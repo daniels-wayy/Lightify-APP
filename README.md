@@ -1,1 +1,1 @@
-# Lightify-App
+# Lightify-APP
