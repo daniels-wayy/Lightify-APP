@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "614381032055",
+    "project_id": "lightify-c16a5",
+    "storage_bucket": "lightify-c16a5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:614381032055:android:d8175f484db1a986746c72",
+        "android_client_info": {
+          "package_name": "lightify.ds"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCYf48X2JdC9kKGJ6vvp5SUH-BZn0sJBhE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
