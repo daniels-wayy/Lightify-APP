@@ -6,7 +6,7 @@ import 'package:lightify/core/domain/repo/device_repo.dart';
 import 'package:lightify/core/ui/constants/app_constants.dart';
 import 'package:lightify/core/ui/utils/function_util.dart';
 
-@Injectable(as: DeviceRepo)
+@LazySingleton(as: DeviceRepo)
 class DeviceRepoImpl implements DeviceRepo {
   @override
   Device? parseDevice(String data) {

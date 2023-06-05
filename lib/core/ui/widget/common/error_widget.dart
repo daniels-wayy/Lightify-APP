@@ -29,7 +29,7 @@ class CustomErrorWidget extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height: height(42)),
+              SizedBox(height: height(124)),
               const Spacer(),
               Icon(
                 Icons.error_outline,
@@ -40,14 +40,16 @@ class CustomErrorWidget extends StatelessWidget {
               Text(
                 AppConstants.strings.AN_ERROR_OCCURED,
                 style: context.textTheme.titleMedium,
+                textAlign: TextAlign.center,
               ),
               SizedBox(height: height(8)),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: width(24)),
                 child: Text(
-                  error,
-                  style: context.textTheme.bodyMedium?.copyWith(
-                    color: AppColors.gray200,
+                  '$error.\n${AppConstants.strings.CHECK_YOUR_INTERNET_CONNECITON_OR_TRY_AGAIN}',
+                  style: context.textTheme.bodyLarge?.copyWith(
+                    color: AppColors.gray300,
+                    height: 1.65,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -75,54 +77,11 @@ class CustomErrorWidget extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: height(42)),
+              SizedBox(height: height(124)),
             ],
           ),
         ),
       ),
     );
-    // return Padding(
-    //   padding: EdgeInsets.symmetric(horizontal: width(32)),
-    //   child: Column(
-    //     mainAxisSize: MainAxisSize.min,
-    //     children: [
-    //       Text(
-    //         'Error',
-    //         style: context.textTheme.titleMedium?.copyWith(color: AppColors.gray400),
-    //       ),
-    //       SizedBox(height: height(10)),
-    //       Text(
-    //         error,
-    //         style: context.textTheme.displayLarge?.copyWith(color: AppColors.gray200),
-    //         textAlign: TextAlign.center,
-    //       ),
-    //       if (onRetry != null) ...[
-    //         SizedBox(height: height(28)),
-    // BouncingWidget(
-    //   onTap: onRetry,
-    //   child: Column(
-    //     children: [
-    //       Container(
-    //         width: width(42),
-    //         height: width(42),
-    //         decoration: BoxDecoration(border: Border.all(color: AppColors.gray200), shape: BoxShape.circle),
-    //         child: const Center(
-    //             child: Icon(
-    //           Icons.refresh,
-    //           color: AppColors.gray200,
-    //         )),
-    //       ),
-    //       SizedBox(height: height(8)),
-    //       Text(
-    //         'Retry',
-    //         style: context.textTheme.displayLarge?.copyWith(color: AppColors.gray200),
-    //       ),
-    //     ],
-    //   ),
-    // ),
-    //       ],
-    //     ],
-    //   ),
-    // );
   }
 }

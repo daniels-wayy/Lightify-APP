@@ -7,17 +7,18 @@ part 'home_state.freezed.dart';
 @freezed
 class HomeState with _$HomeState {
   const HomeState._();
-  const factory HomeState({
-    @Default(false) bool connecting,
-    required List<Device> availableDevices,
-    String? error,
-  }) = _HomeState;
+  const factory HomeState.initial() = _Initial;
+  const factory HomeState.connecting() = _Connecting;
+  const factory HomeState.connected({required List<Device> availableDevices}) = _Connected;
+  const factory HomeState.disconnected() = _Disconnected;
 
-  factory HomeState.initialState() => const HomeState(
-        availableDevices: [],
+  Map<String, List<Device>>? get groupedDevices => maybeMap(
+        connected: (state) => state.availableDevices.groupBy((p0) => p0.deviceInfo.deviceGroup),
+        orElse: () => null,
       );
 
-  Map<String, List<Device>> get groupedDevices {
-    return availableDevices.groupBy((p0) => p0.deviceInfo.deviceGroup);
-  }
+  List<Device> get availableDevices => maybeMap(
+        connected: (state) => state.availableDevices,
+        orElse: () => [],
+      );
 }

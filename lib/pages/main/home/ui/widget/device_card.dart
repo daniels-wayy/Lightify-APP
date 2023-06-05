@@ -139,14 +139,15 @@ class _DeviceCardState extends State<DeviceCard> {
                                   }
                                   final brightnessPercentage = (value * 100).toInt();
                                   return AnimatedDefaultTextStyle(
-                                    style: context.textTheme.displaySmall!.copyWith(
-                                      color: isBrightRange
-                                          ? AppColors.black.withOpacity(0.6)
-                                          : AppColors.white.withOpacity(0.6),
-                                      fontWeight: FontWeight.bold,
-                                      letterSpacing: -0.45,
-                                      fontSize: height(widget.brightnessTextSize),
-                                    ),
+                                    style: context.textTheme.displaySmall?.copyWith(
+                                          color: isBrightRange
+                                              ? AppColors.black.withOpacity(0.6)
+                                              : AppColors.white.withOpacity(0.6),
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: -0.45,
+                                          fontSize: height(widget.brightnessTextSize),
+                                        ) ??
+                                        const TextStyle(),
                                     duration: DeviceCard.COLORS_SWITCH_DURATION,
                                     child: Text('$brightnessPercentage%'),
                                   );
@@ -169,7 +170,8 @@ class _DeviceCardState extends State<DeviceCard> {
                         if (!widget.hideDeviceName)
                           Flexible(
                             child: AnimatedDefaultTextStyle(
-                              style: context.textTheme.titleSmall!.copyWith(color: dataColor, letterSpacing: -0.55),
+                              style: context.textTheme.titleSmall?.copyWith(color: dataColor, letterSpacing: -0.55) ??
+                                  const TextStyle(),
                               duration: DeviceCard.COLORS_SWITCH_DURATION,
                               child: Text(widget.device.deviceInfo.deviceName),
                             ),
