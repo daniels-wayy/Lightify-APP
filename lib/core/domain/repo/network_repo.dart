@@ -1,10 +1,13 @@
-import 'package:lightify/core/data/model/device.dart';
-
 abstract class NetworkRepo {
-  Future<void> initializeConnection({void Function()? onConnectionLost});
+  Future<void> initializeConnection({
+    void Function()? onConnected,
+    void Function()? onDisconnected,
+    void Function(String)? onSubscribed,
+  });
+
   Stream<String?>? getMQTTUpdatesStream();
-  void getDevicesState();
-  void getDeviceState(Device device);
-  void sendToDevice(Device device, String cmd);
+  Future<void> getDevicesState();
+  void getDeviceState(String deviceTopic);
+  void sendToDevice(String deviceTopic, String cmd);
   bool isMQTTConnected();
 }

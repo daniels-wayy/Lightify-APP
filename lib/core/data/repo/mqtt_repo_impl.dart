@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:lightify/core/domain/repo/current_device_repo.dart';
 import 'package:lightify/core/domain/repo/mqtt_repo.dart';
@@ -15,38 +17,48 @@ class MQTTRepoImpl implements MQTTRepo {
   late MqttServerClient client;
 
   @override
-  Future<MqttConnectionState?> connectToMQTT({void Function()? onDisconnect}) async {
-    try {
-      final currentDeviceInfo = await currentDeviceRepo.getCurrentDeviceInfo();
-      final connMess = MqttConnectMessage().withWillQos(MqttQos.atMostOnce).withClientIdentifier(
-            currentDeviceInfo.deviceId ?? FunctionUtil.generateRandomString(12),
-          );
-      client = MqttServerClient(AppConstants.api.MQTT_BROKER_HOST, '',
-          maxConnectionAttempts: AppConstants.api.MQTT_CONNECTION_ATTEMPTS);
-      client.port = AppConstants.api.MQTT_PORT;
-      client.logging(on: false);
-      client.keepAlivePeriod = 30;
-      client.connectionMessage = connMess;
-      client.onDisconnected = onDisconnect;
+  Future<void> connectToMQTT({
+    void Function()? onConnected,
+    void Function()? onDisconnected,
+    void Function(String)? onSubscribed,
+  }) async {
+    final currentDeviceInfo = await currentDeviceRepo.getCurrentDeviceInfo();
+    final connMessage = MqttConnectMessage().withWillQos(MqttQos.atMostOnce).withClientIdentifier(
+          currentDeviceInfo.deviceId ?? FunctionUtil.generateRandomString(12),
+        );
+    client = MqttServerClient(AppConstants.api.MQTT_BROKER_HOST, '',
+        maxConnectionAttempts: AppConstants.api.MQTT_CONNECTION_ATTEMPTS);
+    client.port = AppConstants.api.MQTT_PORT;
 
+    client.setProtocolV311();
+    client.keepAlivePeriod = AppConstants.api.MQTT_KEEP_ALIVE_FREQ_SEC;
+    client.connectTimeoutPeriod = 3000; // milliseconds
+    client.connectionMessage = connMessage;
+    client.onDisconnected = onDisconnected;
+    client.onConnected = onConnected;
+    client.onSubscribed = onSubscribed;
+
+    try {
       await client.connect();
-      if (client.connectionStatus?.state == MqttConnectionState.connected) {
-        client.subscribe(AppConstants.api.MQTT_TOPIC, MqttQos.exactlyOnce);
-      } else if (client.connectionStatus?.state == MqttConnectionState.disconnected ||
-          client.connectionStatus?.state == MqttConnectionState.disconnecting) {
-        _disconnect();
-      }
-      return client.connectionStatus?.state;
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+    } on NoConnectionException catch (e) {
+      debugPrint('MQTT Connection NoConnectionException! $e');
+      client.disconnect();
+    } on SocketException catch (e) {
+      debugPrint('MQTT Connection SocketException! $e');
+      client.disconnect();
     } catch (e) {
-      _disconnect();
-      rethrow;
+      debugPrint('MQTT Connection error! $e');
+      client.disconnect();
+    }
+
+    if (client.connectionStatus?.state == MqttConnectionState.connected) {
+      client.subscribe(AppConstants.api.MQTT_TOPIC, MqttQos.atMostOnce);
     }
   }
 
   @override
-  Stream<List<MqttReceivedMessage<MqttMessage>>>? getMQTTUpdatesStream() {
-    return client.updates;
-  }
+  Stream<List<MqttReceivedMessage<MqttMessage>>>? getMQTTUpdatesStream() => client.updates;
 
   @override
   MqttConnectionState getMQTTConnectionState() => client.connectionStatus?.state ?? MqttConnectionState.disconnected;
@@ -55,8 +67,8 @@ class MQTTRepoImpl implements MQTTRepo {
   void send(String topic, String data) {
     final value = '${AppConstants.api.MQTT_PACKETS_HEADER}$data';
     final mqttPayloadBuilder = MqttClientPayloadBuilder().addString(value);
-    client.publishMessage(topic, MqttQos.exactlyOnce, mqttPayloadBuilder.payload!);
+    if (mqttPayloadBuilder.payload != null) {
+      client.publishMessage(topic, MqttQos.exactlyOnce, mqttPayloadBuilder.payload!);
+    }
   }
-
-  void _disconnect() => client.disconnect();
 }

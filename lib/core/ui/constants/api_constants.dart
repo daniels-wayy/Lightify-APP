@@ -9,7 +9,7 @@ class _ApiConstants {
   final MQTT_TOPIC = 'DSLY_App';
   final MQTT_PORT = 1883;
   // final MQTT_CLIENT_ID = 'DSLYAPPID';
-  final MQTT_CONNECTION_ATTEMPTS = 4;
+  final MQTT_CONNECTION_ATTEMPTS = 3;
 
   final List<String> MQTT_DEVICES_REMOTES = const [
     'DSLY_Livingroom_TV',
@@ -29,5 +29,6 @@ class _ApiConstants {
   final SLEEP_MODE_BRIGHTNESS = 5;
   final MQTT_DEVICE_MAX_BRIGHTNESS = 255;
   final MQTT_SEND_REQUEST_THRESHOLD = const Duration(milliseconds: 200);
-  final MQTT_GET_REQUEST_FREQ = const Duration(seconds: 20);
+  final MQTT_GET_REQUEST_FREQ = const Duration(seconds: 30);
+  final MQTT_KEEP_ALIVE_FREQ_SEC = 25;
 }

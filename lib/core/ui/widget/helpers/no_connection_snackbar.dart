@@ -31,7 +31,8 @@ class NoConnectionSnackbar extends SnackBar {
                 Text(AppConstants.strings.INTERNET_CONNECTION_LOST,
                     style: context.textTheme.bodyLarge?.copyWith(
                       color: AppColors.white,
-                      letterSpacing: 0.0,
+                      fontWeight: FontWeight.w500,
+                      letterSpacing: -0.15,
                     )),
                 const Spacer(),
                 BouncingWidget(

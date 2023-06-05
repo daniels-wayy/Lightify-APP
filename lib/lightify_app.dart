@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lightify/core/domain/repo/connectivity_repo.dart';
 import 'package:lightify/core/ui/bloc/connectivity/connectivity_cubit.dart';
 import 'package:lightify/core/ui/bloc/devices/devices_cubit.dart';
 import 'package:lightify/core/ui/bloc/user_pref/user_pref_cubit.dart';
@@ -11,8 +12,28 @@ import 'package:lightify/core/ui/routes/root_routes.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:lightify/di/di.dart';
 
-class LightifyApp extends StatelessWidget {
+class LightifyApp extends StatefulWidget {
   const LightifyApp({super.key});
+
+  @override
+  State<LightifyApp> createState() => _LightifyAppState();
+}
+
+class _LightifyAppState extends State<LightifyApp> {
+  @override
+  void initState() {
+    super.initState();
+    _checkForRegistration();
+  }
+
+  void _checkForRegistration() {
+    // check for registration
+    if (!getIt.isRegistered<ConnectivityCubit>()) {
+      getIt.registerFactory<ConnectivityCubit>(
+        () => ConnectivityCubit(getIt<ConnectivityRepo>()),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

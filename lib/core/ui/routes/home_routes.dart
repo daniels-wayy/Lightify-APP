@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightify/di/di.dart';
-import 'package:lightify/pages/main/home/ui/bloc/home_cubit.dart';
+import 'package:lightify/pages/main/home/ui/bloc/home_bloc.dart';
 import 'package:lightify/pages/main/home/ui/home_page.dart';
 
 class HomeRoutes {
@@ -16,7 +16,7 @@ final RouteFactory homeRouteFactory = (RouteSettings settings) {
       return MaterialPageRoute<void>(
         settings: settings,
         builder: (_) => BlocProvider(
-          create: (_) => getIt<HomeCubit>(),
+          create: (_) => getIt<HomeBloc>(),
           child: const HomePage(),
         ),
       );

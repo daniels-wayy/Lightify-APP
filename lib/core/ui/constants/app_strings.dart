@@ -36,5 +36,6 @@ class _StringsConstants {
   final B = 'B';
   final INTERNET_CONNECTION_LOST = 'Internet connection lost';
   final AN_ERROR_OCCURED = 'An error occurred';
+  final CHECK_YOUR_INTERNET_CONNECITON_OR_TRY_AGAIN = 'Check your internet connection or try again.';
   final RETRY = 'Retry';
 }

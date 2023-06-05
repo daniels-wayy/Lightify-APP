@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:lightify/core/ui/constants/app_constants.dart';
 import 'package:lightify/core/ui/styles/colors/app_colors.dart';
 import 'package:lightify/core/ui/styles/text_styles/app_text_styles.dart';
 

@@ -37,7 +37,7 @@ class DevicesGroup extends StatelessWidget {
       return const SizedBox.shrink();
     }
     return FadeAnimation(
-      delay: Duration(milliseconds: groupIndex * 200),
+      delay: Duration(milliseconds: groupIndex * 300),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
