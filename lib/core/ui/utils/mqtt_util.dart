@@ -16,6 +16,9 @@ class MQTT_UTIL {
   }
 
   static String breath_cmd(double state) => '${AppConstants.api.MQTT_BREATH_KEY}$state';
+  static String effect_cmd(int state) => '${AppConstants.api.MQTT_EFFECT_KEY}$state';
+  static String effect_speed_cmd(int state) => '${AppConstants.api.MQTT_EFFECT_SPEED_KEY}$state';
+  static String effect_scale_cmd(int state) => '${AppConstants.api.MQTT_EFFECT_SCALE_KEY}$state';
   static String sleep_mode_cmd() => '${AppConstants.api.MQTT_BRIGHTNESS_KEY}${AppConstants.api.SLEEP_MODE_BRIGHTNESS}';
   static String shut_down_cmd() => '${AppConstants.api.MQTT_POWER_KEY}0';
 }

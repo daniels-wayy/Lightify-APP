@@ -16,6 +16,7 @@ class _ApiConstants {
     'DSLY_Kitchen_Workspace',
     'DSLY_Bedroom_Closet',
     'DSLY_Bedroom_Bed',
+    'DSLY_Livingroom_Piano',
   ];
 
   final MQTT_PACKETS_HEADER = 'DSLY:';
@@ -25,10 +26,19 @@ class _ApiConstants {
   final MQTT_BRIGHTNESS_KEY = 'BRI';
   final MQTT_COLOR_KEY = 'CLR';
   final MQTT_BREATH_KEY = 'BRE';
+  final MQTT_EFFECT_KEY = 'EFF';
+  final MQTT_EFFECT_SPEED_KEY = 'SPD';
+  final MQTT_EFFECT_SCALE_KEY = 'SCL';
 
   final SLEEP_MODE_BRIGHTNESS = 5;
   final MQTT_DEVICE_MAX_BRIGHTNESS = 255;
   final MQTT_SEND_REQUEST_THRESHOLD = const Duration(milliseconds: 200);
   final MQTT_GET_REQUEST_FREQ = const Duration(seconds: 30);
   final MQTT_KEEP_ALIVE_FREQ_SEC = 25;
+
+  final EFFECT_MIN_SPEED = 1;
+  final EFFECT_MAX_SPEED = 25;
+
+  final EFFECT_MIN_SCALE = 0;
+  final EFFECT_MAX_SCALE = 255;
 }

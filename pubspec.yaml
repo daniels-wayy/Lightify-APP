@@ -31,7 +31,7 @@ dependencies:
   flutter_colorpicker: ^1.0.3
   fading_edge_scrollview: ^3.0.0
   fluttertoast: ^8.2.2
-  adaptive_dialog: ^1.9.0-0
+  adaptive_dialog: 1.9.0-no-macos.3
 
   # Local DB
   shared_preferences: ^2.1.1

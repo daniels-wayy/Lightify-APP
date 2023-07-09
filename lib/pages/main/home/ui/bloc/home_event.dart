@@ -15,6 +15,9 @@ class HomeEvent with _$HomeEvent {
   const factory HomeEvent.onBrightnessChanged(Device device, int state) = _OnBrightnessChanged;
   const factory HomeEvent.onColorChanged(Device device, HSVColor state) = _OnColorChanged;
   const factory HomeEvent.onBreathChanged(Device device, double state) = _OnBreathChanged;
+  const factory HomeEvent.onEffectChanged(Device device, int state) = _OnEffectChanged;
+  const factory HomeEvent.onEffectSpeedChanged(Device device, double state) = _OnEffectSpeedChanged;
+  const factory HomeEvent.onEffectScaleChanged(Device device, double state) = _OnEffectScaleChanged;
   const factory HomeEvent.onDeviceGroupSleepMode(List<Device> devices) = _OnDeviceGroupSleepMode;
   const factory HomeEvent.onDeviceGroupTurnOff(List<Device> devices) = _OnDeviceGroupTurnOff;
 

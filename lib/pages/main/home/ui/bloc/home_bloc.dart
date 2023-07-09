@@ -61,6 +61,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       onBrightnessChanged: _processOnBrightnessChanged,
       onColorChanged: _processOnColorChanged,
       onBreathChanged: _processOnBreathChanged,
+      onEffectChanged: _processOnEffectChanged,
+      onEffectSpeedChanged: _processOnEffectSpeedChanged,
+      onEffectScaleChanged: _processOnEffectScaleChanged,
       onDeviceGroupSleepMode: _processOnDeviceGroupSleepMode,
       onDeviceGroupTurnOff: _processOnDeviceGroupTurnOff,
       onRefresh: _processOnRefresh,
@@ -107,6 +110,18 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   Stream<HomeState> _processOnBreathChanged(Device device, double state) async* {
     _sendData([device], MQTT_UTIL.breath_cmd(state));
+  }
+
+  Stream<HomeState> _processOnEffectChanged(Device device, int state) async* {
+    _sendData([device], MQTT_UTIL.effect_cmd(state));
+  }
+
+  Stream<HomeState> _processOnEffectSpeedChanged(Device device, double state) async* {
+    _sendData([device], MQTT_UTIL.effect_speed_cmd(state.toInt()));
+  }
+
+  Stream<HomeState> _processOnEffectScaleChanged(Device device, double state) async* {
+    _sendData([device], MQTT_UTIL.effect_scale_cmd(state.toInt()));
   }
 
   Stream<HomeState> _processOnDeviceGroupSleepMode(List<Device> devices) async* {

@@ -68,7 +68,8 @@ class _DetailsPresetColorsWidget extends StatelessWidget {
               style: context.textTheme.displaySmall?.copyWith(
                 color: AppColors.gray200,
                 fontSize: height(10),
-                letterSpacing: -0.2,
+                letterSpacing: -0.1,
+                fontWeight: FontWeight.w600,
               ),
             )
           ],
@@ -101,7 +102,8 @@ class _DetailsPresetColorsWidget extends StatelessWidget {
               style: context.textTheme.displaySmall?.copyWith(
                 color: AppColors.gray200,
                 fontSize: height(10),
-                letterSpacing: -0.2,
+                letterSpacing: -0.1,
+                fontWeight: FontWeight.w600,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,

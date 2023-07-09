@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:lightify/core/data/model/color_preset.dart';
 import 'package:lightify/core/data/model/device.dart';
+import 'package:lightify/core/data/model/effect_entity.dart';
 import 'package:lightify/core/ui/animation/scale_fade_animation.dart';
 import 'package:lightify/core/ui/bloc/devices/devices_cubit.dart';
 import 'package:lightify/core/ui/bloc/devices/devices_state.dart';
@@ -13,9 +14,10 @@ import 'package:lightify/core/ui/bloc/user_pref/user_pref_state.dart';
 import 'package:lightify/core/ui/constants/app_constants.dart';
 import 'package:lightify/core/ui/extensions/core_extensions.dart';
 import 'package:lightify/core/ui/styles/colors/app_colors.dart';
+import 'package:lightify/core/ui/utils/function_util.dart';
 import 'package:lightify/core/ui/utils/screen_util.dart';
 import 'package:lightify/core/ui/widget/common/bouncing_widget.dart';
-import 'package:lightify/core/ui/widget/helpers/custom_hold_detector.dart';
+import 'package:lightify/core/ui/widget/common/common_slider.dart';
 import 'package:lightify/pages/device_details/domain/model/device_details_page_args.dart';
 import 'package:lightify/pages/device_details/domain/model/device_rgb_color_input_dto.dart';
 import 'package:lightify/pages/main/home/ui/widget/device_card.dart';
@@ -24,6 +26,7 @@ part 'package:lightify/pages/device_details/ui/widget/details_device_card_widget
 part 'package:lightify/pages/device_details/ui/widget/details_color_picker_widget.dart';
 part 'package:lightify/pages/device_details/ui/widget/details_preset_colors_widget.dart';
 part 'package:lightify/pages/device_details/ui/widget/details_breath_slider_widget.dart';
+part 'package:lightify/pages/device_details/ui/widget/details_effects_controls_widget.dart';
 
 class DeviceDetailsPage extends StatefulWidget {
   const DeviceDetailsPage({super.key, required this.args});
@@ -56,34 +59,45 @@ class _DeviceDetailsPageState extends State<DeviceDetailsPage> {
         if (device == null) {
           return const SizedBox.shrink();
         }
-        return ListView(
-          // padding: EdgeInsets.only(top: height(12)),
-          physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-          children: [
-            SizedBox(height: height(14)),
-            _DetailsDeviceCardWidget(
-              device: device,
-              onPowerChanged: widget.args.onPowerChanged,
-              onBrightnessChanged: widget.args.onBrightnessChanged,
-            ),
-            SizedBox(height: height(42)),
-            _DetailsBreathSliderWidget(
-              device: device,
-              onBreathChanged: widget.args.onBreathChanged,
-            ),
-            SizedBox(height: height(42)),
-            _DetailsPresetColorsWidget(
-              onPresetTap: widget.args.onColorChanged,
-              onColorPresetRemove: _onPresetRemove,
-              onColorPresetAdd: () => _onColorPresetAdd(device.color),
-            ),
-            SizedBox(height: height(42)),
-            _DetailsColorPickerWidget(
-              device: device,
-              onColorChanged: widget.args.onColorChanged,
-              onCustomColorTap: _onCustomColorTap,
-            ),
-          ],
+        return FadingEdgeScrollView.fromScrollView(
+          gradientFractionOnEnd: 0.25,
+          child: ListView(
+            controller: ScrollController(),
+            padding: EdgeInsets.only(bottom: height(64) + ScreenUtil.bottomPadding, top: height(18)),
+            physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+            children: [
+              SizedBox(height: height(14)),
+              _DetailsDeviceCardWidget(
+                device: device,
+                onPowerChanged: widget.args.onPowerChanged,
+                onBrightnessChanged: widget.args.onBrightnessChanged,
+              ),
+              SizedBox(height: height(42)),
+              _DetailsEffectsControlsWidget(
+                device: device,
+                onEffectChanged: widget.args.onEffectChanged,
+                onEffectSpeedChanged: widget.args.onEffectSpeedChanged,
+                onEffectScaleChanged: widget.args.onEffectScaleChanged,
+              ),
+              SizedBox(height: height(42)),
+              _DetailsBreathSliderWidget(
+                device: device,
+                onBreathChanged: widget.args.onBreathChanged,
+              ),
+              SizedBox(height: height(42)),
+              _DetailsPresetColorsWidget(
+                onPresetTap: widget.args.onColorChanged,
+                onColorPresetRemove: _onPresetRemove,
+                onColorPresetAdd: () => _onColorPresetAdd(device.color),
+              ),
+              SizedBox(height: height(42)),
+              _DetailsColorPickerWidget(
+                device: device,
+                onColorChanged: widget.args.onColorChanged,
+                onCustomColorTap: _onCustomColorTap,
+              ),
+            ],
+          ),
         );
       }),
     );
@@ -98,7 +112,7 @@ class _DeviceDetailsPageState extends State<DeviceDetailsPage> {
       backgroundColor: AppColors.fullBlack,
       centerTitle: true,
       elevation: 0.0,
-      toolbarHeight: height(62),
+      toolbarHeight: height(48),
       title: Column(
         children: [
           Text(
@@ -112,7 +126,7 @@ class _DeviceDetailsPageState extends State<DeviceDetailsPage> {
             widget.args.deviceInfo.deviceGroup,
             style: context.textTheme.displaySmall?.copyWith(
               color: AppColors.gray200,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w600,
               letterSpacing: -0.25,
             ),
           ),
