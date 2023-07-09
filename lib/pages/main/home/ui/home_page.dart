@@ -128,6 +128,9 @@ class _HomePageState extends State<HomePage> {
                   onDeviceBrightnessChanged: _onBrightnessStateChanged,
                   onDeviceColorChanged: _onColorStateChanged,
                   onDeviceBreathChanged: _onBreathStateChanged,
+                  onDeviceEffectChanged: _onEffectStateChanged,
+                  onDeviceEffectSpeedChanged: _onEffectSpeedStateChanged,
+                  onDeviceEffectScaleChanged: _onEffectScaleStateChanged,
                   onDeviceGroupSleepMode: _onDeviceGroupSleepMode,
                   onDeviceGroupTurnOff: _onDeviceGroupTurnOff,
                 );
@@ -158,6 +161,18 @@ class _HomePageState extends State<HomePage> {
 
   void _onBreathStateChanged(Device device, double state) {
     context.read<HomeBloc>().add(HomeEvent.onBreathChanged(device, state));
+  }
+
+  void _onEffectStateChanged(Device device, int state) {
+    context.read<HomeBloc>().add(HomeEvent.onEffectChanged(device, state));
+  }
+
+  void _onEffectSpeedStateChanged(Device device, double state) {
+    context.read<HomeBloc>().add(HomeEvent.onEffectSpeedChanged(device, state));
+  }
+
+  void _onEffectScaleStateChanged(Device device, double state) {
+    context.read<HomeBloc>().add(HomeEvent.onEffectScaleChanged(device, state));
   }
 
   void _onDeviceGroupSleepMode(List<Device> devices) {

@@ -27,6 +27,7 @@ class _StringsConstants {
   final DELETE = 'Delete';
   final CUSTOM_COLOR = 'Custom color';
   final COLOR_PRESETS = 'Color presets';
+  final EFFECTS = 'Effects';
   final COLOR_PICKER = 'Color picker';
   final COLOR_BREATH = 'Color breath';
   final ADD = 'Add';
@@ -38,4 +39,15 @@ class _StringsConstants {
   final AN_ERROR_OCCURED = 'An error occurred';
   final CHECK_YOUR_INTERNET_CONNECITON_OR_TRY_AGAIN = 'Check your internet connection or try again.';
   final RETRY = 'Retry';
+
+  final NONE = 'None';
+  final FLAME = 'Flame';
+  final LAVA = 'Lava';
+  final CLOUDS = 'Clouds';
+  final FOREST = 'Forest';
+  final OCEAN = 'Ocean';
+  final RAINBOW = 'Rainbow';
+
+  final SPEED = 'Speed';
+  final SCALE = 'Scale';
 }

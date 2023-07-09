@@ -7,6 +7,9 @@ class DeviceDetailsPageArgs {
   final void Function(int) onBrightnessChanged;
   final void Function(HSVColor)? onColorChanged;
   final void Function(double)? onBreathChanged;
+  final void Function(int) onEffectChanged;
+  final void Function(double) onEffectSpeedChanged;
+  final void Function(double) onEffectScaleChanged;
 
   const DeviceDetailsPageArgs({
     required this.deviceInfo,
@@ -14,5 +17,8 @@ class DeviceDetailsPageArgs {
     required this.onBrightnessChanged,
     required this.onColorChanged,
     required this.onBreathChanged,
+    required this.onEffectChanged,
+    required this.onEffectSpeedChanged,
+    required this.onEffectScaleChanged,
   });
 }

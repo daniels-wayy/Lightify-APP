@@ -16,4 +16,12 @@ class FunctionUtil {
     const chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
     return List.generate(len, (index) => chars[r.nextInt(chars.length)]).join();
   }
+
+  static double mapValue(double value, double min, double max) {
+    return (value - min) / (max - min);
+  }
+
+  static double reverseMapValue(double value, double min, double max) {
+    return value * (max - min) + min;
+  }
 }

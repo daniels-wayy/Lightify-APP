@@ -15,6 +15,9 @@ class DevicesGroup extends StatelessWidget {
   final void Function(Device, int) onDeviceBrightnessChanged;
   final void Function(Device, HSVColor) onDeviceColorChanged;
   final void Function(Device, double) onDeviceBreathChanged;
+  final void Function(Device, int) onDeviceEffectChanged;
+  final void Function(Device, double) onDeviceEffectSpeedChanged;
+  final void Function(Device, double) onDeviceEffectScaleChanged;
   final void Function(List<Device>) onDeviceGroupSleepMode;
   final void Function(List<Device>) onDeviceGroupTurnOff;
 
@@ -27,6 +30,9 @@ class DevicesGroup extends StatelessWidget {
     required this.onDeviceBrightnessChanged,
     required this.onDeviceColorChanged,
     required this.onDeviceBreathChanged,
+    required this.onDeviceEffectChanged,
+    required this.onDeviceEffectSpeedChanged,
+    required this.onDeviceEffectScaleChanged,
     required this.onDeviceGroupSleepMode,
     required this.onDeviceGroupTurnOff,
   });
@@ -78,11 +84,14 @@ class DevicesGroup extends StatelessWidget {
               final device = groupDevices[index];
               return DeviceCard(
                 device: device,
-                heroTag: device.deviceInfo.topic,
+                // heroTag: device.deviceInfo.topic,
                 onPowerChanged: (state) => onDevicePowerChanged(device, state),
                 onBrightnessChanged: (state) => onDeviceBrightnessChanged(device, state),
                 onColorChanged: (state) => onDeviceColorChanged(device, state),
                 onBreathChanged: (state) => onDeviceBreathChanged(device, state),
+                onEffectChanged: (state) => onDeviceEffectChanged(device, state),
+                onEffectSpeedChanged: (state) => onDeviceEffectSpeedChanged(device, state),
+                onEffectScaleChanged: (state) => onDeviceEffectScaleChanged(device, state),
               );
             },
           ),

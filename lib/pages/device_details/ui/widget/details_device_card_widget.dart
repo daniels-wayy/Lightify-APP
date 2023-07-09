@@ -20,7 +20,7 @@ class _DetailsDeviceCardWidget extends StatelessWidget {
         width: double.maxFinite,
         child: DeviceCard(
           device: device,
-          heroTag: device.deviceInfo.topic,
+          // heroTag: device.deviceInfo.topic,
           onPowerChanged: onPowerChanged,
           onBrightnessChanged: onBrightnessChanged,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -29,6 +29,7 @@ class _DetailsDeviceCardWidget extends StatelessWidget {
           hideDetailsButton: true,
           hideDeviceName: true,
           scaleFactor: 1.05,
+          showEffectIndication: false,
         ),
       ),
     );

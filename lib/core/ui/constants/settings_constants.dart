@@ -28,6 +28,14 @@ class _SettingsConstants {
         ),
       ];
 
+  List<EffectEntity> get effects => [
+        EffectEntity(id: 0, name: AppConstants.strings.NONE, previewColor: AppColors.gray200),
+        EffectEntity(id: 1, name: AppConstants.strings.LAVA, previewColor: Colors.redAccent),
+        EffectEntity(id: 2, name: AppConstants.strings.CLOUDS, previewColor: Colors.blueAccent),
+        EffectEntity(id: 3, name: AppConstants.strings.FOREST, previewColor: Colors.green),
+        EffectEntity(id: 4, name: AppConstants.strings.OCEAN, previewColor: Colors.blue[700]!),
+      ];
+
   //(255, 100, 18)
   //(174, 32, 245)
   //(10, 247, 144)
