@@ -17,6 +17,7 @@ class _ApiConstants {
     'DSLY_Bedroom_Closet',
     'DSLY_Bedroom_Bed',
     'DSLY_Livingroom_Piano',
+    'DSLY_Bedroom_Monitor',
   ];
 
   final MQTT_PACKETS_HEADER = 'DSLY:';
