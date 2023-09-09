@@ -11,13 +11,19 @@ class _ApiConstants {
   // final MQTT_CLIENT_ID = 'DSLYAPPID';
   final MQTT_CONNECTION_ATTEMPTS = 3;
 
-  final List<String> MQTT_DEVICES_REMOTES = const [
+  // D&V
+  final List<String> DS_MQTT_DEVICES_REMOTES = const [
     'DSLY_Livingroom_TV',
     'DSLY_Kitchen_Workspace',
     'DSLY_Bedroom_Closet',
     'DSLY_Bedroom_Bed',
     'DSLY_Livingroom_Piano',
     'DSLY_Bedroom_Monitor',
+  ];
+
+  // Nick
+  final List<String> DN_MQTT_DEVICES_REMOTES = const [
+    'DNLY_Kitchen_Ceiling',
   ];
 
   final MQTT_PACKETS_HEADER = 'DSLY:';

@@ -33,4 +33,14 @@ class UserPrefCubit extends Cubit<UserPrefState> {
     await commonStorage.storeColorPresets(currentPresets);
     emit(state.copyWith(colorPresets: currentPresets));
   }
+
+  Future<void> onShowNavigationBarChanged(bool value) async {
+    emit(state.copyWith(showNavigationBar: value));
+    await commonStorage.storeNavigationBarSetting(value);
+  }
+
+  Future<void> onShowHomeSelectorBarChanged(bool value) async {
+    emit(state.copyWith(showHomeSelectorBar: value));
+    await commonStorage.storeHomeSelectorBarSetting(value);
+  }
 }

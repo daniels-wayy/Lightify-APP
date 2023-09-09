@@ -10,10 +10,14 @@ class UserPrefState with _$UserPrefState {
   const UserPrefState._();
   const factory UserPrefState({
     required List<ColorPreset> colorPresets,
+    required bool showNavigationBar,
+    required bool showHomeSelectorBar,
   }) = _UserPrefState;
 
   factory UserPrefState.initialState(CommonStorage commonStorage) => UserPrefState(
         colorPresets: [...commonStorage.getColorPresets()],
+        showNavigationBar: commonStorage.getNavigationBarSetting(),
+        showHomeSelectorBar: commonStorage.getHomeSelectorBarSetting(),
       );
 
   List<ColorPreset> get getDisplayColorPresets => [

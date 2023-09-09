@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:lightify/core/data/model/device.dart';
 import 'package:lightify/core/ui/animation/fade_animation.dart';
 import 'package:lightify/core/ui/extensions/core_extensions.dart';
-import 'package:lightify/core/ui/styles/colors/app_colors.dart';
 import 'package:lightify/core/ui/utils/screen_util.dart';
 import 'package:lightify/core/ui/widget/common/bouncing_widget.dart';
 import 'package:lightify/pages/main/home/ui/widget/device_card.dart';
@@ -51,21 +50,27 @@ class DevicesGroup extends StatelessWidget {
             children: [
               Text(
                 groupName,
-                style: context.textTheme.titleLarge?.copyWith(
-                  // fontWeight: FontWeight.w700,
-                  letterSpacing: -0.55,
+                style: context.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  fontSize: height(24),
+                  letterSpacing: -0.2,
                 ),
               ),
               const Spacer(),
-              BouncingWidget(
-                onTap: () => onDeviceGroupSleepMode(groupDevices),
-                child: Icon(Icons.bedtime_outlined, color: AppColors.gray200, size: height(22)),
-              ),
+              // BouncingWidget(
+              //   onTap: () => onDeviceGroupSleepMode(groupDevices),
+              //   child: Icon(Icons.bedtime_outlined, color: AppColors.gray200, size: height(22)),
+              // ),
               SizedBox(width: width(12)),
-              BouncingWidget(
-                onTap: () => onDeviceGroupTurnOff(groupDevices),
-                child: Icon(Icons.power_settings_new_outlined, color: AppColors.gray200, size: height(22)),
-              ),
+              if (groupDevices.length > 1)
+                BouncingWidget(
+                  onTap: () => onDeviceGroupTurnOff(groupDevices),
+                  child: Icon(
+                    Icons.power_settings_new_outlined,
+                    color: groupDevices.every((device) => !device.powered) ? Colors.green : Colors.red,
+                    size: height(22),
+                  ),
+                ),
             ],
           ),
           SizedBox(height: height(12)),

@@ -1,22 +1,36 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:lightify/config.dart';
 import 'package:lightify/core/data/model/device.dart';
+import 'package:lightify/core/data/model/house.dart';
 import 'package:lightify/core/domain/repo/device_repo.dart';
 import 'package:lightify/core/domain/repo/network_repo.dart';
 import 'package:lightify/core/ui/bloc/connectivity/connectivity_cubit.dart';
 import 'package:lightify/core/ui/bloc/connectivity/connectivity_state.dart';
 import 'package:lightify/core/ui/bloc/devices/devices_cubit.dart';
+import 'package:lightify/core/ui/bloc/user_pref/user_pref_cubit.dart';
+import 'package:lightify/core/ui/bloc/user_pref/user_pref_state.dart';
+import 'package:lightify/core/ui/constants/app_constants.dart';
+import 'package:lightify/core/ui/extensions/core_extensions.dart';
 import 'package:lightify/core/ui/styles/colors/app_colors.dart';
 import 'package:lightify/core/ui/utils/dialog_util.dart';
 import 'package:lightify/core/ui/utils/screen_util.dart';
+import 'package:lightify/core/ui/widget/common/bouncing_widget.dart';
 import 'package:lightify/core/ui/widget/common/error_widget.dart';
+import 'package:lightify/core/ui/widget/common/fading_edge_widget.dart';
 import 'package:lightify/core/ui/widget/progress/loading_widget.dart';
 import 'package:lightify/di/di.dart';
 import 'package:lightify/pages/main/home/ui/bloc/home_bloc.dart';
 import 'package:lightify/pages/main/home/ui/bloc/home_event.dart';
 import 'package:lightify/pages/main/home/ui/bloc/home_state.dart';
 import 'package:lightify/pages/main/home/ui/widget/devices_group.dart';
+import 'package:lightify/pages/main/home/ui/widget/home_tab_bar.dart';
+import 'package:lightify/pages/main/main/ui/bloc/main_cubit.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -25,14 +39,21 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+  late final TabController controller;
+  var house = Config.houses.first;
+  var prevTabIndex = -1;
+
   @override
   void initState() {
     super.initState();
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
+    controller = TabController(length: Config.houses.length, vsync: this)..addListener(_tabListener);
     _initializeConnection();
   }
 
-  void _initializeConnection() {
+  void _initializeConnection({bool connect = true}) {
     // check for registration
     if (!getIt.isRegistered<HomeBloc>()) {
       getIt.registerFactory<HomeBloc>(() => HomeBloc(
@@ -42,44 +63,104 @@ class _HomePageState extends State<HomePage> {
             connectivityCubit: getIt<ConnectivityCubit>(),
           ));
     }
-    context.read<HomeBloc>().add(const HomeEvent.initConnection());
+    context.read<HomeBloc>().add(HomeEvent.initConnection(house, connect: connect));
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  void _tabListener() {
+    if (prevTabIndex != controller.index) {
+      prevTabIndex = controller.index;
+      house = Config.houses[controller.index];
+      _initializeConnection(connect: false);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.fullBlack,
-      body: BlocListener<ConnectivityCubit, ConnectivityState>(
-        listener: (_, __) {},
-        listenWhen: (oldState, newState) {
-          if (!newState.connectionEstablished) {
+    return BlocBuilder<UserPrefCubit, UserPrefState>(builder: (context, userPrefState) {
+      return Scaffold(
+        backgroundColor: AppColors.fullBlack,
+        body: BlocListener<ConnectivityCubit, ConnectivityState>(
+          listener: (_, __) {},
+          listenWhen: (oldState, newState) {
+            if (!newState.connectionEstablished) {
+              return false;
+            }
+            if (oldState.connectedToNet && !newState.connectedToNet) {
+              // Connection lost
+              DialogUtil.showNoConnectionSnackbar(context);
+            } else if (!oldState.connectedToNet && newState.connectedToNet) {
+              // Connection restored
+              DialogUtil.closeSnackBar(context);
+              _initializeConnection();
+            }
             return false;
-          }
-          if (oldState.connectedToNet && !newState.connectedToNet) {
-            // Connection lost
-            DialogUtil.showNoConnectionSnackbar(context);
-          } else if (!oldState.connectedToNet && newState.connectedToNet) {
-            // Connection restored
-            DialogUtil.closeSnackBar(context);
-            _initializeConnection();
-          }
-          return false;
-        },
-        child: BlocBuilder<HomeBloc, HomeState>(builder: (_, state) {
-          return Center(
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 800),
-              child: state.maybeMap(
-                connecting: (_) => _buildConnectingState(),
-                connected: (state) => _buildConnectedState(state.groupedDevices),
-                disconnected: (_) => _buildDisconnectedState(),
-                orElse: () => const SizedBox.shrink(),
-              ),
-            ),
-          );
-        }),
-      ),
-    );
+          },
+          child: BlocBuilder<HomeBloc, HomeState>(builder: (_, state) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AnimatedCrossFade(
+                  sizeCurve: Curves.ease,
+                  crossFadeState:
+                      userPrefState.showHomeSelectorBar ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                  duration: const Duration(milliseconds: 250),
+                  secondChild: Container(),
+                  firstChild: Column(
+                    children: [
+                      SizedBox(height: height(14)),
+                      SafeArea(
+                        bottom: false,
+                        child: Row(
+                          children: [
+                            SizedBox(width: width(6)),
+                            HomeTabBar(context: context, controller: controller),
+                            const Spacer(),
+                            !userPrefState.showNavigationBar
+                                ? Padding(
+                                    padding: EdgeInsets.only(left: width(12), right: width(18)),
+                                    child: BouncingWidget(
+                                      onTap: () => MainCubit.context.read<MainCubit>().changeTab(TabIndex.SETTINGS),
+                                      child: Icon(
+                                        PlatformIcons(context).settings,
+                                        size: height(Platform.isIOS ? 21 : 23),
+                                        color: Colors.white54,
+                                      ),
+                                    ),
+                                  )
+                                : const SizedBox.shrink(),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Center(
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 800),
+                      child: state.maybeMap(
+                        connecting: (_) => _buildConnectingState(),
+                        connected: (state) => _buildConnectedState(state.availableDevices),
+                        disconnected: (_) => _buildDisconnectedState(),
+                        orElse: () => const SizedBox.shrink(),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          }),
+        ),
+        floatingActionButton:
+            !userPrefState.showNavigationBar && !userPrefState.showHomeSelectorBar ? _buildFAB() : null,
+      );
+    });
   }
 
   Widget _buildConnectingState() {
@@ -90,60 +171,114 @@ class _HomePageState extends State<HomePage> {
     return CustomErrorWidget(error: 'MQTT Disconnected', onRetry: _initializeConnection);
   }
 
-  Widget _buildConnectedState(Map<String, List<Device>>? devices) {
-    if (devices == null || devices.isEmpty) {
+  Widget _buildConnectedState(List<Device> devices) {
+    return TabBarView(
+      controller: controller,
+      children: Config.houses
+          .map(
+            (house) => _buildDevicesGrid(house, devices),
+          )
+          .toList(),
+    );
+  }
+
+  Widget _buildDevicesGrid(House house, List<Device> devices) {
+    final houseDevices = devices
+        .where((device) => house.remotes.any(
+              (remote) => device.deviceInfo.topic == remote,
+            ))
+        .toList();
+
+    if (houseDevices.isEmpty) {
       return const SizedBox.shrink();
     }
-    return CustomScrollView(
-      physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-      slivers: [
-        CupertinoSliverRefreshControl(
-          refreshIndicatorExtent: height(80),
-          refreshTriggerPullDistance: height(120),
-          builder: (context, refreshState, pulledExtent, refreshTriggerPullDistance, refreshIndicatorExtent) {
-            final animate = refreshState != RefreshIndicatorMode.drag;
-            return Padding(
-              padding: EdgeInsets.only(top: height(64)),
-              child: Center(
-                child: LoadingWidget(
-                    rotationAnimationValue: animate ? null : pulledExtent / refreshTriggerPullDistance,
-                    animate: animate),
+
+    final groupedDevices = houseDevices.groupBy((p0) => p0.deviceInfo.deviceGroup);
+
+    return FadingEdge(
+      scrollDirection: Axis.vertical,
+      child: CustomScrollView(
+        controller: ScrollController(),
+        physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+        slivers: [
+          CupertinoSliverRefreshControl(
+            refreshIndicatorExtent: height(80),
+            refreshTriggerPullDistance: height(120),
+            builder: (context, refreshState, pulledExtent, refreshTriggerPullDistance, refreshIndicatorExtent) {
+              final animate = refreshState != RefreshIndicatorMode.drag;
+              return Padding(
+                padding: EdgeInsets.only(top: height(64)),
+                child: Center(
+                  child: LoadingWidget(
+                      rotationAnimationValue: animate ? null : pulledExtent / refreshTriggerPullDistance,
+                      animate: animate),
+                ),
+              );
+            },
+            onRefresh: _onRefresh,
+          ),
+          SliverSafeArea(
+            top: !context.read<UserPrefCubit>().state.showHomeSelectorBar,
+            sliver: SliverPadding(
+              padding: EdgeInsets.symmetric(horizontal: width(18)).copyWith(
+                top: height(30),
               ),
-            );
-          },
-          onRefresh: _onRefresh,
-        ),
-        SliverSafeArea(
-          sliver: SliverPadding(
-            padding: EdgeInsets.symmetric(horizontal: width(18), vertical: height(20)),
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(childCount: devices.length, (_, index) {
-                final groupName = devices.keys.toList()[index];
-                final groupDevices = devices.values.toList()[index];
-                return DevicesGroup(
-                  groupIndex: index,
-                  groupName: groupName,
-                  groupDevices: groupDevices,
-                  onDevicePowerChanged: _onPowerStateChanged,
-                  onDeviceBrightnessChanged: _onBrightnessStateChanged,
-                  onDeviceColorChanged: _onColorStateChanged,
-                  onDeviceBreathChanged: _onBreathStateChanged,
-                  onDeviceEffectChanged: _onEffectStateChanged,
-                  onDeviceEffectSpeedChanged: _onEffectSpeedStateChanged,
-                  onDeviceEffectScaleChanged: _onEffectScaleStateChanged,
-                  onDeviceGroupSleepMode: _onDeviceGroupSleepMode,
-                  onDeviceGroupTurnOff: _onDeviceGroupTurnOff,
-                );
-              }),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate(childCount: groupedDevices.length, (_, index) {
+                  final groupName = groupedDevices.keys.toList()[index];
+                  final groupDevices = groupedDevices.values.toList()[index];
+                  return DevicesGroup(
+                    groupIndex: index,
+                    groupName: groupName,
+                    groupDevices: groupDevices,
+                    onDevicePowerChanged: _onPowerStateChanged,
+                    onDeviceBrightnessChanged: _onBrightnessStateChanged,
+                    onDeviceColorChanged: _onColorStateChanged,
+                    onDeviceBreathChanged: _onBreathStateChanged,
+                    onDeviceEffectChanged: _onEffectStateChanged,
+                    onDeviceEffectSpeedChanged: _onEffectSpeedStateChanged,
+                    onDeviceEffectScaleChanged: _onEffectScaleStateChanged,
+                    onDeviceGroupSleepMode: _onDeviceGroupSleepMode,
+                    onDeviceGroupTurnOff: _onDeviceGroupTurnOff,
+                  );
+                }),
+              ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFAB() {
+    return BouncingWidget(
+      onTap: () => MainCubit.context.read<MainCubit>().changeTab(TabIndex.SETTINGS),
+      child: Container(
+        width: width(50),
+        height: width(50),
+        margin: EdgeInsets.symmetric(horizontal: width(3)),
+        decoration: BoxDecoration(
+          color: Colors.deepPurple,
+          borderRadius: AppConstants.widget.mediumBorderRadius,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.55),
+              blurRadius: 10.0,
+              offset: Offset.zero,
+            ),
+          ],
         ),
-      ],
+        child: Icon(
+          PlatformIcons(context).settings,
+          size: height(24),
+          color: Colors.white,
+        ),
+      ),
     );
   }
 
   Future<void> _onRefresh() async {
-    context.read<HomeBloc>().add(const HomeEvent.onRefresh());
+    context.read<HomeBloc>().add(HomeEvent.onRefresh(house));
     await Future<void>.delayed(const Duration(seconds: 1));
   }
 

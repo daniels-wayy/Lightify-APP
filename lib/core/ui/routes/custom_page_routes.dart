@@ -42,3 +42,48 @@ class CustomPageRoutes {
   //       transitionDuration: const Duration(milliseconds: 300),
   //     );
 }
+
+class CrossFadeScalePageRoute<T> extends MaterialPageRoute<T> {
+  CrossFadeScalePageRoute({
+    required WidgetBuilder builder,
+    RouteSettings? settings,
+  }) : super(
+          builder: builder,
+          settings: settings,
+        );
+
+  @override
+  Duration get transitionDuration => const Duration(milliseconds: 300);
+
+  @override
+  Duration get reverseTransitionDuration => const Duration(milliseconds: 220);
+
+  @override
+  Widget buildTransitions(
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    final scaleAnimation = Tween<double>(
+      begin: 0.9,
+      end: 1.0,
+    ).animate(
+      CurvedAnimation(parent: animation, curve: const Interval(0.0, 1.0, curve: Curves.ease)),
+    );
+
+    final fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(
+      CurvedAnimation(parent: animation, curve: const Interval(0.0, 0.5, curve: Curves.easeOut)),
+    );
+    return ScaleTransition(
+      scale: scaleAnimation,
+      child: FadeTransition(
+        opacity: fadeAnimation,
+        child: child,
+      ),
+    );
+  }
+}
