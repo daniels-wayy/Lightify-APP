@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:lightify/core/data/model/device.dart';
+import 'package:lightify/core/data/model/house.dart';
 import 'package:lightify/core/domain/repo/device_repo.dart';
 import 'package:lightify/core/domain/repo/network_repo.dart';
 import 'package:lightify/core/ui/bloc/connectivity/connectivity_cubit.dart';
@@ -73,21 +74,30 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     );
   }
 
-  Stream<HomeState> _processInitConnection() async* {
-    debugPrint('_processInitConnection');
+  Stream<HomeState> _processInitConnection(House house, bool connect) async* {
+    debugPrint('_processInitConnection - connect: $connect');
     yield const HomeState.connecting();
-    await networkRepo.initializeConnection(
-      onConnected: () => add(const HomeEvent.onMQTTConnected()),
-      onDisconnected: () => add(const HomeEvent.onMQTTDisconnected()),
-    );
+    if (connect) {
+      await networkRepo.initializeConnection(
+        onConnected: () => add(HomeEvent.onMQTTConnected(house)),
+        onDisconnected: () => add(const HomeEvent.onMQTTDisconnected()),
+      );
+    } else {
+      networkRepo.overrideConnectivityCallbacks(
+        onConnected: () => add(HomeEvent.onMQTTConnected(house)),
+        onDisconnected: () => add(const HomeEvent.onMQTTDisconnected()),
+      );
+      add(HomeEvent.onMQTTConnected(house));
+    }
   }
 
-  Stream<HomeState> _processOnMQTTConnected() async* {
+  Stream<HomeState> _processOnMQTTConnected(House house) async* {
+    _mqttUpdates?.cancel();
     _mqttUpdates = networkRepo.getMQTTUpdatesStream()?.listen(
           (data) => add(HomeEvent.onReceivedMessage(data)),
         );
-    _getDevicesState();
-    _startGetTimer();
+    _getDevicesState(house);
+    _startGetTimer(house);
     yield const HomeState.connected(availableDevices: []);
   }
 
@@ -129,12 +139,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   Stream<HomeState> _processOnDeviceGroupTurnOff(List<Device> devices) async* {
-    _sendData(devices.where((e) => e.powered).toList(), MQTT_UTIL.shut_down_cmd());
+    if (devices.every((device) => !device.powered)) {
+      _sendData(devices, MQTT_UTIL.power_cmd(1));
+    } else {
+      _sendData(devices.where((e) => e.powered).toList(), MQTT_UTIL.shut_down_cmd());
+    }
   }
 
-  Stream<HomeState> _processOnRefresh() async* {
-    _startGetTimer();
-    _getDevicesState();
+  Stream<HomeState> _processOnRefresh(House house) async* {
+    _startGetTimer(house);
+    _getDevicesState(house);
   }
 
   Stream<HomeState> _processOnReceivedMessage(String? data) async* {
@@ -170,8 +184,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     _ensureConnected(() {
       _sendTimer?.cancel();
       _sendTimer = Timer(AppConstants.api.MQTT_SEND_REQUEST_THRESHOLD, () async {
-        _startGetTimer();
         for (final device in devices) {
+          debugPrint('sendToDevice: ${device.deviceInfo.topic} - $data');
           networkRepo.sendToDevice(device.deviceInfo.topic, data);
           await Future<void>.delayed(AppConstants.api.MQTT_SEND_REQUEST_THRESHOLD);
           networkRepo.getDeviceState(device.deviceInfo.topic);
@@ -180,10 +194,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     });
   }
 
-  void _getDevicesState() => _ensureConnected(() => networkRepo.getDevicesState());
+  void _getDevicesState(House house) => _ensureConnected(() => networkRepo.getDevicesState(house.remotes));
 
-  void _startGetTimer() {
+  void _startGetTimer(House house) {
     _getTimer?.cancel();
-    _getTimer = Timer.periodic(AppConstants.api.MQTT_GET_REQUEST_FREQ, (_) => _getDevicesState());
+    _getTimer = Timer.periodic(AppConstants.api.MQTT_GET_REQUEST_FREQ, (_) => _getDevicesState(house));
   }
 }

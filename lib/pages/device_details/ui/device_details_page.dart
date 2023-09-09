@@ -1,5 +1,4 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
-import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
@@ -18,6 +17,7 @@ import 'package:lightify/core/ui/utils/function_util.dart';
 import 'package:lightify/core/ui/utils/screen_util.dart';
 import 'package:lightify/core/ui/widget/common/bouncing_widget.dart';
 import 'package:lightify/core/ui/widget/common/common_slider.dart';
+import 'package:lightify/core/ui/widget/common/fading_edge_widget.dart';
 import 'package:lightify/pages/device_details/domain/model/device_details_page_args.dart';
 import 'package:lightify/pages/device_details/domain/model/device_rgb_color_input_dto.dart';
 import 'package:lightify/pages/main/home/ui/widget/device_card.dart';
@@ -59,8 +59,8 @@ class _DeviceDetailsPageState extends State<DeviceDetailsPage> {
         if (device == null) {
           return const SizedBox.shrink();
         }
-        return FadingEdgeScrollView.fromScrollView(
-          gradientFractionOnEnd: 0.25,
+        return FadingEdge(
+          scrollDirection: Axis.vertical,
           child: ListView(
             controller: ScrollController(),
             padding: EdgeInsets.only(bottom: height(64) + ScreenUtil.bottomPadding, top: height(18)),
@@ -112,7 +112,7 @@ class _DeviceDetailsPageState extends State<DeviceDetailsPage> {
       backgroundColor: AppColors.fullBlack,
       centerTitle: true,
       elevation: 0.0,
-      toolbarHeight: height(48),
+      toolbarHeight: height(64),
       title: Column(
         children: [
           Text(

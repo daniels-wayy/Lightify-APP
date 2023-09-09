@@ -1,14 +1,15 @@
 import 'package:flutter/widgets.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:lightify/core/data/model/device.dart';
+import 'package:lightify/core/data/model/house.dart';
 
 part 'home_event.freezed.dart';
 
 @freezed
 class HomeEvent with _$HomeEvent {
-  const factory HomeEvent.initConnection() = _InitConnection;
+  const factory HomeEvent.initConnection(House house, {@Default(true) bool connect}) = _InitConnection;
 
-  const factory HomeEvent.onMQTTConnected() = _OnMQTTConnected;
+  const factory HomeEvent.onMQTTConnected(House house) = _OnMQTTConnected;
   const factory HomeEvent.onMQTTDisconnected() = _OnMQTTDisconnected;
 
   const factory HomeEvent.onPowerChanged(Device device, bool state) = _OnPowerChanged;
@@ -21,6 +22,6 @@ class HomeEvent with _$HomeEvent {
   const factory HomeEvent.onDeviceGroupSleepMode(List<Device> devices) = _OnDeviceGroupSleepMode;
   const factory HomeEvent.onDeviceGroupTurnOff(List<Device> devices) = _OnDeviceGroupTurnOff;
 
-  const factory HomeEvent.onRefresh() = _OnRefresh;
+  const factory HomeEvent.onRefresh(House house) = _OnRefresh;
   const factory HomeEvent.onReceivedMessage(String? data) = _OnReceivedMessage;
 }

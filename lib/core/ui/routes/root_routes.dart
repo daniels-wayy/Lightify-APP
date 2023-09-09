@@ -29,9 +29,9 @@ final RouteFactory rootRouteFactory = (RouteSettings settings) {
     case Routes.DEVICE_DETAILS:
       final args = settings.arguments as DeviceDetailsPageArgs;
       if (Platform.isAndroid) {
-        return CustomPageRoutes.fadablePageRoute(
+        return CrossFadeScalePageRoute(
           settings: settings,
-          child: DeviceDetailsPage(args: args),
+          builder: (_) => DeviceDetailsPage(args: args),
         );
       } else {
         return MaterialPageRoute<void>(

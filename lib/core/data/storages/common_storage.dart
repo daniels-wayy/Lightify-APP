@@ -31,4 +31,20 @@ class CommonStorage extends StorageKeys {
     }
     return presets ?? [];
   }
+
+  Future<void> storeNavigationBarSetting(bool value) async {
+    await storage.putBool(key: showNavigationBarKey, value: value);
+  }
+
+  bool getNavigationBarSetting() {
+    return storage.getBool(key: showNavigationBarKey) ?? true;
+  }
+
+  Future<void> storeHomeSelectorBarSetting(bool value) async {
+    await storage.putBool(key: showHomeSelectorKey, value: value);
+  }
+
+  bool getHomeSelectorBarSetting() {
+    return storage.getBool(key: showHomeSelectorKey) ?? true;
+  }
 }

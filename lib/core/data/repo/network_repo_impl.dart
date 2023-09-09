@@ -1,9 +1,7 @@
-import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:lightify/core/data/storages/common_storage.dart';
 import 'package:lightify/core/domain/repo/mqtt_repo.dart';
 import 'package:lightify/core/domain/repo/network_repo.dart';
-import 'package:lightify/core/ui/constants/app_constants.dart';
 import 'package:lightify/core/ui/utils/mqtt_util.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 
@@ -31,6 +29,19 @@ class NetworkRepoImpl implements NetworkRepo {
   }
 
   @override
+  void overrideConnectivityCallbacks({
+    void Function()? onConnected,
+    void Function()? onDisconnected,
+    void Function(String)? onSubscribed,
+  }) {
+    mqttRepo.overrideConnectivityCallbacks(
+      onConnected: onConnected,
+      onDisconnected: onDisconnected,
+      onSubscribed: onSubscribed,
+    );
+  }
+
+  @override
   Stream<String?>? getMQTTUpdatesStream() {
     final stream = mqttRepo.getMQTTUpdatesStream();
     return stream?.map((event) {
@@ -46,8 +57,8 @@ class NetworkRepoImpl implements NetworkRepo {
   }
 
   @override
-  Future<void> getDevicesState() async {
-    for (final topic in AppConstants.api.MQTT_DEVICES_REMOTES) {
+  Future<void> getDevicesState(List<String> topics) async {
+    for (final topic in topics) {
       sendToDevice(topic, MQTT_UTIL.get_cmd());
       await Future<void>.delayed(const Duration(milliseconds: 100));
     }
@@ -61,7 +72,6 @@ class NetworkRepoImpl implements NetworkRepo {
   @override
   void sendToDevice(String deviceTopic, String cmd) {
     if (isMQTTConnected()) {
-      debugPrint('sendToDevice: $deviceTopic - $cmd');
       mqttRepo.send(deviceTopic, cmd);
     }
   }

@@ -58,6 +58,23 @@ class MQTTRepoImpl implements MQTTRepo {
   }
 
   @override
+  void overrideConnectivityCallbacks({
+    void Function()? onConnected,
+    void Function()? onDisconnected,
+    void Function(String)? onSubscribed,
+  }) {
+    if (onDisconnected != null) {
+      client.onDisconnected = onDisconnected;
+    }
+    if (onConnected != null) {
+      client.onConnected = onConnected;
+    }
+    if (onSubscribed != null) {
+      client.onSubscribed = onSubscribed;
+    }
+  }
+
+  @override
   Stream<List<MqttReceivedMessage<MqttMessage>>>? getMQTTUpdatesStream() => client.updates;
 
   @override

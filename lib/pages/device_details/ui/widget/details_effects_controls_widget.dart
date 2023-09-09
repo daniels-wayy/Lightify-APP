@@ -39,8 +39,8 @@ class _DetailsEffectsControlsWidgetState extends State<_DetailsEffectsControlsWi
         SizedBox(
           height: height(48),
           width: double.maxFinite,
-          child: FadingEdgeScrollView.fromScrollView(
-            gradientFractionOnEnd: 0.1,
+          child: FadingEdge(
+            scrollDirection: Axis.horizontal,
             child: ListView.separated(
               controller: ScrollController(),
               scrollDirection: Axis.horizontal,

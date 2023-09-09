@@ -14,9 +14,6 @@ class DeviceRepoImpl implements DeviceRepo {
     try {
       final substring = data.substring(AppConstants.api.MQTT_PACKETS_HEADER.length);
       final splitted = substring.split(',');
-
-      debugPrint('splitted: $splitted');
-
       if (splitted.isEmpty) return null;
 
       final powerState = int.tryParse(splitted[3]) == 1;
@@ -56,7 +53,6 @@ class DeviceRepoImpl implements DeviceRepo {
         effectScale: effectScale,
       );
     } catch (e) {
-      debugPrint('parseDevice error: $e');
       return null;
     }
   }

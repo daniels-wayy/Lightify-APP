@@ -77,7 +77,7 @@ class CustomErrorWidget extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: height(124)),
+              SizedBox(height: height(142)),
             ],
           ),
         ),

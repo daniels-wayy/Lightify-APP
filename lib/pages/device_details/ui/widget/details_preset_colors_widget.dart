@@ -26,7 +26,8 @@ class _DetailsPresetColorsWidget extends StatelessWidget {
           width: double.maxFinite,
           child: BlocBuilder<UserPrefCubit, UserPrefState>(builder: (_, state) {
             final displayPresets = state.getDisplayColorPresets;
-            return FadingEdgeScrollView.fromScrollView(
+            return FadingEdge(
+              scrollDirection: Axis.horizontal,
               child: ListView.separated(
                 controller: ScrollController(),
                 scrollDirection: Axis.horizontal,

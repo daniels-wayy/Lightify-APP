@@ -1,8 +1,12 @@
 // ignore_for_file: constant_identifier_names
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:injectable/injectable.dart';
+import 'package:lightify/core/ui/utils/screen_util.dart';
 import 'main_state.dart';
 
 enum TabIndex {
@@ -23,21 +27,21 @@ extension TabIndexExtension on TabIndex {
     }
   }
 
-  IconData getUnselectedIcon() {
+  IconData icon(BuildContext context) {
     switch (this) {
       case TabIndex.HOME:
-        return Icons.home_outlined;
+        return PlatformIcons(context).home;
       case TabIndex.SETTINGS:
-        return Icons.settings_outlined;
+        return PlatformIcons(context).settings;
     }
   }
 
-  IconData getSelectedIcon() {
+  double iconSize() {
     switch (this) {
       case TabIndex.HOME:
-        return Icons.home;
+        return height(Platform.isIOS ? 22 : 24);
       case TabIndex.SETTINGS:
-        return Icons.settings;
+        return height(24);
     }
   }
 }
@@ -45,6 +49,8 @@ extension TabIndexExtension on TabIndex {
 @injectable
 class MainCubit extends Cubit<MainState> {
   MainCubit() : super(MainState.initialState());
+
+  static late BuildContext context;
 
   static final navigatorKeys = {
     TabIndex.HOME: GlobalKey<NavigatorState>(),
