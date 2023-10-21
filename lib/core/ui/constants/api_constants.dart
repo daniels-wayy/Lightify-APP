@@ -19,6 +19,7 @@ class _ApiConstants {
     'DSLY_Bedroom_Bed',
     'DSLY_Livingroom_Piano',
     'DSLY_Bedroom_Monitor',
+    'DSLY_Bedroom_Bed_Upperside',
   ];
 
   // Nick
