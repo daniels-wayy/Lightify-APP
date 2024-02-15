@@ -50,4 +50,6 @@ class _StringsConstants {
 
   final SPEED = 'Speed';
   final SCALE = 'Scale';
+
+  final UNAVAILABLE = 'Unavailable';
 }

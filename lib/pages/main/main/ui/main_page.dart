@@ -38,9 +38,11 @@ class MainPage extends StatelessWidget {
       child: Column(
         children: [
           Expanded(
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 150),
-              child: views[selectedTab.index],
+            child: IndexedStack(
+              // duration: const Duration(milliseconds: 150),
+              // child: views[selectedTab.index],
+              index: selectedTab.index,
+              children: views,
             ),
           ),
           _buildBottomNavigationBar(selectedTab),

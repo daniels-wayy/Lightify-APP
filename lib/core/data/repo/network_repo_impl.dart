@@ -1,31 +1,60 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
-import 'package:lightify/core/data/storages/common_storage.dart';
-import 'package:lightify/core/domain/repo/mqtt_repo.dart';
+import 'package:lightify/core/domain/repo/current_device_repo.dart';
 import 'package:lightify/core/domain/repo/network_repo.dart';
-import 'package:lightify/core/ui/utils/mqtt_util.dart';
+import 'package:lightify/core/ui/constants/app_constants.dart';
+import 'package:lightify/core/ui/utils/function_util.dart';
 import 'package:mqtt_client/mqtt_client.dart';
+import 'package:mqtt_client/mqtt_server_client.dart';
 
 @LazySingleton(as: NetworkRepo)
 class NetworkRepoImpl implements NetworkRepo {
-  final CommonStorage commonStorage;
-  final MQTTRepo mqttRepo;
+  final CurrentDeviceRepo currentDeviceRepo;
 
   NetworkRepoImpl({
-    required this.commonStorage,
-    required this.mqttRepo,
+    required this.currentDeviceRepo,
   });
 
+  late MqttServerClient client;
+
   @override
-  Future<void> initializeConnection({
-    void Function()? onConnected,
-    void Function()? onDisconnected,
-    void Function(String)? onSubscribed,
-  }) async {
-    await mqttRepo.connectToMQTT(
-      onConnected: onConnected,
-      onDisconnected: onDisconnected,
-      onSubscribed: onSubscribed,
-    );
+  Future<void> establishConnection(
+      {void Function()? onConnected, void Function()? onDisconnected, void Function(String p1)? onSubscribed}) async {
+    final currentDeviceInfo = await currentDeviceRepo.getCurrentDeviceInfo();
+    final connMessage = MqttConnectMessage().withWillQos(MqttQos.atMostOnce).withClientIdentifier(
+          currentDeviceInfo.deviceId ?? FunctionUtil.generateRandomString(12),
+        );
+    client = MqttServerClient(AppConstants.api.MQTT_BROKER_HOST, '',
+        maxConnectionAttempts: AppConstants.api.MQTT_CONNECTION_ATTEMPTS);
+    client.port = AppConstants.api.MQTT_PORT;
+
+    client.setProtocolV311();
+    client.keepAlivePeriod = AppConstants.api.MQTT_KEEP_ALIVE_FREQ_SEC;
+    client.connectTimeoutPeriod = 3000; // milliseconds
+    client.connectionMessage = connMessage;
+    client.onDisconnected = onDisconnected;
+    client.onConnected = onConnected;
+    client.onSubscribed = onSubscribed;
+
+    try {
+      await client.connect();
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+    } on NoConnectionException catch (e) {
+      debugPrint('MQTT Connection NoConnectionException! $e');
+      client.disconnect();
+    } on SocketException catch (e) {
+      debugPrint('MQTT Connection SocketException! $e');
+      client.disconnect();
+    } catch (e) {
+      debugPrint('MQTT Connection error! $e');
+      client.disconnect();
+    }
+
+    if (client.connectionStatus?.state == MqttConnectionState.connected) {
+      client.subscribe(AppConstants.api.MQTT_TOPIC, MqttQos.atMostOnce);
+    }
   }
 
   @override
@@ -34,20 +63,23 @@ class NetworkRepoImpl implements NetworkRepo {
     void Function()? onDisconnected,
     void Function(String)? onSubscribed,
   }) {
-    mqttRepo.overrideConnectivityCallbacks(
-      onConnected: onConnected,
-      onDisconnected: onDisconnected,
-      onSubscribed: onSubscribed,
-    );
+    if (onDisconnected != null) {
+      client.onDisconnected = onDisconnected;
+    }
+    if (onConnected != null) {
+      client.onConnected = onConnected;
+    }
+    if (onSubscribed != null) {
+      client.onSubscribed = onSubscribed;
+    }
   }
 
   @override
-  Stream<String?>? getMQTTUpdatesStream() {
-    final stream = mqttRepo.getMQTTUpdatesStream();
-    return stream?.map((event) {
-      if (event.isEmpty) return null;
+  Stream<String?>? get serverUpdates {
+    return client.updates?.map((messages) {
+      if (messages.isEmpty) return null;
       try {
-        final recMess = event.first.payload as MqttPublishMessage;
+        final recMess = messages.first.payload as MqttPublishMessage;
         final message = MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
         return message;
       } catch (_) {
@@ -57,27 +89,17 @@ class NetworkRepoImpl implements NetworkRepo {
   }
 
   @override
-  Future<void> getDevicesState(List<String> topics) async {
-    for (final topic in topics) {
-      sendToDevice(topic, MQTT_UTIL.get_cmd());
-      await Future<void>.delayed(const Duration(milliseconds: 100));
+  bool isConnectedToServer() {
+    final state = client.connectionStatus?.state;
+    return state != null && state == MqttConnectionState.connected;
+  }
+  
+  @override
+  void sendToServer(String address, String data) {
+    final formattedData = '${AppConstants.api.MQTT_PACKETS_HEADER}$data';
+    final mqttPayloadBuilder = MqttClientPayloadBuilder().addString(formattedData);
+    if (mqttPayloadBuilder.payload != null) {
+      client.publishMessage(address, MqttQos.exactlyOnce, mqttPayloadBuilder.payload!);
     }
-  }
-
-  @override
-  void getDeviceState(String deviceTopic) {
-    sendToDevice(deviceTopic, MQTT_UTIL.get_cmd());
-  }
-
-  @override
-  void sendToDevice(String deviceTopic, String cmd) {
-    if (isMQTTConnected()) {
-      mqttRepo.send(deviceTopic, cmd);
-    }
-  }
-
-  @override
-  bool isMQTTConnected() {
-    return mqttRepo.getMQTTConnectionState() == MqttConnectionState.connected;
   }
 }

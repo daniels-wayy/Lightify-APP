@@ -33,7 +33,9 @@ class CustomPopScope extends StatelessWidget {
   Widget _buildCupertinoPopScope(BuildContext context) {
     return GestureDetector(
       onPanUpdate: (details) {
-        if (details.localPosition.dy > MediaQuery.of(context).size.height / 2 && details.delta.dx >= 3) {
+        if (details.localPosition.dy > MediaQuery.of(context).size.height / 2 &&
+            details.localPosition.dx < MediaQuery.of(context).size.width / 3 &&
+            details.delta.dx >= 3) {
           onWillPop();
         }
       },

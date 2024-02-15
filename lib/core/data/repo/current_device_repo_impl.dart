@@ -8,12 +8,11 @@ import 'package:package_info_plus/package_info_plus.dart';
 @LazySingleton(as: CurrentDeviceRepo)
 class CurrentDeviceRepoImpl implements CurrentDeviceRepo {
   final PackageInfo packageInfo;
+  final DeviceInfoPlugin _deviceInfoPlugin;
 
-  CurrentDeviceRepoImpl(this.packageInfo) {
+  CurrentDeviceRepoImpl(this.packageInfo, this._deviceInfoPlugin) {
     getCurrentDeviceInfo();
   }
-
-  final _deviceInfoPlugin = DeviceInfoPlugin();
 
   CurrentDeviceInfo? _currentDeviceInfo;
 
@@ -43,5 +42,22 @@ class CurrentDeviceRepoImpl implements CurrentDeviceRepo {
       );
     }
     throw UnimplementedError();
+  }
+
+  @override
+  Future<double?> getIOSVersion() async {
+    if (Platform.isIOS) {
+      final iosInfo = await _deviceInfoPlugin.iosInfo;
+      final systemVersion = iosInfo.systemVersion;
+      final components = systemVersion.split('.');
+      if (components.length >= 2) {
+        final majorVersion = '${components[0]}.${components[1]}';
+        final version = double.tryParse(majorVersion);
+        if (version != null) {
+          return version;
+        }
+      }
+    }
+    return null;
   }
 }

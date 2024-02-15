@@ -4,14 +4,25 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:home_widget/home_widget.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:lightify/core/ui/bloc/home_widgets_config/utils/home_widgets_config.dart';
+import 'package:lightify/core/ui/bloc/home_widgets_config/utils/home_widgets_functions.dart';
 import 'package:lightify/di/di.dart';
 import 'package:lightify/di/services/debug_print_service.dart';
 import 'package:lightify/lightify_app.dart';
+import 'package:path_provider/path_provider.dart';
 
 Future<void> run() async {
   WidgetsFlutterBinding.ensureInitialized();
   await configureDependencies();
   await Firebase.initializeApp();
+
+  HydratedBloc.storage = await HydratedStorage.build(
+    storageDirectory: kIsWeb
+        ? HydratedStorage.webStorageDirectory
+        : await getApplicationDocumentsDirectory(),
+  );
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
@@ -20,10 +31,13 @@ Future<void> run() async {
   FlutterError.onError = _recordFlutterError;
   PlatformDispatcher.instance.onError = _recordZoneError;
 
+  await HomeWidget.setAppGroupId(HomeWidgetsConfig.appGroupId);
+  await HomeWidget.registerInteractivityCallback(interactiveCallback);
+
   runApp(
     const RootRestorationScope(
       restorationId: 'root',
-      child: LightifyApp(),
+      child: LightifyApp() /*WidgetsTest()*/,
     ),
   );
 }

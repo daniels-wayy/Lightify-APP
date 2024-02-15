@@ -7,5 +7,6 @@ abstract class House with _$House {
   const factory House({
     required String name,
     required List<String> remotes,
+    @Default(false) bool isPrimary,
   }) = _House;
 }

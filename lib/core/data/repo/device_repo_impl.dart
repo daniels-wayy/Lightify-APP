@@ -2,15 +2,92 @@ import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:lightify/core/data/model/device.dart';
 import 'package:lightify/core/data/model/device_info.dart';
+import 'package:lightify/core/data/model/house.dart';
 import 'package:lightify/core/domain/repo/device_repo.dart';
+import 'package:lightify/core/domain/repo/network_repo.dart';
 import 'package:lightify/core/ui/constants/app_constants.dart';
 import 'package:lightify/core/ui/extensions/core_extensions.dart';
 import 'package:lightify/core/ui/utils/function_util.dart';
+import 'package:lightify/core/ui/utils/mqtt_util.dart';
 
 @LazySingleton(as: DeviceRepo)
 class DeviceRepoImpl implements DeviceRepo {
+  final NetworkRepo _networkRepo;
+
+  const DeviceRepoImpl(this._networkRepo);
+
   @override
-  Device? parseDevice(String data) {
+  Stream<Device?>? get devicesStream {
+    return _networkRepo.serverUpdates?.map((data) {
+      if (data == null || data.isEmpty) return null;
+      try {
+        if (data.startsWith(AppConstants.api.MQTT_PACKETS_HEADER)) {
+          final device = _parseDevice(data);
+          if (device != null) {
+            return device;
+          }
+        }
+        return null;
+      } catch (_) {
+        return null;
+      }
+    });
+  }
+
+  @override
+  Future<void> getDevices(House house) async {
+    for (final topic in house.remotes) {
+      _networkRepo.sendToServer(topic, MQTT_UTIL.get_cmd());
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+    }
+  }
+
+  @override
+  void getDeviceInfo(Device device) {
+    _networkRepo.sendToServer(device.deviceInfo.topic, MQTT_UTIL.get_cmd());
+  }
+
+  @override
+  void changePower(Device device, bool state) {
+    _networkRepo.sendToServer(device.deviceInfo.topic, MQTT_UTIL.power_cmd(state.intState));
+  }
+
+  @override
+  void changeBrightness(Device device, int state) {
+    _networkRepo.sendToServer(device.deviceInfo.topic, MQTT_UTIL.brightness_cmd(state));
+  }
+
+  @override
+  void changeColor(Device device, HSVColor state) {
+    _networkRepo.sendToServer(device.deviceInfo.topic, MQTT_UTIL.color_cmd(state));
+  }
+
+  @override
+  void changeBreath(Device device, double state) {
+    _networkRepo.sendToServer(device.deviceInfo.topic, MQTT_UTIL.breath_cmd(state));
+  }
+
+  @override
+  void changeEffect(Device device, int state) {
+    _networkRepo.sendToServer(device.deviceInfo.topic, MQTT_UTIL.effect_cmd(state));
+  }
+
+  @override
+  void changeEffectSpeed(Device device, int state) {
+    _networkRepo.sendToServer(device.deviceInfo.topic, MQTT_UTIL.effect_speed_cmd(state));
+  }
+
+  @override
+  void changeEffectScale(Device device, int state) {
+    _networkRepo.sendToServer(device.deviceInfo.topic, MQTT_UTIL.effect_scale_cmd(state));
+  }
+
+  @override
+  void sleepDevice(Device device) {
+    _networkRepo.sendToServer(device.deviceInfo.topic, MQTT_UTIL.sleep_mode_cmd());
+  }
+
+  Device? _parseDevice(String data) {
     try {
       final substring = data.substring(AppConstants.api.MQTT_PACKETS_HEADER.length);
       final splitted = substring.split(',');

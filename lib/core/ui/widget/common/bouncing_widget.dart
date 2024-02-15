@@ -6,6 +6,7 @@ class BouncingWidget extends StatefulWidget {
   final void Function()? onTap;
   final void Function()? onLongTap;
   final double? minScale;
+  final bool bounceOnTap;
 
   const BouncingWidget({
     Key? key,
@@ -13,6 +14,7 @@ class BouncingWidget extends StatefulWidget {
     this.onLongTap,
     this.minScale,
     required this.child,
+    this.bounceOnTap = false,
   }) : super(key: key);
 
   static const _DURATION = Duration(milliseconds: 125);
@@ -49,7 +51,14 @@ class _BouncingWidgetState extends State<BouncingWidget> with SingleTickerProvid
 
   @override
   Widget build(BuildContext context) => GestureDetector(
-        onTap: widget.onTap,
+        onTap: widget.onTap == null
+            ? null
+            : () {
+                widget.onTap!();
+                if (widget.bounceOnTap) {
+                  _controller?.forward().then((_) => _controller?.reverse());
+                }
+              },
         onTapDown: (_) => _controller?.forward(),
         onTapUp: (_) => _controller?.reverse(),
         onTapCancel: () => _controller?.reverse(),

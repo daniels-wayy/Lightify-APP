@@ -6,6 +6,8 @@ class _ApiConstants {
   const _ApiConstants();
 
   final MQTT_BROKER_HOST = 'broker.mqttdashboard.com';
+  final COMMUNICATION_HEADER = 'DSLY';
+  final COMMUNICATION_HEADER2 = 'DNLY';
   final MQTT_TOPIC = 'DSLY_App';
   final MQTT_PORT = 1883;
   // final MQTT_CLIENT_ID = 'DSLYAPPID';
@@ -13,13 +15,13 @@ class _ApiConstants {
 
   // D&V
   final List<String> DS_MQTT_DEVICES_REMOTES = const [
-    'DSLY_Livingroom_TV',
     'DSLY_Kitchen_Workspace',
-    'DSLY_Bedroom_Closet',
+    'DSLY_Livingroom_TV',
     'DSLY_Bedroom_Bed',
-    'DSLY_Livingroom_Piano',
     'DSLY_Bedroom_Monitor',
     'DSLY_Bedroom_Bed_Upperside',
+    'DSLY_Livingroom_Piano',
+    'DSLY_Bedroom_Closet',
   ];
 
   // Nick

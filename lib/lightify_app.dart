@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightify/core/domain/repo/connectivity_repo.dart';
 import 'package:lightify/core/ui/bloc/connectivity/connectivity_cubit.dart';
 import 'package:lightify/core/ui/bloc/devices/devices_cubit.dart';
+import 'package:lightify/core/ui/bloc/home_widgets_config/home_widgets_config_cubit.dart';
 import 'package:lightify/core/ui/bloc/user_pref/user_pref_cubit.dart';
 import 'package:lightify/core/ui/constants/app_constants.dart';
 import 'package:lightify/core/ui/styles/text_styles/app_text_styles.dart';
@@ -11,6 +12,7 @@ import 'package:lightify/core/ui/utils/screen_util.dart';
 import 'package:lightify/core/ui/routes/root_routes.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:lightify/di/di.dart';
+import 'package:lightify/pages/main/home/ui/devices_watcher/devices_watcher_bloc.dart';
 
 class LightifyApp extends StatefulWidget {
   const LightifyApp({super.key});
@@ -43,6 +45,8 @@ class _LightifyAppState extends State<LightifyApp> {
           BlocProvider(create: (_) => getIt<DevicesCubit>()),
           BlocProvider(create: (_) => getIt<UserPrefCubit>()),
           BlocProvider(create: (_) => getIt<ConnectivityCubit>()),
+          BlocProvider(create: (_) => getIt<HomeWidgetsConfigCubit>()),
+          BlocProvider(create: (_) => getIt<DevicesWatcherBloc>()),
         ],
         child: MaterialApp(
           title: AppConstants.strings.APP_TITLE,

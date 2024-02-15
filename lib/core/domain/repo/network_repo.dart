@@ -1,19 +1,13 @@
 abstract class NetworkRepo {
-  Future<void> initializeConnection({
-    void Function()? onConnected,
-    void Function()? onDisconnected,
-    void Function(String)? onSubscribed,
-  });
+  Stream<String?>? get serverUpdates;
 
-  void overrideConnectivityCallbacks({
-    void Function()? onConnected,
-    void Function()? onDisconnected,
-    void Function(String)? onSubscribed,
-  });
+  Future<void> establishConnection(
+      {void Function()? onConnected, void Function()? onDisconnected, void Function(String)? onSubscribed});
 
-  Stream<String?>? getMQTTUpdatesStream();
-  Future<void> getDevicesState(List<String> topics);
-  void getDeviceState(String deviceTopic);
-  void sendToDevice(String deviceTopic, String cmd);
-  bool isMQTTConnected();
+  void overrideConnectivityCallbacks(
+      {void Function()? onConnected, void Function()? onDisconnected, void Function(String)? onSubscribed});
+
+  void sendToServer(String address, String data);
+  
+  bool isConnectedToServer();
 }

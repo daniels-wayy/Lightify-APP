@@ -15,8 +15,8 @@ part 'package:lightify/pages/main/home/ui/widget/effect_icon.dart';
 
 class DeviceCard extends StatefulWidget {
   final Device device;
-  final void Function(bool) onPowerChanged;
-  final void Function(int) onBrightnessChanged;
+  final void Function(bool)? onPowerChanged;
+  final void Function(int)? onBrightnessChanged;
   final void Function(HSVColor)? onColorChanged;
   final void Function(double)? onBreathChanged;
   final void Function(int)? onEffectChanged;
@@ -34,8 +34,8 @@ class DeviceCard extends StatefulWidget {
   const DeviceCard({
     super.key,
     required this.device,
-    required this.onPowerChanged,
-    required this.onBrightnessChanged,
+    this.onPowerChanged,
+    this.onBrightnessChanged,
     this.onEffectChanged,
     this.onEffectSpeedChanged,
     this.onEffectScaleChanged,
@@ -63,10 +63,13 @@ class _DeviceCardState extends State<DeviceCard> with SingleTickerProviderStateM
   var brightnessState = ValueNotifier<double>(0.0);
   var prevBrightnessState = -999.0;
   var powerState = false;
+  var isUnreachable = false;
 
   @override
   void initState() {
     super.initState();
+    isUnreachable = widget.device.deviceInfo.deviceGroup == AppConstants.strings.UNAVAILABLE;
+
     _onPowerStateSet(isInit: true);
     _onBrightnessStateSet(isInit: true);
     _prepareEffectControllers();
@@ -84,6 +87,10 @@ class _DeviceCardState extends State<DeviceCard> with SingleTickerProviderStateM
     super.didUpdateWidget(oldWidget);
     _onPowerStateSet();
     _onBrightnessStateSet();
+
+    if (oldWidget.device.deviceInfo.deviceGroup != widget.device.deviceInfo.deviceGroup) {
+      isUnreachable = widget.device.deviceInfo.deviceGroup == AppConstants.strings.UNAVAILABLE;
+    }
 
     if (!widget.showEffectIndication) {
       return;
@@ -105,7 +112,11 @@ class _DeviceCardState extends State<DeviceCard> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    final icon = powerState ? Icons.light_mode_sharp : Icons.light_mode_outlined;
+    final icon = isUnreachable
+        ? Icons.error_outline
+        : powerState
+            ? Icons.light_mode_sharp
+            : Icons.light_mode_outlined;
     final color = widget.device.getCardColor;
     final isBrightRange = widget.device.inBrightRange /*false*/;
     final dataColor = isBrightRange ? AppColors.fullBlack.withOpacity(0.9) : AppColors.white;
@@ -120,6 +131,7 @@ class _DeviceCardState extends State<DeviceCard> with SingleTickerProviderStateM
           ),
         ),
         CustomHoldDetector(
+          bounceOnTap: true,
           onTap: _onPowerChange,
           onLongPressDrag: _onBrightnessChange,
           endScale: widget.scaleFactor,
@@ -191,14 +203,17 @@ class _DeviceCardState extends State<DeviceCard> with SingleTickerProviderStateM
                                   }),
                               const Spacer(),
                               if (!widget.hideDetailsButton)
-                                BouncingWidget(
-                                  onTap: _onDetailsTap,
-                                  child: AnimatedContainer(
-                                    width: width(26),
-                                    height: width(26),
-                                    duration: DeviceCard.COLORS_SWITCH_DURATION,
-                                    decoration: BoxDecoration(color: dataColor, shape: BoxShape.circle),
-                                    child: Center(child: Icon(Icons.more_horiz, color: color)),
+                                Opacity(
+                                  opacity: isUnreachable ? 0.7 : 1.0,
+                                  child: BouncingWidget(
+                                    onTap: _onDetailsTap,
+                                    child: AnimatedContainer(
+                                      width: width(26),
+                                      height: width(26),
+                                      duration: DeviceCard.COLORS_SWITCH_DURATION,
+                                      decoration: BoxDecoration(color: dataColor, shape: BoxShape.circle),
+                                      child: Center(child: Icon(Icons.more_horiz, color: color)),
+                                    ),
                                   ),
                                 ),
                             ],
@@ -254,6 +269,9 @@ class _DeviceCardState extends State<DeviceCard> with SingleTickerProviderStateM
   }
 
   void _onPowerStateSet({bool isInit = false, bool? customPowerState}) {
+    if (isUnreachable) {
+      return;
+    }
     if (isInit) {
       powerState = widget.device.powered;
     } else {
@@ -262,6 +280,9 @@ class _DeviceCardState extends State<DeviceCard> with SingleTickerProviderStateM
   }
 
   void _onBrightnessStateSet({bool isInit = false, double? customBrightnessFactor}) {
+    if (isUnreachable) {
+      return;
+    }
     if (isInit) {
       final brightnessFactor = widget.device.brightness / AppConstants.api.MQTT_DEVICE_MAX_BRIGHTNESS;
       brightnessState = ValueNotifier<double>(brightnessFactor);
@@ -273,11 +294,17 @@ class _DeviceCardState extends State<DeviceCard> with SingleTickerProviderStateM
   }
 
   void _onPowerChange() {
+    if (isUnreachable) {
+      return;
+    }
     _onPowerStateSet(customPowerState: !powerState);
-    widget.onPowerChanged(powerState);
+    widget.onPowerChanged?.call(powerState);
   }
 
   void _onBrightnessChange(double value) {
+    if (isUnreachable) {
+      return;
+    }
     if (powerState) {
       if (prevBrightnessState != value) {
         prevBrightnessState = value;
@@ -290,13 +317,16 @@ class _DeviceCardState extends State<DeviceCard> with SingleTickerProviderStateM
           _onBrightnessStateSet(customBrightnessFactor: value);
           final brightnessFactor = value * AppConstants.api.MQTT_DEVICE_MAX_BRIGHTNESS;
           final brightness = brightnessFactor.toInt();
-          widget.onBrightnessChanged(brightness);
+          widget.onBrightnessChanged?.call(brightness);
         }
       }
     }
   }
 
   void _onDetailsTap() {
+    if (isUnreachable) {
+      return;
+    }
     Navigator.of(context, rootNavigator: true).pushNamed(
       Routes.DEVICE_DETAILS,
       arguments: DeviceDetailsPageArgs(

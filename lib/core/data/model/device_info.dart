@@ -13,4 +13,16 @@ class DeviceInfo {
       : deviceName = '',
         deviceGroup = '',
         topic = '';
+
+  DeviceInfo copyWith({
+    final String? topic,
+    final String? deviceGroup,
+    final String? deviceName,
+  }) {
+    return DeviceInfo(
+      deviceName: deviceName ?? this.deviceName,
+      deviceGroup: deviceGroup ?? this.deviceGroup,
+      topic: topic ?? this.topic,
+    );
+  }
 }
