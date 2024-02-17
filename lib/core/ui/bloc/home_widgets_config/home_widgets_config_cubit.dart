@@ -182,29 +182,13 @@ class HomeWidgetsConfigCubit extends Cubit<HomeWidgetsConfigState> with Hydrated
     final result = <HomeWidgetDeviceEntity>[];
 
     for (final entity in entities) {
-      final icon = Icon(key: globalKey, entity.icon, size: 28.0, color: Colors.white70);
+      final icon = Icon(key: globalKey, entity.icon, size: 26.0, color: Colors.white70);
       final iconPath =
           await HomeWidget.renderFlutterWidget(icon, key: '${entity.deviceTopic}_iconPath', pixelRatio: 1.0);
       result.add(entity.copyWith(iconPath: iconPath));
     }
 
     return result;
-  }
-
-  Future<void> _generateAndUpdateState(List<HomeWidgetDeviceEntity> widgets) async {
-    final smallWidget = widgets.where((e) => state.smallWidget.any((widget) => widget.deviceTopic == e.deviceTopic));
-    final mediumWidget = widgets.where((e) => state.mediumWidget.any((widget) => widget.deviceTopic == e.deviceTopic));
-    final bigWidget = widgets.where((e) => state.bigWidget.any((widget) => widget.deviceTopic == e.deviceTopic));
-
-    final generatedSmallWidget = await _generateWidgetsIcons(smallWidget);
-    final generatedMediumWidget = await _generateWidgetsIcons(mediumWidget);
-    final generatedBigWidget = await _generateWidgetsIcons(bigWidget);
-
-    emit(state.copyWith(
-      smallWidget: generatedSmallWidget.take(smallWidgetDevicesCount).toList(),
-      mediumWidget: generatedMediumWidget.take(mediumWidgetDevicesCount).toList(),
-      bigWidget: generatedBigWidget.take(bigWidgetDevicesCount).toList(),
-    ));
   }
 
   @override

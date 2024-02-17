@@ -39,9 +39,10 @@ class HomeWidgetDeviceEntity {
   }
 
   HomeWidgetDeviceEntity copyWith({
+    final bool? currentPowerState,
     final String? iconPath,
   }) => HomeWidgetDeviceEntity(
-        currentPowerState: currentPowerState,
+        currentPowerState: currentPowerState ?? this.currentPowerState,
         currentBrightness: currentBrightness,
         deviceTopic: deviceTopic,
         colorHex: colorHex,
@@ -70,6 +71,8 @@ class HomeWidgetDeviceEntity {
         return Icons.piano;
       case 'DSLY_Bedroom_Bed_Upperside':
         return Icons.bedroom_parent_outlined;
+      case 'DSLY_Office_Desk':
+        return Icons.desk;
       default:
         return Icons.light;
     }

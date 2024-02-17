@@ -9,4 +9,5 @@ abstract class DevicesWatcherEvent with _$DevicesWatcherEvent {
   const factory DevicesWatcherEvent.overrideConnectivityCallbacks(House house) = _OverrideConnectivityCallbacks;
   const factory DevicesWatcherEvent.refresh(House house) = _Refresh;
   const factory DevicesWatcherEvent.disconnect() = _Disconnect;
+  const factory DevicesWatcherEvent.checkConnectionState() = _CheckConnectionState;
 }

@@ -19,6 +19,7 @@ class _ApiConstants {
     'DSLY_Livingroom_TV',
     'DSLY_Bedroom_Bed',
     'DSLY_Bedroom_Monitor',
+    'DSLY_Office_Desk',
     'DSLY_Bedroom_Bed_Upperside',
     'DSLY_Livingroom_Piano',
     'DSLY_Bedroom_Closet',

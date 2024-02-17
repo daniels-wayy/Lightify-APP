@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
+import 'package:lightify/config.dart';
 import 'package:lightify/core/data/model/device.dart';
 import 'package:lightify/core/data/model/house.dart';
 import 'package:lightify/core/domain/repo/device_repo.dart';
@@ -73,6 +74,7 @@ class DevicesWatcherBloc extends Bloc<DevicesWatcherEvent, DevicesWatcherState> 
       deviceUpdateReceived: _deviceUpdateReceived,
       overrideConnectivityCallbacks: _overrideConnectivityCallbacks,
       refresh: _processOnRefresh,
+      checkConnectionState: _checkConnectionState,
     );
   }
 
@@ -211,6 +213,12 @@ class DevicesWatcherBloc extends Bloc<DevicesWatcherEvent, DevicesWatcherState> 
 
   Stream<DevicesWatcherState> _disconnect() async* {
     yield const DevicesWatcherState.disconnected();
+  }
+
+  Stream<DevicesWatcherState> _checkConnectionState() async* {
+    if (state == const DevicesWatcherState.disconnected()) {
+      add(DevicesWatcherEvent.initialize(Config.primaryHouse));
+    }
   }
 
   Iterable<Device> _checkUnreachableDevices(House house, List<Device> fetchedDevices) {

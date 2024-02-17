@@ -36,7 +36,7 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   late final TabController controller;
   var house = Config.primaryHouse;
   var prevTabIndex = -1;
@@ -47,6 +47,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom]);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
     controller = TabController(length: Config.houses.length, vsync: this)..addListener(_tabListener);
+    WidgetsBinding.instance.addObserver(this);
     _initializeConnection();
   }
 
@@ -72,7 +73,18 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   @override
   void dispose() {
     controller.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        context.read<DevicesWatcherBloc>().add(const DevicesWatcherEvent.checkConnectionState());
+      });
+    }
   }
 
   void _tabListener() {

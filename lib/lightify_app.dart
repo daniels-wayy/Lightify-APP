@@ -12,6 +12,7 @@ import 'package:lightify/core/ui/utils/screen_util.dart';
 import 'package:lightify/core/ui/routes/root_routes.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:lightify/di/di.dart';
+import 'package:lightify/lightify_app_wrapper.dart';
 import 'package:lightify/pages/main/home/ui/devices_watcher/devices_watcher_bloc.dart';
 
 class LightifyApp extends StatefulWidget {
@@ -39,7 +40,7 @@ class _LightifyAppState extends State<LightifyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
+    return LightifyAppWrapper(appBody: LayoutBuilder(builder: (context, constraints) {
       return MultiBlocProvider(
         providers: [
           BlocProvider(create: (_) => getIt<DevicesCubit>()),
@@ -77,6 +78,6 @@ class _LightifyAppState extends State<LightifyApp> {
           initialRoute: Routes.MAIN,
         ),
       );
-    });
+    }));
   }
 }

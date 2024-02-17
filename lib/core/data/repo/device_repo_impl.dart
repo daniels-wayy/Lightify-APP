@@ -22,7 +22,7 @@ class DeviceRepoImpl implements DeviceRepo {
       if (data == null || data.isEmpty) return null;
       try {
         if (data.startsWith(AppConstants.api.MQTT_PACKETS_HEADER)) {
-          final device = _parseDevice(data);
+          final device = DeviceRepoImpl.parseDevice(data);
           if (device != null) {
             return device;
           }
@@ -87,7 +87,7 @@ class DeviceRepoImpl implements DeviceRepo {
     _networkRepo.sendToServer(device.deviceInfo.topic, MQTT_UTIL.sleep_mode_cmd());
   }
 
-  Device? _parseDevice(String data) {
+  static Device? parseDevice(String data) {
     try {
       final substring = data.substring(AppConstants.api.MQTT_PACKETS_HEADER.length);
       final splitted = substring.split(',');

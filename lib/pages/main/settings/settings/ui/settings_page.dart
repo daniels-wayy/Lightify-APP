@@ -16,7 +16,6 @@ import 'package:lightify/pages/main/home/ui/devices_watcher/devices_watcher_bloc
 import 'package:lightify/pages/main/main/ui/bloc/main_cubit.dart';
 import 'package:lightify/pages/main/settings/home_widgets/ui/widgets/home_widget_variants/home_widget_small_widget.dart';
 import 'package:lightify/pages/main/settings/settings/ui/widgets/settings_app_bar_widget.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 part 'package:lightify/pages/main/settings/settings/ui/widgets/navigation_bar_switch_widget.dart';
 part 'package:lightify/pages/main/settings/settings/ui/widgets/home_selector_bar_switch_widget.dart';
