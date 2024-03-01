@@ -15,16 +15,25 @@ struct DeviceGridItemView: View {
     let intent: any AppIntent
     
     @Environment(\.widgetFamily) private var widgetFamily
+    @Environment(\.colorScheme) private var colorScheme
     
-    private let lineWidth = 6.0
+    private let lineWidth = 5.0
     
     var IconWidget: some View {
+        
         if let iconPath = deviceData.iconPath {
             if let uiImage = UIImage(contentsOfFile: iconPath) {
+                
+                let color: Color = (colorScheme == .dark) ? .white : .black
+                
                 let image = Image(uiImage: uiImage)
+                    .renderingMode(.template)
+                    .foregroundColor(color)
+                
                 return AnyView(image)
             }
         }
+        
         print("The image file not loaded")
         return AnyView(EmptyView())
     }
@@ -33,6 +42,7 @@ struct DeviceGridItemView: View {
         ZStack {
             IconWidget
                 .frame(width: 24, height: 24)
+                .opacity(deviceData.currentPowerState ? 1.0 : 0.65)
             Circle()
                 .stroke(lineWidth: lineWidth)
                 .opacity(0.3)

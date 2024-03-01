@@ -35,6 +35,7 @@ target 'Runner' do
 
   target 'DevicesPowerStateWidgetExtension' do
     inherit! :search_paths
+    pod 'CocoaMQTT'
   end
 end
 

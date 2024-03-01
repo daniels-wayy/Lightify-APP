@@ -93,13 +93,19 @@ class NetworkRepoImpl implements NetworkRepo {
     final state = client.connectionStatus?.state;
     return state != null && state == MqttConnectionState.connected;
   }
-  
+
   @override
   void sendToServer(String address, String data) {
-    final formattedData = '${AppConstants.api.MQTT_PACKETS_HEADER}$data';
-    final mqttPayloadBuilder = MqttClientPayloadBuilder().addString(formattedData);
-    if (mqttPayloadBuilder.payload != null) {
-      client.publishMessage(address, MqttQos.exactlyOnce, mqttPayloadBuilder.payload!);
+    if (isConnectedToServer()) {
+      try {
+        final formattedData = '${AppConstants.api.MQTT_PACKETS_HEADER}$data';
+        final mqttPayloadBuilder = MqttClientPayloadBuilder().addString(formattedData);
+        if (mqttPayloadBuilder.payload != null) {
+          client.publishMessage(address, MqttQos.exactlyOnce, mqttPayloadBuilder.payload!);
+        }
+      } catch (e) {
+        debugPrint('NetworkRepoImpl - sendToServer error: $e');
+      }
     }
   }
 }

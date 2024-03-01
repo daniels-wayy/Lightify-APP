@@ -18,12 +18,13 @@ struct DevicesGridView: View {
     var GridOfItems: some View {
         LazyVGrid(columns: columns, spacing: 14) {
             ForEach(devices!, id: \.id) { device in
-                    DeviceGridItemView(
-                        deviceData: device,
-                        showBrightnessPercent: showBrightnessPercent,
-                        intent: BackgroundIntent(method: "\(updateKey)/\(device.deviceTopic)"))
-                    .padding(.horizontal, 3.0)
-                    .padding(itemPadding)
+                let intent = BackgroundIntent(method: device.deviceTopic)
+                return DeviceGridItemView(
+                    deviceData: device,
+                    showBrightnessPercent: showBrightnessPercent,
+                    intent: intent)
+                .padding(.horizontal, 3.0)
+                .padding(itemPadding)
             }
         }
     }

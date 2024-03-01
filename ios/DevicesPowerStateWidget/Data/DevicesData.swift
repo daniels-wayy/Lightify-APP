@@ -20,4 +20,8 @@ struct DevicesLists: Codable {
     let smallWidget: [DeviceData]?
     let mediumWidget: [DeviceData]?
     let bigWidget: [DeviceData]?
+    
+    func isExist() -> Bool {
+        return smallWidget != nil && mediumWidget != nil && bigWidget != nil
+    }
 }

@@ -18,6 +18,11 @@
 		65095E7B2B7D96A600A28BA3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 65095E7A2B7D96A600A28BA3 /* Assets.xcassets */; };
 		65095E7F2B7D96A600A28BA3 /* DevicesPowerStateWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 65095E6C2B7D96A400A28BA3 /* DevicesPowerStateWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		651A12C82A261ECC00A79611 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 651A12C72A261ECB00A79611 /* GoogleService-Info.plist */; };
+		65E6EB612B8E8D530000CDD6 /* DevicesPowerBackgroundIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FF2A392B80294500665BC8 /* DevicesPowerBackgroundIntent.swift */; };
+		65E6EB642B8E8DCE0000CDD6 /* MQTTConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E6EB632B8E8DCE0000CDD6 /* MQTTConstants.swift */; };
+		65E6EB652B8E8DCE0000CDD6 /* MQTTConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E6EB632B8E8DCE0000CDD6 /* MQTTConstants.swift */; };
+		65E6EB672B8E8DF80000CDD6 /* MQTTDevicePowerChanger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E6EB662B8E8DF80000CDD6 /* MQTTDevicePowerChanger.swift */; };
+		65E6EB682B8E8DF80000CDD6 /* MQTTDevicePowerChanger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E6EB662B8E8DF80000CDD6 /* MQTTDevicePowerChanger.swift */; };
 		65FF2A252B80226500665BC8 /* DevicesData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FF2A242B80226500665BC8 /* DevicesData.swift */; };
 		65FF2A262B80226500665BC8 /* DevicesData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FF2A242B80226500665BC8 /* DevicesData.swift */; };
 		65FF2A282B8022B300665BC8 /* DevicesParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FF2A272B8022B300665BC8 /* DevicesParser.swift */; };
@@ -29,7 +34,6 @@
 		65FF2A362B8027D700665BC8 /* WidgetSystemLarge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FF2A352B8027D700665BC8 /* WidgetSystemLarge.swift */; };
 		65FF2A382B8028EC00665BC8 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FF2A372B8028EC00665BC8 /* Extensions.swift */; };
 		65FF2A3A2B80294500665BC8 /* DevicesPowerBackgroundIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FF2A392B80294500665BC8 /* DevicesPowerBackgroundIntent.swift */; };
-		65FF2A3B2B80294500665BC8 /* DevicesPowerBackgroundIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FF2A392B80294500665BC8 /* DevicesPowerBackgroundIntent.swift */; };
 		65FF2A3D2B802ABE00665BC8 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FF2A3C2B802ABD00665BC8 /* Constants.swift */; };
 		65FF2A3E2B802ABE00665BC8 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FF2A3C2B802ABD00665BC8 /* Constants.swift */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
@@ -94,6 +98,8 @@
 		65095E852B7D96BC00A28BA3 /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
 		65095E862B7D96C600A28BA3 /* DevicesPowerStateWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DevicesPowerStateWidgetExtension.entitlements; sourceTree = "<group>"; };
 		651A12C72A261ECB00A79611 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		65E6EB632B8E8DCE0000CDD6 /* MQTTConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MQTTConstants.swift; sourceTree = "<group>"; };
+		65E6EB662B8E8DF80000CDD6 /* MQTTDevicePowerChanger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MQTTDevicePowerChanger.swift; sourceTree = "<group>"; };
 		65FF2A242B80226500665BC8 /* DevicesData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevicesData.swift; sourceTree = "<group>"; };
 		65FF2A272B8022B300665BC8 /* DevicesParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevicesParser.swift; sourceTree = "<group>"; };
 		65FF2A2B2B80262000665BC8 /* WidgetSystemSmall.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSystemSmall.swift; sourceTree = "<group>"; };
@@ -171,6 +177,15 @@
 			path = DevicesPowerStateWidget;
 			sourceTree = "<group>";
 		};
+		65E6EB622B8E8D7F0000CDD6 /* MQTT */ = {
+			isa = PBXGroup;
+			children = (
+				65E6EB632B8E8DCE0000CDD6 /* MQTTConstants.swift */,
+				65E6EB662B8E8DF80000CDD6 /* MQTTDevicePowerChanger.swift */,
+			);
+			path = MQTT;
+			sourceTree = "<group>";
+		};
 		65FF2A222B80220000665BC8 /* Data */ = {
 			isa = PBXGroup;
 			children = (
@@ -226,6 +241,7 @@
 		97C146E51CF9000F007C117D = {
 			isa = PBXGroup;
 			children = (
+				65E6EB622B8E8D7F0000CDD6 /* MQTT */,
 				65FF2A392B80294500665BC8 /* DevicesPowerBackgroundIntent.swift */,
 				65095E862B7D96C600A28BA3 /* DevicesPowerStateWidgetExtension.entitlements */,
 				9740EEB11CF90186004384FC /* Flutter */,
@@ -297,7 +313,6 @@
 				97C146EB1CF9000F007C117D /* Frameworks */,
 				97C146EC1CF9000F007C117D /* Resources */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
-				654C164B2A2644C500F7C3EE /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -407,23 +422,6 @@
 			shellPath = /bin/sh;
 			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" embed_and_thin";
 		};
-		654C164B2A2644C500F7C3EE /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\necho \"Symbols Directory\"\necho \"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}\"\n#Firebase\n\"${PODS_ROOT}/FirebaseCrashlytics/upload-symbols\" -gsp \"${PROJECT_DIR}/Runner/GoogleService-Info.plist\" -p ios \"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}\"\n";
-		};
 		8FB5B5CB3465EC3FC7B9359C /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -492,6 +490,7 @@
 			files = (
 				65095E772B7D96A400A28BA3 /* DevicesPowerStateWidget.swift in Sources */,
 				65FF2A262B80226500665BC8 /* DevicesData.swift in Sources */,
+				65E6EB682B8E8DF80000CDD6 /* MQTTDevicePowerChanger.swift in Sources */,
 				65FF2A2C2B80262000665BC8 /* WidgetSystemSmall.swift in Sources */,
 				65095E792B7D96A400A28BA3 /* AppIntent.swift in Sources */,
 				65FF2A302B80269200665BC8 /* DeviceGridItemView.swift in Sources */,
@@ -500,9 +499,10 @@
 				65FF2A382B8028EC00665BC8 /* Extensions.swift in Sources */,
 				65095E752B7D96A400A28BA3 /* DevicesPowerStateWidgetLiveActivity.swift in Sources */,
 				65FF2A342B8027B200665BC8 /* WidgetSystemMedium.swift in Sources */,
-				65FF2A3B2B80294500665BC8 /* DevicesPowerBackgroundIntent.swift in Sources */,
 				65FF2A3E2B802ABE00665BC8 /* Constants.swift in Sources */,
+				65E6EB612B8E8D530000CDD6 /* DevicesPowerBackgroundIntent.swift in Sources */,
 				65FF2A292B8022B300665BC8 /* DevicesParser.swift in Sources */,
+				65E6EB652B8E8DCE0000CDD6 /* MQTTConstants.swift in Sources */,
 				65095E732B7D96A400A28BA3 /* DevicesPowerStateWidgetBundle.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -513,8 +513,10 @@
 			files = (
 				65FF2A252B80226500665BC8 /* DevicesData.swift in Sources */,
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
+				65E6EB672B8E8DF80000CDD6 /* MQTTDevicePowerChanger.swift in Sources */,
 				65FF2A282B8022B300665BC8 /* DevicesParser.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
+				65E6EB642B8E8DCE0000CDD6 /* MQTTConstants.swift in Sources */,
 				65FF2A3A2B80294500665BC8 /* DevicesPowerBackgroundIntent.swift in Sources */,
 				65FF2A3D2B802ABE00665BC8 /* Constants.swift in Sources */,
 			);
@@ -591,7 +593,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphoneos;
@@ -613,6 +615,7 @@
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -649,7 +652,7 @@
 				INFOPLIST_FILE = DevicesPowerStateWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = DevicesPowerStateWidget;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -693,7 +696,7 @@
 				INFOPLIST_FILE = DevicesPowerStateWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = DevicesPowerStateWidget;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -734,7 +737,7 @@
 				INFOPLIST_FILE = DevicesPowerStateWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = DevicesPowerStateWidget;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -799,7 +802,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -848,7 +851,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = iphoneos;
@@ -872,6 +875,7 @@
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -898,6 +902,7 @@
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
