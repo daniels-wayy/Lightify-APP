@@ -1,7 +1,10 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightify/core/data/model/device.dart';
+import 'package:lightify/core/ui/bloc/devices/devices_cubit.dart';
+import 'package:lightify/core/ui/bloc/devices/devices_state.dart';
 import 'package:lightify/core/ui/constants/app_constants.dart';
 import 'package:lightify/core/ui/extensions/core_extensions.dart';
 import 'package:lightify/core/ui/routes/root_routes.dart';
@@ -225,7 +228,11 @@ class _DeviceCardState extends State<DeviceCard> with SingleTickerProviderStateM
                                 style: context.textTheme.titleSmall?.copyWith(color: dataColor, letterSpacing: -0.55) ??
                                     const TextStyle(),
                                 duration: DeviceCard.COLORS_SWITCH_DURATION,
-                                child: Text(widget.device.deviceInfo.deviceName),
+                                child: BlocBuilder<DevicesCubit, DevicesState>(
+                                  builder: (context, _) {
+                                    return Text(widget.device.deviceInfo.displayDeviceName);
+                                  }
+                                ),
                               ),
                             ),
                         ],
@@ -305,7 +312,7 @@ class _DeviceCardState extends State<DeviceCard> with SingleTickerProviderStateM
     if (isUnreachable) {
       return;
     }
-    if (powerState) {
+    // if (powerState) {
       if (prevBrightnessState != value) {
         prevBrightnessState = value;
         value = value <= 0.01
@@ -320,7 +327,7 @@ class _DeviceCardState extends State<DeviceCard> with SingleTickerProviderStateM
           widget.onBrightnessChanged?.call(brightness);
         }
       }
-    }
+    // }
   }
 
   void _onDetailsTap() {

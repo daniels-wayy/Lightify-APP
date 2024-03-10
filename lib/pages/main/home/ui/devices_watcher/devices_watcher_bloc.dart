@@ -31,9 +31,9 @@ class DevicesWatcherBloc extends Bloc<DevicesWatcherEvent, DevicesWatcherState> 
     this._devicesCubit,
   ) : super(const DevicesWatcherState.initial());
 
-  static const initialDevicesCheckTimeout = Duration(milliseconds: 100);
-  static const devicesCheckTimeout = Duration(milliseconds: 150);
-  static const devicesCheckRetries = 3;
+  static const initialDevicesCheckTimeout = Duration(milliseconds: 275);
+  static const devicesCheckTimeout = Duration(milliseconds: 75);
+  static const devicesCheckRetries = 2;
 
   StreamSubscription? _devicesStream;
   Timer? _getTimer;

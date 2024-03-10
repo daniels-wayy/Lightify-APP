@@ -1,7 +1,9 @@
 // ignore_for_file: non_constant_identifier_names
 import 'dart:convert';
 import 'package:injectable/injectable.dart';
+import 'package:lightify/config.dart';
 import 'package:lightify/core/data/model/color_preset.dart';
+import 'package:lightify/core/data/model/device_rename_dto.dart';
 import 'package:lightify/core/data/storages/storage.dart';
 import 'package:lightify/core/data/storages/storage_keys.dart';
 
@@ -12,6 +14,7 @@ class CommonStorage extends StorageKeys {
   CommonStorage({required this.storage});
 
   final _COLOR_PRESETS_MAP_KEY = 'colorPresets';
+  final _DEVICE_RENAMES_MAP_KEY = 'deviceRenames';
 
   Future<void> storeColorPresets(List<ColorPreset> presets) async {
     final map = <String, dynamic>{
@@ -45,6 +48,33 @@ class CommonStorage extends StorageKeys {
   }
 
   bool getHomeSelectorBarSetting() {
-    return storage.getBool(key: showHomeSelectorKey) ?? true;
+    return storage.getBool(key: showHomeSelectorKey) ?? Config.showHomeSelectorDefault;
+  }
+
+  List<String>? getDevicesGroupOrder() {
+    return storage.getStringArray(key: devicesGroupOrderKey);
+  }
+
+  Future<void> storeDevicesGroupOrder(List<String> value) async {
+    await storage.putStringArray(key: devicesGroupOrderKey, value: value);
+  }
+
+  Future<void> storeRenamesData(List<DeviceRenameDTO> renames) async {
+    final map = <String, dynamic>{
+      _DEVICE_RENAMES_MAP_KEY: renames.map((e) => e.toJson()).toList(),
+    };
+    await storage.putString(key: deviceRenamesKey, value: jsonEncode(map));
+  }
+
+  List<DeviceRenameDTO> getRenamesData() {
+    List<DeviceRenameDTO>? renames;
+    final cachedRenames = storage.getString(key: deviceRenamesKey);
+    if (cachedRenames != null && cachedRenames.isNotEmpty) {
+      final json = jsonDecode(cachedRenames) as Map<String, dynamic>;
+      renames = (json[_DEVICE_RENAMES_MAP_KEY] as List<dynamic>)
+          .map((dynamic e) => DeviceRenameDTO.fromJson(e as Map<String, dynamic>))
+          .toList();
+    }
+    return renames ?? [];
   }
 }

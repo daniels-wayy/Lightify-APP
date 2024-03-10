@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -30,12 +31,15 @@ class HomeWidgetsConfigCubit extends Cubit<HomeWidgetsConfigState> with Hydrated
   static const bigWidgetDevicesCount = 12;
 
   static const widgetsUpdateThreshold = Duration(milliseconds: 500);
+  static const widgetsUpdateFromDeviceThreshold = Duration(milliseconds: 300);
 
   Timer? _widgetsUpdateTimer;
+  Timer? _widgetsUpdateFromDeviceTimer;
 
   @override
   Future<void> close() {
     _widgetsUpdateTimer?.cancel();
+    _widgetsUpdateFromDeviceTimer?.cancel();
     return super.close();
   }
 
@@ -54,6 +58,38 @@ class HomeWidgetsConfigCubit extends Cubit<HomeWidgetsConfigState> with Hydrated
     return isAvailable;
   }
 
+  Future<int?> checkWidgetsBackgroundUpdateCount() async {
+    if (!state.isWidgetsAvailable) {
+      return null;
+    }
+    const channel = MethodChannel('native/devicesBackground');
+    try {
+      debugPrint('_checkWidgetsBackgroundUpdateCount');
+      final count = await channel.invokeMethod<int?>('tasksCount');
+      debugPrint('_checkWidgetsBackgroundUpdateCount - count: $count');
+      return count ?? 0;
+    } on PlatformException catch (e) {
+      debugPrint('_checkWidgetsBackgroundUpdateCount PlatformException: $e');
+      return null;
+    }
+  }
+
+  Future<bool?> resetBackgroundTasks() async {
+    if (!state.isWidgetsAvailable) {
+      return null;
+    }
+    const channel = MethodChannel('native/devicesBackground');
+    try {
+      debugPrint('resetBackgroundTasks');
+      final isSuccess = await channel.invokeMethod<bool?>('reset');
+      debugPrint('resetBackgroundTasks - isSuccess: $isSuccess');
+      return isSuccess;
+    } on PlatformException catch (e) {
+      debugPrint('resetBackgroundTasks PlatformException: $e');
+      return null;
+    }
+  }
+
   Future<void> setWidgetsFromDevices(List<Device> devices) async {
     var isWidgetsAvailable = state.isWidgetsAvailable;
 
@@ -62,6 +98,9 @@ class HomeWidgetsConfigCubit extends Cubit<HomeWidgetsConfigState> with Hydrated
     }
 
     if (!isWidgetsAvailable || state.isNotEmpty) {
+      if (state.isNotEmpty) {
+        updateAllWidgets(devices);
+      }
       return;
     }
 
@@ -79,26 +118,75 @@ class HomeWidgetsConfigCubit extends Cubit<HomeWidgetsConfigState> with Hydrated
     _updateWidgets(isInit: true);
   }
 
+  Future<void> updateAllWidgets(List<Device> devices) async {
+    _widgetsUpdateFromDeviceTimer?.cancel();
+    _widgetsUpdateFromDeviceTimer = Timer(widgetsUpdateFromDeviceThreshold, () {
+      _ensureAvailable(() async {
+        final currentWidgetsState = await HomeWidgetsFunctions.getWidgetState();
+
+        debugPrint('updateAllWidgets');
+
+        Iterable<HomeWidgetDeviceEntity> smallWidget = currentWidgetsState?.smallWidget ?? state.smallWidget;
+        Iterable<HomeWidgetDeviceEntity> mediumWidget = currentWidgetsState?.mediumWidget ?? state.mediumWidget;
+        Iterable<HomeWidgetDeviceEntity> bigWidget = currentWidgetsState?.bigWidget ?? state.bigWidget;
+
+        debugPrint('small widget before: ${smallWidget.map((e) => e.currentPowerState)}');
+
+        for (final device in devices) {
+          smallWidget = smallWidget
+              .map((e) => (device.deviceInfo.topic == e.deviceTopic) ? HomeWidgetDeviceEntity.fromDevice(device) : e);
+
+          mediumWidget = mediumWidget
+              .map((e) => (device.deviceInfo.topic == e.deviceTopic) ? HomeWidgetDeviceEntity.fromDevice(device) : e);
+
+          bigWidget = bigWidget
+              .map((e) => (device.deviceInfo.topic == e.deviceTopic) ? HomeWidgetDeviceEntity.fromDevice(device) : e);
+        }
+
+        debugPrint('small widget after: ${smallWidget.map((e) => e.currentPowerState)}');
+
+        final generatedSmallWidget = await _generateWidgetsIcons(smallWidget);
+        final generatedMediumWidget = await _generateWidgetsIcons(mediumWidget);
+        final generatedBigWidget = await _generateWidgetsIcons(bigWidget);
+
+        emit(state.copyWith(
+          smallWidget: generatedSmallWidget.take(smallWidgetDevicesCount).toList(),
+          mediumWidget: generatedMediumWidget.take(mediumWidgetDevicesCount).toList(),
+          bigWidget: generatedBigWidget.take(bigWidgetDevicesCount).toList(),
+        ));
+
+        _updateWidgets();
+      });
+    });
+  }
+
   Future<void> updateWidgetsWithDevice(Device device) async {
-    _ensureAvailable(() async {
-      final smallWidget = state.smallWidget
-          .map((e) => (device.deviceInfo.topic == e.deviceTopic) ? HomeWidgetDeviceEntity.fromDevice(device) : e);
-      final mediumWidget = state.mediumWidget
-          .map((e) => (device.deviceInfo.topic == e.deviceTopic) ? HomeWidgetDeviceEntity.fromDevice(device) : e);
-      final bigWidget = state.bigWidget
-          .map((e) => (device.deviceInfo.topic == e.deviceTopic) ? HomeWidgetDeviceEntity.fromDevice(device) : e);
+    _widgetsUpdateFromDeviceTimer?.cancel();
+    _widgetsUpdateFromDeviceTimer = Timer(widgetsUpdateFromDeviceThreshold, () {
+      _ensureAvailable(() async {
+        final currentWidgetsState = await HomeWidgetsFunctions.getWidgetState();
 
-      final generatedSmallWidget = await _generateWidgetsIcons(smallWidget);
-      final generatedMediumWidget = await _generateWidgetsIcons(mediumWidget);
-      final generatedBigWidget = await _generateWidgetsIcons(bigWidget);
+        final smallWidget = (currentWidgetsState?.smallWidget ?? state.smallWidget)
+            .map((e) => (device.deviceInfo.topic == e.deviceTopic) ? HomeWidgetDeviceEntity.fromDevice(device) : e);
 
-      emit(state.copyWith(
-      smallWidget: generatedSmallWidget.take(smallWidgetDevicesCount).toList(),
-      mediumWidget: generatedMediumWidget.take(mediumWidgetDevicesCount).toList(),
-      bigWidget: generatedBigWidget.take(bigWidgetDevicesCount).toList(),
-    ));
+        final mediumWidget = (currentWidgetsState?.mediumWidget ?? state.mediumWidget)
+            .map((e) => (device.deviceInfo.topic == e.deviceTopic) ? HomeWidgetDeviceEntity.fromDevice(device) : e);
 
-      _updateWidgets();
+        final bigWidget = (currentWidgetsState?.bigWidget ?? state.bigWidget)
+            .map((e) => (device.deviceInfo.topic == e.deviceTopic) ? HomeWidgetDeviceEntity.fromDevice(device) : e);
+
+        final generatedSmallWidget = await _generateWidgetsIcons(smallWidget);
+        final generatedMediumWidget = await _generateWidgetsIcons(mediumWidget);
+        final generatedBigWidget = await _generateWidgetsIcons(bigWidget);
+
+        emit(state.copyWith(
+          smallWidget: generatedSmallWidget.take(smallWidgetDevicesCount).toList(),
+          mediumWidget: generatedMediumWidget.take(mediumWidgetDevicesCount).toList(),
+          bigWidget: generatedBigWidget.take(bigWidgetDevicesCount).toList(),
+        ));
+
+        _updateWidgets();
+      });
     });
   }
 
@@ -171,8 +259,8 @@ class HomeWidgetsConfigCubit extends Cubit<HomeWidgetsConfigState> with Hydrated
   void _updateWidgets({bool isInit = false}) {
     _ensureAvailable(() {
       _widgetsUpdateTimer?.cancel();
-      _widgetsUpdateTimer = Timer(widgetsUpdateThreshold, () async {
-        updateWidgets(state.widgetsDTO);
+      _widgetsUpdateTimer = Timer(widgetsUpdateThreshold, () {
+        HomeWidgetsFunctions.updateWidgets(state.widgetsDTO);
       });
     }, isInit: isInit);
   }
@@ -183,8 +271,12 @@ class HomeWidgetsConfigCubit extends Cubit<HomeWidgetsConfigState> with Hydrated
 
     for (final entity in entities) {
       final icon = Icon(key: globalKey, entity.icon, size: 26.0, color: Colors.white70);
-      final iconPath =
-          await HomeWidget.renderFlutterWidget(icon, key: '${entity.deviceTopic}_iconPath', pixelRatio: 1.0);
+      final iconPath = await HomeWidget.renderFlutterWidget(
+        icon,
+        key: '${entity.deviceTopic}_icon',
+        pixelRatio: 0.85,
+        logicalSize: const Size(512, 512),
+      );
       result.add(entity.copyWith(iconPath: iconPath));
     }
 

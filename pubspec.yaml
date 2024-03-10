@@ -3,7 +3,7 @@ description: Lightify application
 
 publish_to: 'none' 
 
-version: 1.1.1+8
+version: 1.2.0+30
 
 environment:
   sdk: '>=2.19.6 <3.0.0'
@@ -32,7 +32,7 @@ dependencies:
   flutter_colorpicker: ^1.0.3
   # fading_edge_scrollview: ^3.0.0
   fluttertoast: ^8.2.2
-  adaptive_dialog: 1.9.0-no-macos.3
+  adaptive_dialog: ^1.10.1
   flutter_platform_widgets: ^3.3.5
 
   # Local DB
@@ -59,6 +59,9 @@ dependencies:
 
   # file manager
   path_provider: ^2.1.2
+
+  # list reorder
+  reorderables: ^0.6.0
 
 
 dev_dependencies:

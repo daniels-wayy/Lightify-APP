@@ -57,9 +57,15 @@ class MainCubit extends Cubit<MainState> {
     TabIndex.SETTINGS: GlobalKey<NavigatorState>(),
   };
 
-  void changeTab(TabIndex tabIndex) {
+  void changeTab(TabIndex tabIndex, {bool pop = false}) {
     if (state.tabIndex != tabIndex) {
       emit(state.copyWith(tabIndex: tabIndex));
+    } else {
+      if (pop) {
+        navigatorKeys[tabIndex]?.currentState?.popUntil(
+              (route) => route.isFirst,
+            );
+      }
     }
   }
 }

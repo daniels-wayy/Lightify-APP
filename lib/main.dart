@@ -9,7 +9,10 @@ void main() {
     House(name: 'Nick\'s home', remotes: AppConstants.api.DN_MQTT_DEVICES_REMOTES),
   ];
 
-  Config.init(houses: houses);
+  Config.init(
+    houses: houses,
+    showHomeSelectorDefault: false,
+  );
 
   run();
 }

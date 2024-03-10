@@ -23,6 +23,7 @@ class _StringsConstants {
   final DEEP_ORANGE = 'Deep orange';
   final PRESET_ALREADY_EXIST = 'Preset already exist';
   final ADD_COLOR_PRESET = 'Add color preset';
+  final RENAME_DEVICE = 'Rename device';
   final DELETE_PRESET_QUESTION = 'Delete preset?';
   final DELETE = 'Delete';
   final CUSTOM_COLOR = 'Custom color';
@@ -32,6 +33,7 @@ class _StringsConstants {
   final COLOR_BREATH = 'Color breath';
   final ADD = 'Add';
   final PRESET_NAME = 'Preset name';
+  final NEW_DEVICE_NAME = 'New device name';
   final R = 'R';
   final G = 'G';
   final B = 'B';

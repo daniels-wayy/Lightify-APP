@@ -8,7 +8,7 @@ class HomeWidgetMedium extends StatelessWidget {
   const HomeWidgetMedium({super.key});
 
   static const width = 174.0 * 2.0;
-  static const height = 180.0;
+  static const height = 174.0;
 
   @override
   Widget build(BuildContext context) {

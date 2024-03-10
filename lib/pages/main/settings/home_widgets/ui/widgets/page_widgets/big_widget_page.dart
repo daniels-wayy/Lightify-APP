@@ -17,26 +17,30 @@ class BigWidgetPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       shrinkWrap: true,
-      padding: EdgeInsets.symmetric(horizontal: width(18), vertical: height(12)),
+      padding: EdgeInsets.symmetric(horizontal: width(18), vertical: height(12)).copyWith(
+        bottom: height(128),
+      ),
       children: [
         SizedBox(height: height(24)),
         const Align(alignment: Alignment.center, child: HomeWidgetBig()),
+        SizedBox(height: height(48)),
         BlocBuilder<DevicesCubit, DevicesState>(builder: (context, devicesState) {
           return ListView.separated(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
-              final item = devicesState.availableDevices[index];
+              final item = devicesState.devicesByRooms[index];
               final isSelected = selectedDevices.any((device) => device.deviceTopic == item.deviceInfo.topic);
               return HomeWidgetDeviceRow(
                 entity: HomeWidgetDeviceEntity.fromDevice(item),
                 isSelected: isSelected,
                 onTap: onTap,
-                deviceName: item.deviceInfo.deviceName,
+                deviceName: item.deviceInfo.displayDeviceName,
               );
             },
-            separatorBuilder: (_, __) => const SizedBox(height: 24),
-            itemCount: devicesState.availableDevices.length,
+            separatorBuilder: (_, __) => SizedBox(height: height(22)),
+            itemCount: devicesState.devicesByRooms.length,
+            padding: EdgeInsets.symmetric(horizontal: width(12)),
           );
         }),
       ],

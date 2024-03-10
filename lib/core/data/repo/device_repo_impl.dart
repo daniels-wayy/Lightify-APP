@@ -38,7 +38,7 @@ class DeviceRepoImpl implements DeviceRepo {
   Future<void> getDevices(House house) async {
     for (final topic in house.remotes) {
       _networkRepo.sendToServer(topic, MQTT_UTIL.get_cmd());
-      await Future<void>.delayed(const Duration(milliseconds: 50));
+      await Future<void>.delayed(const Duration(milliseconds: 25));
     }
   }
 

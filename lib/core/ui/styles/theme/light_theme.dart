@@ -2,6 +2,7 @@ part of 'app_theme.dart';
 
 ThemeData get lightTheme {
   return ThemeData(
+    useMaterial3: Platform.isAndroid,
     brightness: Brightness.light,
     colorScheme: ColorScheme.fromSwatch().copyWith(
       secondary: AppColors.primary100,
@@ -42,6 +43,7 @@ ThemeData get lightTheme {
       border: const UnderlineInputBorder(borderSide: BorderSide(color: AppColors.white)),
       focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: AppColors.white)),
       enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: AppColors.gray100)),
+      counterStyle: AppTextStyles.displaySmall().copyWith(color: Colors.white70),
     ),
     textButtonTheme: TextButtonThemeData(
       style: ButtonStyle(
@@ -70,5 +72,6 @@ ThemeData get lightTheme {
         primaryColor: AppColors.white,
       ), // This is required
     ),
+    appBarTheme: AppBarTheme(surfaceTintColor: Platform.isIOS ? Colors.transparent : Colors.grey.shade800),
   );
 }

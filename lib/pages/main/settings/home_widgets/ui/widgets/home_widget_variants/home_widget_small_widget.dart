@@ -22,10 +22,12 @@ class HomeWidgetSmall extends StatelessWidget {
       child: BlocBuilder<HomeWidgetsConfigCubit, HomeWidgetsConfigState>(builder: (context, configState) {
         return GridView.count(
           physics: const NeverScrollableScrollPhysics(),
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          padding: EdgeInsets.symmetric(
+              horizontal: variant == HomeWidgetVariant.bigger ? 10 : 8,
+              vertical: variant == HomeWidgetVariant.bigger ? 10 : 8),
           crossAxisCount: 2,
-          mainAxisSpacing: 8,
-          crossAxisSpacing: 8,
+          mainAxisSpacing: variant == HomeWidgetVariant.bigger ? 12 : 7,
+          crossAxisSpacing: variant == HomeWidgetVariant.bigger ? 12 : 7,
           children: configState.smallWidget.map((e) => HomeWidgetDeviceItem(deviceEntity: e, variant: variant)).toList(),
         );
       }),

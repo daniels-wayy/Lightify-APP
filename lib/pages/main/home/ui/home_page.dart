@@ -14,11 +14,11 @@ import 'package:lightify/core/ui/bloc/devices/devices_cubit.dart';
 import 'package:lightify/core/ui/bloc/home_widgets_config/home_widgets_config_cubit.dart';
 import 'package:lightify/core/ui/bloc/user_pref/user_pref_cubit.dart';
 import 'package:lightify/core/ui/bloc/user_pref/user_pref_state.dart';
-import 'package:lightify/core/ui/constants/app_constants.dart';
-import 'package:lightify/core/ui/extensions/core_extensions.dart';
 import 'package:lightify/core/ui/styles/colors/app_colors.dart';
 import 'package:lightify/core/ui/utils/dialog_util.dart';
+import 'package:lightify/core/ui/utils/reorder_util.dart';
 import 'package:lightify/core/ui/utils/screen_util.dart';
+import 'package:lightify/core/ui/utils/vibration_util.dart';
 import 'package:lightify/core/ui/widget/common/bouncing_widget.dart';
 import 'package:lightify/core/ui/widget/common/error_widget.dart';
 import 'package:lightify/core/ui/widget/common/fading_edge_widget.dart';
@@ -26,8 +26,10 @@ import 'package:lightify/core/ui/widget/progress/loading_widget.dart';
 import 'package:lightify/pages/main/home/ui/devices_updater/devices_updater_bloc.dart';
 import 'package:lightify/pages/main/home/ui/devices_watcher/devices_watcher_bloc.dart';
 import 'package:lightify/pages/main/home/ui/widget/devices_group.dart';
+import 'package:lightify/pages/main/home/ui/widget/home_fab_widget.dart';
 import 'package:lightify/pages/main/home/ui/widget/home_tab_bar.dart';
 import 'package:lightify/pages/main/main/ui/bloc/main_cubit.dart';
+import 'package:reorderables/reorderables.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -167,12 +169,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                         child: Center(
                           child: AnimatedSwitcher(
                             duration: const Duration(milliseconds: 800),
-                            // child: state.maybeMap(
-                            //   connecting: (_) => _buildConnectingState(),
-                            //   connected: (state) => _buildConnectedState(state.availableDevices),
-                            //   disconnected: (_) => _buildDisconnectedState(),
-                            //   orElse: () => const SizedBox.shrink(),
-                            // ),
                             child: state.maybeWhen(
                               loading: _buildConnectingState,
                               loaded: _buildConnectedState,
@@ -187,7 +183,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 }),
               ),
               floatingActionButton:
-                  !userPrefState.showNavigationBar && !userPrefState.showHomeSelectorBar ? _buildFAB() : null,
+                  !userPrefState.showNavigationBar && !userPrefState.showHomeSelectorBar ? const HomeFAB() : null,
             );
           })),
     );
@@ -226,7 +222,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       return const SizedBox.shrink();
     }
 
-    final groupedDevices = houseDevices.groupBy((p0) => p0.deviceInfo.deviceGroup);
+    final groupedDevices = /*houseDevices.groupBy((p0) => p0.deviceInfo.deviceGroup)*/
+        ReorderUtil.getDevicesPerOrder(houseDevices);
 
     return FadingEdge(
       scrollDirection: Axis.vertical,
@@ -253,14 +250,36 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           SliverSafeArea(
             top: !context.read<UserPrefCubit>().state.showHomeSelectorBar,
             sliver: SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: width(18)).copyWith(
-                top: height(30),
+              padding: EdgeInsets.symmetric(horizontal: width(16)).copyWith(
+                top: height(24),
+                bottom: height(74),
               ),
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(childCount: groupedDevices.length, (_, index) {
+              sliver: /*SliverList*/ ReorderableSliverList(
+                onReorder: (oldI, newI) => _onReorder(groupedDevices, oldI, newI),
+                onReorderStarted: (_) => VibrationUtil.vibrate(),
+                controller: ScrollController(),
+                buildDraggableFeedback: (context, constraints, child) => ConstrainedBox(
+                  constraints: constraints,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(14),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.35),
+                          offset: const Offset(0.0, -10.0),
+                          blurRadius: 15.0,
+                        ),
+                      ],
+                    ),
+                    child: child,
+                  ),
+                ),
+                delegate: /*SliverChildBuilderDelegate*/
+                    ReorderableSliverChildBuilderDelegate(childCount: groupedDevices.length, (_, index) {
                   final groupName = groupedDevices.keys.toList()[index];
                   final groupDevices = groupedDevices.values.toList()[index];
                   return DevicesGroup(
+                    key: ObjectKey(groupName),
                     groupIndex: index,
                     groupName: groupName,
                     groupDevices: groupDevices,
@@ -283,31 +302,12 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     );
   }
 
-  Widget _buildFAB() {
-    return BouncingWidget(
-      onTap: () => MainCubit.context.read<MainCubit>().changeTab(TabIndex.SETTINGS),
-      child: Container(
-        width: width(50),
-        height: width(50),
-        margin: EdgeInsets.symmetric(horizontal: width(3)),
-        decoration: BoxDecoration(
-          color: Colors.deepPurple,
-          borderRadius: AppConstants.widget.mediumBorderRadius,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.55),
-              blurRadius: 10.0,
-              offset: Offset.zero,
-            ),
-          ],
-        ),
-        child: Icon(
-          PlatformIcons(context).settings,
-          size: height(24),
-          color: Colors.white,
-        ),
-      ),
-    );
+  void _onReorder(Map<String, List<Device>> currentState, int oldI, int newI) {
+    final groupNames = [...currentState.keys.toList()];
+    final oldName = groupNames.removeAt(oldI);
+    groupNames.insert(newI, oldName);
+    ReorderUtil.updateDevicesGroupOrder(groupNames);
+    setState(() {});
   }
 
   Future<void> _onRefresh() async {

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:lightify/core/data/model/device.dart';
-import 'package:lightify/core/ui/animation/fade_animation.dart';
 import 'package:lightify/core/ui/extensions/core_extensions.dart';
 import 'package:lightify/core/ui/utils/screen_util.dart';
 import 'package:lightify/core/ui/widget/common/bouncing_widget.dart';
@@ -41,8 +40,8 @@ class DevicesGroup extends StatelessWidget {
     if (groupDevices.isEmpty) {
       return const SizedBox.shrink();
     }
-    return FadeAnimation(
-      delay: Duration(milliseconds: groupIndex * 300),
+    return Material(
+      color: Colors.transparent,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -57,10 +56,6 @@ class DevicesGroup extends StatelessWidget {
                 ),
               ),
               const Spacer(),
-              // BouncingWidget(
-              //   onTap: () => onDeviceGroupSleepMode(groupDevices),
-              //   child: Icon(Icons.bedtime_outlined, color: AppColors.gray200, size: height(22)),
-              // ),
               SizedBox(width: width(12)),
               if (groupDevices.length > 1)
                 BouncingWidget(

@@ -1,8 +1,13 @@
+import 'dart:io';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightify/core/ui/bloc/user_pref/user_pref_cubit.dart';
 import 'package:lightify/core/ui/extensions/core_extensions.dart';
+import 'package:lightify/core/ui/styles/colors/app_colors.dart';
 import 'package:lightify/core/ui/utils/screen_util.dart';
+import 'package:lightify/core/ui/utils/vibration_util.dart';
 import 'package:lightify/core/ui/widget/common/bouncing_widget.dart';
 import 'package:lightify/pages/main/main/ui/bloc/main_cubit.dart';
 import 'package:lightify/core/ui/routes/home_routes.dart';
@@ -35,9 +40,9 @@ class MainPage extends StatelessWidget {
         final isFirstRouteInCurrentTab = !(await MainCubit.navigatorKeys[selectedTab]!.currentState!.maybePop());
         return isFirstRouteInCurrentTab;
       },
-      child: Column(
+      child: Stack(
         children: [
-          Expanded(
+          Positioned.fill(
             child: IndexedStack(
               // duration: const Duration(milliseconds: 150),
               // child: views[selectedTab.index],
@@ -45,7 +50,12 @@ class MainPage extends StatelessWidget {
               children: views,
             ),
           ),
-          _buildBottomNavigationBar(selectedTab),
+          Positioned(
+            left: 0.0,
+            right: 0.0,
+            bottom: 0.0,
+            child: _buildBottomNavigationBar(selectedTab),
+          ),
         ],
       ),
     );
@@ -58,21 +68,48 @@ class MainPage extends StatelessWidget {
           duration: const Duration(milliseconds: 300),
           crossFadeState: showBar ? CrossFadeState.showFirst : CrossFadeState.showSecond,
           secondChild: Container(),
-          firstChild: Material(
-            color: Colors.black,
-            child: SafeArea(
-              top: false,
-              child: Row(
-                children: [
-                  _buildIcon(context, TabIndex.HOME, selectedTab),
-                  SizedBox(width: width(24)),
-                  _buildIcon(context, TabIndex.SETTINGS, selectedTab),
-                ],
-              ),
-            ),
-          ),
+          firstChild: Platform.isIOS
+              ? _buildBottomNavigationBarBodyIOS(context, selectedTab)
+              : _buildBottomNavigationBarBodyAndroid(context, selectedTab),
         );
       });
+
+  Widget _buildBottomNavigationBarBodyIOS(BuildContext context, TabIndex selectedTab) {
+    return ClipRRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 45, sigmaY: 45),
+        child: Material(
+          color: AppColors.fullBlack.withOpacity(0.96),
+          child: SafeArea(
+            top: false,
+            child: Row(
+              children: [
+                _buildIcon(context, TabIndex.HOME, selectedTab),
+                SizedBox(width: width(24)),
+                _buildIcon(context, TabIndex.SETTINGS, selectedTab),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBottomNavigationBarBodyAndroid(BuildContext context, TabIndex selectedTab) {
+    return Material(
+      color: AppColors.fullBlack,
+      child: SafeArea(
+        top: false,
+        child: Row(
+          children: [
+            _buildIcon(context, TabIndex.HOME, selectedTab),
+            SizedBox(width: width(24)),
+            _buildIcon(context, TabIndex.SETTINGS, selectedTab),
+          ],
+        ),
+      ),
+    );
+  }
 
   Widget _buildIcon(BuildContext context, TabIndex tab, TabIndex selectedTab) {
     final isSelected = tab == selectedTab;
@@ -80,7 +117,10 @@ class MainPage extends StatelessWidget {
     return Expanded(
       child: BouncingWidget(
         minScale: 0.9,
-        onTap: () => context.read<MainCubit>().changeTab(tab),
+        onTap: () {
+          VibrationUtil.vibrate();
+          context.read<MainCubit>().changeTab(tab, pop: true);
+        },
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: height(10)),
           child: Column(

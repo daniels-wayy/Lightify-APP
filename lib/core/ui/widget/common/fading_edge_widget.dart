@@ -28,7 +28,7 @@ class FadingEdge extends StatelessWidget {
             Colors.transparent,
             Colors.black,
           ],
-          stops: const [0.0, 0.05, 0.93, 1.0],
+          stops: const [0.0, 0.06, 0.96, 1.0],
         ).createShader(rect);
       },
       blendMode: BlendMode.dstOut,

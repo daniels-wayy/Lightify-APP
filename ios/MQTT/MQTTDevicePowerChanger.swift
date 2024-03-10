@@ -48,7 +48,6 @@ public class MQTTDevicePowerChanger {
     }
     
     private func onConnectionEstablished(for remote: String) {
-        print("onConnectionEstablished: \(remote)")
         processDeviceChangeFromWidget(for: remote)
     }
     
@@ -127,7 +126,6 @@ public class MQTTDevicePowerChanger {
     
     private func sendToServer(remote: String, data: String) {
         let formattedData = "\(MQTTConstants.getMqttPackageHeader())\(data)"
-        print("sendToServer: \(formattedData)")
         mqtt.publish(remote, withString: formattedData, qos: .qos1)
     }
     
@@ -143,7 +141,6 @@ public class MQTTDevicePowerChanger {
     }
     
     private func didPublishMessage(_ mqtt: CocoaMQTT, didPublishMessage message: CocoaMQTTMessage, id: UInt16) {
-        print("didPublishMessage")
         if (mqtt.connState == CocoaMQTTConnState.connected) {
             mqtt.disconnect()
         }
