@@ -39,6 +39,14 @@ class Storage {
     return sharedPreferences.getDouble(key);
   }
 
+  Future<bool> putStringArray({required String key, required List<String> value}) async {
+    return sharedPreferences.setStringList(key, value);
+  }
+
+  List<String>? getStringArray({required String key}) {
+    return sharedPreferences.getStringList(key);
+  }
+
   Future<bool> remove({required String key}) async {
     return sharedPreferences.remove(key);
   }

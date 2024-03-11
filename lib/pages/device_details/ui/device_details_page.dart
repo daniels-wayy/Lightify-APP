@@ -13,11 +13,13 @@ import 'package:lightify/core/ui/bloc/user_pref/user_pref_state.dart';
 import 'package:lightify/core/ui/constants/app_constants.dart';
 import 'package:lightify/core/ui/extensions/core_extensions.dart';
 import 'package:lightify/core/ui/styles/colors/app_colors.dart';
+import 'package:lightify/core/ui/utils/dialog_util.dart';
 import 'package:lightify/core/ui/utils/function_util.dart';
 import 'package:lightify/core/ui/utils/screen_util.dart';
 import 'package:lightify/core/ui/widget/common/bouncing_widget.dart';
 import 'package:lightify/core/ui/widget/common/common_slider.dart';
 import 'package:lightify/core/ui/widget/common/fading_edge_widget.dart';
+import 'package:lightify/di/di.dart';
 import 'package:lightify/pages/device_details/domain/model/device_details_page_args.dart';
 import 'package:lightify/pages/device_details/domain/model/device_rgb_color_input_dto.dart';
 import 'package:lightify/pages/main/home/ui/widget/device_card.dart';
@@ -42,10 +44,12 @@ class _DeviceDetailsPageState extends State<DeviceDetailsPage> {
   var customColorPreset = ColorPreset.empty();
 
   late final UserPrefCubit userPrefCubit;
+  late final DevicesCubit devicesCubit;
 
   @override
   void initState() {
     userPrefCubit = context.read<UserPrefCubit>();
+    devicesCubit = context.read<DevicesCubit>();
     super.initState();
   }
 
@@ -109,18 +113,29 @@ class _DeviceDetailsPageState extends State<DeviceDetailsPage> {
         onTap: Navigator.of(context).pop,
         child: Icon(Icons.arrow_back_ios_new, color: AppColors.white, size: height(22)),
       ),
+      actions: [
+        BouncingWidget(
+          onTap: _onEditTap,
+          child: Padding(
+            padding: EdgeInsets.only(right: width(12)),
+            child: Icon(Icons.edit_outlined, size: height(21), color: Colors.white),
+          ),
+        ),
+      ],
       backgroundColor: AppColors.fullBlack,
       centerTitle: true,
       elevation: 0.0,
       toolbarHeight: height(64),
       title: Column(
         children: [
-          Text(
-            widget.args.deviceInfo.deviceName,
-            style: context.textTheme.titleMedium?.copyWith(
-              letterSpacing: 0.3,
-            ),
-          ),
+          BlocBuilder<DevicesCubit, DevicesState>(builder: (context, _) {
+            return Text(
+              widget.args.deviceInfo.displayDeviceName,
+              style: context.textTheme.titleMedium?.copyWith(
+                letterSpacing: 0.3,
+              ),
+            );
+          }),
           SizedBox(height: height(2)),
           Text(
             widget.args.deviceInfo.deviceGroup,
@@ -202,6 +217,34 @@ class _DeviceDetailsPageState extends State<DeviceDetailsPage> {
     );
     if (result == OkCancelResult.ok) {
       userPrefCubit.removeColorPreset(preset);
+    }
+  }
+
+  Future<void> _onEditTap() async {
+    final device = getIt<DevicesCubit>().state.findDeviceById(widget.args.deviceInfo.topic);
+
+    final result = await showTextInputDialog(
+      context: context,
+      textFields: [
+        DialogTextField(
+            maxLines: 1,
+            maxLength: 16,
+            autocorrect: true,
+            keyboardType: TextInputType.text,
+            initialText: device?.deviceInfo.displayDeviceName,
+            hintText: AppConstants.strings.NEW_DEVICE_NAME,
+            textCapitalization: TextCapitalization.sentences),
+      ],
+      title: AppConstants.strings.RENAME_DEVICE,
+      okLabel: AppConstants.strings.SAVE,
+      fullyCapitalizedForMaterial: false,
+    );
+    if (result != null && result.isNotEmpty) {
+      if (result.first.length <= 2) {
+        DialogUtil.showToast('The name must be at least 3 characters long.');
+        return;
+      }
+      devicesCubit.renameDevice(widget.args.deviceInfo.topic, result.first.capitalizeFirstLetter);
     }
   }
 }

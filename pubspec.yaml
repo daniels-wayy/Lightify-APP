@@ -3,7 +3,7 @@ description: Lightify application
 
 publish_to: 'none' 
 
-version: 1.1.1+8
+version: 1.2.0+30
 
 environment:
   sdk: '>=2.19.6 <3.0.0'
@@ -24,6 +24,7 @@ dependencies:
 
   # UI
   flutter_bloc: ^7.3.3  
+  hydrated_bloc: ^7.1.0
   cupertino_icons: ^1.0.2
   intl: ^0.18.0
   simple_animations: ^5.0.0+3
@@ -31,7 +32,7 @@ dependencies:
   flutter_colorpicker: ^1.0.3
   # fading_edge_scrollview: ^3.0.0
   fluttertoast: ^8.2.2
-  adaptive_dialog: 1.9.0-no-macos.3
+  adaptive_dialog: ^1.10.1
   flutter_platform_widgets: ^3.3.5
 
   # Local DB
@@ -52,6 +53,15 @@ dependencies:
   # device/package info
   device_info_plus: ^9.0.2
   package_info_plus: ^4.0.2
+
+  # platform home widgets
+  home_widget: ^0.4.0
+
+  # file manager
+  path_provider: ^2.1.2
+
+  # list reorder
+  reorderables: ^0.6.0
 
 
 dev_dependencies:

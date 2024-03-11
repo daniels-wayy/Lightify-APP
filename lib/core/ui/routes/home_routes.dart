@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightify/di/di.dart';
-import 'package:lightify/pages/main/home/ui/bloc/home_bloc.dart';
+import 'package:lightify/pages/main/home/ui/devices_updater/devices_updater_bloc.dart';
 import 'package:lightify/pages/main/home/ui/home_page.dart';
 
 class HomeRoutes {
@@ -15,8 +15,11 @@ final RouteFactory homeRouteFactory = (RouteSettings settings) {
     case HomeRoutes.HOME:
       return MaterialPageRoute<void>(
         settings: settings,
-        builder: (_) => BlocProvider(
-          create: (_) => getIt<HomeBloc>(),
+        builder: (_) => MultiBlocProvider(
+          providers: [
+            // BlocProvider(create: (_) => getIt<DevicesWatcherBloc>()),
+            BlocProvider(create: (_) => getIt<DevicesUpdaterBloc>()),
+          ],
           child: const HomePage(),
         ),
       );

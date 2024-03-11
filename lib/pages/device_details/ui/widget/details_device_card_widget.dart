@@ -8,8 +8,8 @@ class _DetailsDeviceCardWidget extends StatelessWidget {
   });
 
   final Device device;
-  final void Function(bool) onPowerChanged;
-  final void Function(int) onBrightnessChanged;
+  final void Function(bool)? onPowerChanged;
+  final void Function(int)? onBrightnessChanged;
 
   @override
   Widget build(BuildContext context) {

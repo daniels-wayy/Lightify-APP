@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lightify/core/ui/extensions/core_extensions.dart';
@@ -26,7 +28,7 @@ class TitleSwitchWidget extends StatelessWidget {
           style: context.textTheme.titleSmall?.copyWith(
             fontSize: height(18),
             fontWeight: FontWeight.w500,
-            letterSpacing: -0.2,
+            letterSpacing: -0.6,
           ),
         ),
         const Spacer(),
@@ -44,6 +46,14 @@ class TitleSwitchWidget extends StatelessWidget {
               return AppColors.gray100.withOpacity(.6);
             },
           ),
+          thumbColor: Platform.isAndroid ? MaterialStateColor.resolveWith(
+            (states) {
+              if (!states.contains(MaterialState.selected)) {
+                return Colors.black;
+              }
+              return Colors.white;
+            },
+          ) : null,
         ),
       ],
     );

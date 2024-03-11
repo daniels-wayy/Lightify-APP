@@ -25,6 +25,22 @@ class Device {
     required this.effectScale,
   });
 
+  factory Device.unreachable(String remote) {
+    var deviceName = remote;
+    deviceName = deviceName.replaceAll('${AppConstants.api.COMMUNICATION_HEADER}_', '');
+    deviceName = deviceName.replaceAll('${AppConstants.api.COMMUNICATION_HEADER2}_', '');
+    return Device.empty().copyWith(
+      color: HSVColor.fromColor(Colors.grey.shade300),
+      deviceInfo: DeviceInfo(
+        deviceName: deviceName,
+        deviceGroup: AppConstants.strings.UNAVAILABLE,
+        topic: remote,
+      ),
+    );
+  }
+
+  bool get isUnreachable => deviceInfo.deviceGroup == AppConstants.strings.UNAVAILABLE;
+
   bool get effectRunning => effectId > 0;
 
   Color get getCardColor {
@@ -60,13 +76,16 @@ class Device {
 
   Device copyWith({
     final bool? powered,
+    final int? brightness,
+    final HSVColor? color,
+    final DeviceInfo? deviceInfo,
   }) =>
       Device(
         powered: powered ?? this.powered,
-        color: color,
-        brightness: brightness,
+        color: color ?? this.color,
+        brightness: brightness ?? this.brightness,
         breathFactor: breathFactor,
-        deviceInfo: deviceInfo,
+        deviceInfo: deviceInfo ?? this.deviceInfo,
         effectId: effectId,
         effectSpeed: effectSpeed,
         effectScale: effectScale,
@@ -78,4 +97,6 @@ class Device {
   }
 
   int get intPowerState => powered ? 1 : 0;
+
+  double get brightnessFactor => brightness / AppConstants.api.MQTT_DEVICE_MAX_BRIGHTNESS;
 }

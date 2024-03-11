@@ -32,6 +32,11 @@ target 'Runner' do
   use_modular_headers!
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+
+  target 'DevicesPowerStateWidgetExtension' do
+    inherit! :search_paths
+    pod 'CocoaMQTT'
+  end
 end
 
 post_install do |installer|

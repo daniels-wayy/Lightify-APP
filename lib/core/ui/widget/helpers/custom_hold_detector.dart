@@ -10,12 +10,14 @@ class CustomHoldDetector extends StatefulWidget {
     required this.onLongPressDrag,
     this.endScale = 1.08,
     this.onTap,
+    this.bounceOnTap = false,
   });
 
   final Widget child;
   final VoidCallback? onTap;
   final void Function(double) onLongPressDrag;
   final double endScale;
+  final bool bounceOnTap;
 
   static const _DURATION = Duration(milliseconds: 200);
   static const _REVERSE_DURATION = Duration(milliseconds: 300);
@@ -51,7 +53,15 @@ class _CustomHoldDetectorState extends State<CustomHoldDetector> with SingleTick
     return LayoutBuilder(
       builder: (_, x) {
         return GestureDetector(
-          onTap: widget.onTap,
+          onTap: widget.onTap == null
+              ? null
+              : () {
+                  widget.onTap!();
+                  VibrationUtil.vibrate();
+                  if (widget.bounceOnTap) {
+                    controller.forward().then((_) => controller.reverse());
+                  }
+                },
           onTapDown: (_) => controller.forward(),
           onTapUp: (_) => controller.reverse(),
           onLongPress: () => VibrationUtil.vibrate(),

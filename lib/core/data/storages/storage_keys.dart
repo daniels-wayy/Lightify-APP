@@ -4,4 +4,7 @@ abstract class StorageKeys {
 
   final String showNavigationBarKey = '_SHOW_NAV_BAR_KEY';
   final String showHomeSelectorKey = '_SHOW_HOME_SELECTOR_KEY';
+
+  final String devicesGroupOrderKey = '_DEVICES_GROUP_ORDER_KEY';
+  final String deviceRenamesKey = '_DEVICES_RENAMES_KEY';
 }
