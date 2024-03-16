@@ -5,8 +5,8 @@ import 'package:lightify/di/di.dart';
 
 class ReorderUtil {
   static const _defaultGroupOrder = [
-    'Kitchen',
     'Living Room',
+    'Kitchen',
     'Bedroom',
     'Office',
   ];

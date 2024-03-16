@@ -18,18 +18,16 @@ import 'package:lightify/core/ui/styles/colors/app_colors.dart';
 import 'package:lightify/core/ui/utils/dialog_util.dart';
 import 'package:lightify/core/ui/utils/reorder_util.dart';
 import 'package:lightify/core/ui/utils/screen_util.dart';
-import 'package:lightify/core/ui/utils/vibration_util.dart';
 import 'package:lightify/core/ui/widget/common/bouncing_widget.dart';
 import 'package:lightify/core/ui/widget/common/error_widget.dart';
 import 'package:lightify/core/ui/widget/common/fading_edge_widget.dart';
 import 'package:lightify/core/ui/widget/progress/loading_widget.dart';
 import 'package:lightify/pages/main/home/ui/devices_updater/devices_updater_bloc.dart';
 import 'package:lightify/pages/main/home/ui/devices_watcher/devices_watcher_bloc.dart';
-import 'package:lightify/pages/main/home/ui/widget/devices_group.dart';
+import 'package:lightify/pages/main/home/ui/widget/adaptive/adaptive_home_body.dart';
 import 'package:lightify/pages/main/home/ui/widget/home_fab_widget.dart';
 import 'package:lightify/pages/main/home/ui/widget/home_tab_bar.dart';
 import 'package:lightify/pages/main/main/ui/bloc/main_cubit.dart';
-import 'package:reorderables/reorderables.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -227,77 +225,19 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
     return FadingEdge(
       scrollDirection: Axis.vertical,
-      child: CustomScrollView(
-        controller: ScrollController(),
-        physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-        slivers: [
-          CupertinoSliverRefreshControl(
-            refreshIndicatorExtent: height(80),
-            refreshTriggerPullDistance: height(120),
-            builder: (context, refreshState, pulledExtent, refreshTriggerPullDistance, refreshIndicatorExtent) {
-              final animate = refreshState != RefreshIndicatorMode.drag;
-              return Padding(
-                padding: EdgeInsets.only(top: height(64)),
-                child: Center(
-                  child: LoadingWidget(
-                      rotationAnimationValue: animate ? null : pulledExtent / refreshTriggerPullDistance,
-                      animate: animate),
-                ),
-              );
-            },
-            onRefresh: _onRefresh,
-          ),
-          SliverSafeArea(
-            top: !context.read<UserPrefCubit>().state.showHomeSelectorBar,
-            sliver: SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: width(16)).copyWith(
-                top: height(24),
-                bottom: height(74),
-              ),
-              sliver: /*SliverList*/ ReorderableSliverList(
-                onReorder: (oldI, newI) => _onReorder(groupedDevices, oldI, newI),
-                onReorderStarted: (_) => VibrationUtil.vibrate(),
-                controller: ScrollController(),
-                buildDraggableFeedback: (context, constraints, child) => ConstrainedBox(
-                  constraints: constraints,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(14),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.35),
-                          offset: const Offset(0.0, -10.0),
-                          blurRadius: 15.0,
-                        ),
-                      ],
-                    ),
-                    child: child,
-                  ),
-                ),
-                delegate: /*SliverChildBuilderDelegate*/
-                    ReorderableSliverChildBuilderDelegate(childCount: groupedDevices.length, (_, index) {
-                  final groupName = groupedDevices.keys.toList()[index];
-                  final groupDevices = groupedDevices.values.toList()[index];
-                  return DevicesGroup(
-                    key: ObjectKey(groupName),
-                    groupIndex: index,
-                    groupName: groupName,
-                    groupDevices: groupDevices,
-                    onDevicePowerChanged: _onPowerStateChanged,
-                    onDeviceBrightnessChanged: _onBrightnessStateChanged,
-                    onDeviceColorChanged: _onColorStateChanged,
-                    onDeviceBreathChanged: _onBreathStateChanged,
-                    onDeviceEffectChanged: _onEffectStateChanged,
-                    onDeviceEffectSpeedChanged: _onEffectSpeedStateChanged,
-                    onDeviceEffectScaleChanged: _onEffectScaleStateChanged,
-                    onDeviceGroupSleepMode: _onDeviceGroupSleepMode,
-                    onDeviceGroupTurnOff: _onDeviceGroupTurnOff,
-                  );
-                }),
-              ),
-            ),
-          ),
-        ],
+      child: AdaptiveHomeBody(
+        groupedDevices: groupedDevices,
+        onDevicePowerChanged: _onPowerStateChanged,
+        onDeviceBrightnessChanged: _onBrightnessStateChanged,
+        onDeviceColorChanged: _onColorStateChanged,
+        onDeviceBreathChanged: _onBreathStateChanged,
+        onDeviceEffectChanged: _onEffectStateChanged,
+        onDeviceEffectSpeedChanged: _onEffectSpeedStateChanged,
+        onDeviceEffectScaleChanged: _onEffectScaleStateChanged,
+        onDeviceGroupSleepMode: _onDeviceGroupSleepMode,
+        onDeviceGroupTurnOff: _onDeviceGroupTurnOff,
+        onRefresh: _onRefresh,
+        onReorder: _onReorder,
       ),
     );
   }
