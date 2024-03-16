@@ -62,9 +62,6 @@ dependencies:
 
   # list reorder
   reorderables: ^0.6.0
-  
-  # adaptive UI
-  flutter_adaptive_ui: ^0.8.0+1
 
 
 dev_dependencies:

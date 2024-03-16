@@ -42,6 +42,12 @@ class DevicesParser {
         do {
             // Decode JSON data into DevicesList
             let devicesLists = try decoder.decode(DevicesLists.self, from: jsonData)
+            
+            print("WidgetParser parseWidgets()")
+            print("smallWidgetCount: \(String(describing: devicesLists.smallWidget?.count))")
+            print("mediumWidgetCount: \(String(describing: devicesLists.mediumWidget?.count))")
+            print("bigWidgetCount: \(String(describing: devicesLists.bigWidget?.count))")
+            
             return devicesLists
         } catch {
             print("Error decoding JSON: \(error)")

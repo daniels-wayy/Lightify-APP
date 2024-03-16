@@ -3,7 +3,6 @@ import 'package:lightify/core/data/model/device.dart';
 import 'package:lightify/core/ui/extensions/core_extensions.dart';
 import 'package:lightify/core/ui/utils/screen_util.dart';
 import 'package:lightify/core/ui/widget/common/bouncing_widget.dart';
-import 'package:lightify/pages/main/home/ui/widget/adaptive/adaptive_layout_type.dart';
 import 'package:lightify/pages/main/home/ui/widget/device_card.dart';
 
 class DevicesGroup extends StatelessWidget {
@@ -19,7 +18,6 @@ class DevicesGroup extends StatelessWidget {
   final void Function(Device, double) onDeviceEffectScaleChanged;
   final void Function(List<Device>) onDeviceGroupSleepMode;
   final void Function(List<Device>) onDeviceGroupTurnOff;
-  final AdaptiveLayoutType layoutType;
 
   const DevicesGroup({
     super.key,
@@ -35,7 +33,6 @@ class DevicesGroup extends StatelessWidget {
     required this.onDeviceEffectScaleChanged,
     required this.onDeviceGroupSleepMode,
     required this.onDeviceGroupTurnOff,
-    this.layoutType = AdaptiveLayoutType.regular,
   });
 
   @override
@@ -58,8 +55,8 @@ class DevicesGroup extends StatelessWidget {
                   letterSpacing: -0.2,
                 ),
               ),
-              if (layoutType != AdaptiveLayoutType.desktop) const Spacer(),
-              SizedBox(width: width(layoutType != AdaptiveLayoutType.desktop ? 8 : 12)),
+              const Spacer(),
+              SizedBox(width: width(12)),
               if (groupDevices.length > 1)
                 BouncingWidget(
                   onTap: () => onDeviceGroupTurnOff(groupDevices),
@@ -79,9 +76,9 @@ class DevicesGroup extends StatelessWidget {
             physics: const NeverScrollableScrollPhysics(),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               childAspectRatio: 1.35,
+              crossAxisCount: 2,
               mainAxisSpacing: width(12),
               crossAxisSpacing: height(12),
-              crossAxisCount: layoutType.itemsCrossAxisCount,
             ),
             itemBuilder: (_, index) {
               final device = groupDevices[index];
@@ -95,8 +92,6 @@ class DevicesGroup extends StatelessWidget {
                 onEffectChanged: (state) => onDeviceEffectChanged(device, state),
                 onEffectSpeedChanged: (state) => onDeviceEffectSpeedChanged(device, state),
                 onEffectScaleChanged: (state) => onDeviceEffectScaleChanged(device, state),
-                brightnessIconSize: layoutType.brightnessIconSize,
-                layoutType: layoutType,
               );
             },
           ),

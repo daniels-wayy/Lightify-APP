@@ -19,31 +19,17 @@ struct Provider: TimelineProvider {
     }
     
     func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> Void) {
-        let currentDate = Date()
-        
-        if (!CurrentWidgetsState.shared.hasData()) {
-            let entry = SimpleEntry(date: currentDate, devices: nil)
+        getSnapshot(in: context) { (entry) in
             let timeline = Timeline(entries: [entry], policy: .atEnd)
             completion(timeline)
-        } else {
-            CurrentDevicesFetcher.shared.process { devices in
-                if (devices != nil && devices!.isExist()) {
-                    CurrentWidgetsState.shared.updateState(updatedDevicesLists: devices!)
-                }
-                
-                let entry = (devices == nil || !devices!.isExist()) ? generateEntry() : SimpleEntry(date: currentDate, devices: devices)
-                let nextUpdate = Calendar.current.date(byAdding: .minute, value: widgetsUpdatePeriod, to: currentDate)!
-                let timeline = Timeline(entries: [entry], policy: .after(nextUpdate))
-                completion(timeline)
-                return
-            }
         }
     }
     
     private func generateEntry() -> SimpleEntry {
-        let currentDate = Date()
-        let devicesLists = CurrentWidgetsState.shared.currentState()
-        return SimpleEntry(date: currentDate, devices: devicesLists)
+        let prefs = UserDefaults(suiteName: appGroup)
+        let jsonString = prefs?.string(forKey: getKey)
+        let devicesLists = DevicesParser.parse(jsonString: jsonString)
+        return SimpleEntry(date: Date(), devices: devicesLists)
     }
 }
 

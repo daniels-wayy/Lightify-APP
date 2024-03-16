@@ -18,10 +18,8 @@
 		65095E7B2B7D96A600A28BA3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 65095E7A2B7D96A600A28BA3 /* Assets.xcassets */; };
 		65095E7F2B7D96A600A28BA3 /* DevicesPowerStateWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 65095E6C2B7D96A400A28BA3 /* DevicesPowerStateWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		651A12C82A261ECC00A79611 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 651A12C72A261ECB00A79611 /* GoogleService-Info.plist */; };
-		6538463B2BA3A86D002130AA /* CurrentDevicesFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6538463A2BA3A86D002130AA /* CurrentDevicesFetcher.swift */; };
-		6538463C2BA3A86D002130AA /* CurrentDevicesFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6538463A2BA3A86D002130AA /* CurrentDevicesFetcher.swift */; };
-		6538463F2BA3AB17002130AA /* CurrentWidgetsState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6538463E2BA3AB17002130AA /* CurrentWidgetsState.swift */; };
-		653846402BA3AB17002130AA /* CurrentWidgetsState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6538463E2BA3AB17002130AA /* CurrentWidgetsState.swift */; };
+		6547BB562B94CF9200CCCAE5 /* MQTTDevicesBackgroundUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6547BB552B94CF9200CCCAE5 /* MQTTDevicesBackgroundUpdate.swift */; };
+		6547BB572B94CF9200CCCAE5 /* MQTTDevicesBackgroundUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6547BB552B94CF9200CCCAE5 /* MQTTDevicesBackgroundUpdate.swift */; };
 		6547BB582B94FFED00CCCAE5 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FF2A372B8028EC00665BC8 /* Extensions.swift */; };
 		65E6EB612B8E8D530000CDD6 /* DevicesPowerBackgroundIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FF2A392B80294500665BC8 /* DevicesPowerBackgroundIntent.swift */; };
 		65E6EB642B8E8DCE0000CDD6 /* MQTTConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E6EB632B8E8DCE0000CDD6 /* MQTTConstants.swift */; };
@@ -103,8 +101,7 @@
 		65095E852B7D96BC00A28BA3 /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
 		65095E862B7D96C600A28BA3 /* DevicesPowerStateWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DevicesPowerStateWidgetExtension.entitlements; sourceTree = "<group>"; };
 		651A12C72A261ECB00A79611 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		6538463A2BA3A86D002130AA /* CurrentDevicesFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentDevicesFetcher.swift; sourceTree = "<group>"; };
-		6538463E2BA3AB17002130AA /* CurrentWidgetsState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentWidgetsState.swift; sourceTree = "<group>"; };
+		6547BB552B94CF9200CCCAE5 /* MQTTDevicesBackgroundUpdate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MQTTDevicesBackgroundUpdate.swift; sourceTree = "<group>"; };
 		65E6EB632B8E8DCE0000CDD6 /* MQTTConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MQTTConstants.swift; sourceTree = "<group>"; };
 		65E6EB662B8E8DF80000CDD6 /* MQTTDevicePowerChanger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MQTTDevicePowerChanger.swift; sourceTree = "<group>"; };
 		65FF2A242B80226500665BC8 /* DevicesData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevicesData.swift; sourceTree = "<group>"; };
@@ -184,20 +181,12 @@
 			path = DevicesPowerStateWidget;
 			sourceTree = "<group>";
 		};
-		6538463D2BA3AAA6002130AA /* WidgetsUtil */ = {
-			isa = PBXGroup;
-			children = (
-				6538463E2BA3AB17002130AA /* CurrentWidgetsState.swift */,
-			);
-			path = WidgetsUtil;
-			sourceTree = "<group>";
-		};
 		65E6EB622B8E8D7F0000CDD6 /* MQTT */ = {
 			isa = PBXGroup;
 			children = (
 				65E6EB632B8E8DCE0000CDD6 /* MQTTConstants.swift */,
 				65E6EB662B8E8DF80000CDD6 /* MQTTDevicePowerChanger.swift */,
-				6538463A2BA3A86D002130AA /* CurrentDevicesFetcher.swift */,
+				6547BB552B94CF9200CCCAE5 /* MQTTDevicesBackgroundUpdate.swift */,
 			);
 			path = MQTT;
 			sourceTree = "<group>";
@@ -257,7 +246,6 @@
 		97C146E51CF9000F007C117D = {
 			isa = PBXGroup;
 			children = (
-				6538463D2BA3AAA6002130AA /* WidgetsUtil */,
 				65E6EB622B8E8D7F0000CDD6 /* MQTT */,
 				65FF2A392B80294500665BC8 /* DevicesPowerBackgroundIntent.swift */,
 				65095E862B7D96C600A28BA3 /* DevicesPowerStateWidgetExtension.entitlements */,
@@ -517,13 +505,12 @@
 				65FF2A382B8028EC00665BC8 /* Extensions.swift in Sources */,
 				65095E752B7D96A400A28BA3 /* DevicesPowerStateWidgetLiveActivity.swift in Sources */,
 				65FF2A342B8027B200665BC8 /* WidgetSystemMedium.swift in Sources */,
-				653846402BA3AB17002130AA /* CurrentWidgetsState.swift in Sources */,
+				6547BB572B94CF9200CCCAE5 /* MQTTDevicesBackgroundUpdate.swift in Sources */,
 				65FF2A3E2B802ABE00665BC8 /* Constants.swift in Sources */,
 				65E6EB612B8E8D530000CDD6 /* DevicesPowerBackgroundIntent.swift in Sources */,
 				65FF2A292B8022B300665BC8 /* DevicesParser.swift in Sources */,
 				65E6EB652B8E8DCE0000CDD6 /* MQTTConstants.swift in Sources */,
 				65095E732B7D96A400A28BA3 /* DevicesPowerStateWidgetBundle.swift in Sources */,
-				6538463C2BA3A86D002130AA /* CurrentDevicesFetcher.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -533,11 +520,10 @@
 			files = (
 				65FF2A252B80226500665BC8 /* DevicesData.swift in Sources */,
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
-				6538463B2BA3A86D002130AA /* CurrentDevicesFetcher.swift in Sources */,
+				6547BB562B94CF9200CCCAE5 /* MQTTDevicesBackgroundUpdate.swift in Sources */,
 				65E6EB672B8E8DF80000CDD6 /* MQTTDevicePowerChanger.swift in Sources */,
 				65FF2A282B8022B300665BC8 /* DevicesParser.swift in Sources */,
 				6547BB582B94FFED00CCCAE5 /* Extensions.swift in Sources */,
-				6538463F2BA3AB17002130AA /* CurrentWidgetsState.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 				65E6EB642B8E8DCE0000CDD6 /* MQTTConstants.swift in Sources */,
 				65FF2A3A2B80294500665BC8 /* DevicesPowerBackgroundIntent.swift in Sources */,

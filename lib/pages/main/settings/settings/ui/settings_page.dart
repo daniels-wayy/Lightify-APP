@@ -6,7 +6,9 @@ import 'package:lightify/core/ui/bloc/user_pref/user_pref_cubit.dart';
 import 'package:lightify/core/ui/extensions/core_extensions.dart';
 import 'package:lightify/core/ui/routes/settings_routes.dart';
 import 'package:lightify/core/ui/styles/colors/app_colors.dart';
+import 'package:lightify/core/ui/utils/dialog_util.dart';
 import 'package:lightify/core/ui/utils/screen_util.dart';
+import 'package:lightify/core/ui/utils/vibration_util.dart';
 import 'package:lightify/core/ui/widget/common/app_version_info_widget.dart';
 import 'package:lightify/core/ui/widget/common/bouncing_widget.dart';
 import 'package:lightify/core/ui/widget/common/custom_pop_scope.dart';
@@ -73,7 +75,11 @@ class SettingsPage extends StatelessWidget {
                         },
                       ),
                       SizedBox(height: height(28)),
-                      const _AppInfo(),
+                      GestureDetector(
+                        onTap: () => _onAppInfoTap(context),
+                        onLongPress: () => _onAppInfoLongTap(context),
+                        child: const _AppInfo(),
+                      ),
                       SizedBox(height: height(28)),
                     ],
                   ),
@@ -88,5 +94,23 @@ class SettingsPage extends StatelessWidget {
 
   void _onHomeWidgetsTap(BuildContext context) {
     Navigator.of(context).pushNamed(SettingsRoutes.HOME_WIDGETS_PAGE);
+  }
+
+  void _onAppInfoTap(BuildContext context) {
+    VibrationUtil.vibrate();
+    context.read<HomeWidgetsConfigCubit>().checkWidgetsBackgroundUpdateCount().then((count) {
+      if (count != null) {
+        DialogUtil.showToast("Home widgets background updates count: $count");
+      }
+    });
+  }
+
+  void _onAppInfoLongTap(BuildContext context) {
+    VibrationUtil.vibrate();
+    context.read<HomeWidgetsConfigCubit>().resetBackgroundTasks().then((isSuccess) {
+      if (isSuccess != null) {
+        DialogUtil.showToast("Home widgets background tasks reset: $isSuccess");
+      }
+    });
   }
 }

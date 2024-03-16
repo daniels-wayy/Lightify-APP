@@ -58,6 +58,38 @@ class HomeWidgetsConfigCubit extends Cubit<HomeWidgetsConfigState> with Hydrated
     return isAvailable;
   }
 
+  Future<int?> checkWidgetsBackgroundUpdateCount() async {
+    if (!state.isWidgetsAvailable) {
+      return null;
+    }
+    const channel = MethodChannel('native/devicesBackground');
+    try {
+      debugPrint('_checkWidgetsBackgroundUpdateCount');
+      final count = await channel.invokeMethod<int?>('tasksCount');
+      debugPrint('_checkWidgetsBackgroundUpdateCount - count: $count');
+      return count ?? 0;
+    } on PlatformException catch (e) {
+      debugPrint('_checkWidgetsBackgroundUpdateCount PlatformException: $e');
+      return null;
+    }
+  }
+
+  Future<bool?> resetBackgroundTasks() async {
+    if (!state.isWidgetsAvailable) {
+      return null;
+    }
+    const channel = MethodChannel('native/devicesBackground');
+    try {
+      debugPrint('resetBackgroundTasks');
+      final isSuccess = await channel.invokeMethod<bool?>('reset');
+      debugPrint('resetBackgroundTasks - isSuccess: $isSuccess');
+      return isSuccess;
+    } on PlatformException catch (e) {
+      debugPrint('resetBackgroundTasks PlatformException: $e');
+      return null;
+    }
+  }
+
   Future<void> setWidgetsFromDevices(List<Device> devices) async {
     var isWidgetsAvailable = state.isWidgetsAvailable;
 
@@ -92,9 +124,13 @@ class HomeWidgetsConfigCubit extends Cubit<HomeWidgetsConfigState> with Hydrated
       _ensureAvailable(() async {
         final currentWidgetsState = await HomeWidgetsFunctions.getWidgetState();
 
+        debugPrint('updateAllWidgets');
+
         Iterable<HomeWidgetDeviceEntity> smallWidget = currentWidgetsState?.smallWidget ?? state.smallWidget;
         Iterable<HomeWidgetDeviceEntity> mediumWidget = currentWidgetsState?.mediumWidget ?? state.mediumWidget;
         Iterable<HomeWidgetDeviceEntity> bigWidget = currentWidgetsState?.bigWidget ?? state.bigWidget;
+
+        debugPrint('small widget before: ${smallWidget.map((e) => e.currentPowerState)}');
 
         for (final device in devices) {
           smallWidget = smallWidget
@@ -106,6 +142,8 @@ class HomeWidgetsConfigCubit extends Cubit<HomeWidgetsConfigState> with Hydrated
           bigWidget = bigWidget
               .map((e) => (device.deviceInfo.topic == e.deviceTopic) ? HomeWidgetDeviceEntity.fromDevice(device) : e);
         }
+
+        debugPrint('small widget after: ${smallWidget.map((e) => e.currentPowerState)}');
 
         final generatedSmallWidget = await _generateWidgetsIcons(smallWidget);
         final generatedMediumWidget = await _generateWidgetsIcons(mediumWidget);
