@@ -13,6 +13,7 @@ import 'package:lightify/core/ui/utils/screen_util.dart';
 import 'package:lightify/core/ui/widget/common/bouncing_widget.dart';
 import 'package:lightify/pages/device_details/domain/model/device_details_page_args.dart';
 import 'package:lightify/core/ui/widget/helpers/custom_hold_detector.dart';
+import 'package:lightify/pages/main/home/ui/widget/adaptive/adaptive_layout_type.dart';
 
 part 'package:lightify/pages/main/home/ui/widget/effect_icon.dart';
 
@@ -32,7 +33,7 @@ class DeviceCard extends StatefulWidget {
   final int brightnessTextSize;
   final double scaleFactor;
   final bool showEffectIndication;
-  // final String heroTag;
+  final AdaptiveLayoutType layoutType;
 
   const DeviceCard({
     super.key,
@@ -44,7 +45,6 @@ class DeviceCard extends StatefulWidget {
     this.onEffectScaleChanged,
     this.onColorChanged,
     this.onBreathChanged,
-    // required this.heroTag,
     this.hideDetailsButton = false,
     this.hideDeviceName = false,
     this.mainAxisAlignment = MainAxisAlignment.spaceBetween,
@@ -52,6 +52,7 @@ class DeviceCard extends StatefulWidget {
     this.brightnessTextSize = 12,
     this.scaleFactor = 1.08,
     this.showEffectIndication = true,
+    this.layoutType = AdaptiveLayoutType.regular,
   });
 
   static const COLORS_SWITCH_DURATION = Duration(milliseconds: 250);
@@ -174,7 +175,7 @@ class _DeviceCardState extends State<DeviceCard> with SingleTickerProviderStateM
                       );
                     }),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: width(12), vertical: height(12)),
+                      padding: widget.layoutType.padding,
                       child: Column(
                         mainAxisAlignment: widget.mainAxisAlignment,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -201,7 +202,8 @@ class _DeviceCardState extends State<DeviceCard> with SingleTickerProviderStateM
                                           ) ??
                                           const TextStyle(),
                                       duration: DeviceCard.COLORS_SWITCH_DURATION,
-                                      child: Text('$brightnessPercentage%'),
+                                      child: Text('$brightnessPercentage%',
+                                          style: TextStyle(fontSize: widget.layoutType.brightnessTextSize)),
                                     );
                                   }),
                               const Spacer(),
@@ -211,8 +213,8 @@ class _DeviceCardState extends State<DeviceCard> with SingleTickerProviderStateM
                                   child: BouncingWidget(
                                     onTap: _onDetailsTap,
                                     child: AnimatedContainer(
-                                      width: width(26),
-                                      height: width(26),
+                                      width: width(widget.layoutType.detailsButtonSize),
+                                      height: width(widget.layoutType.detailsButtonSize),
                                       duration: DeviceCard.COLORS_SWITCH_DURATION,
                                       decoration: BoxDecoration(color: dataColor, shape: BoxShape.circle),
                                       child: Center(child: Icon(Icons.more_horiz, color: color)),
@@ -225,7 +227,11 @@ class _DeviceCardState extends State<DeviceCard> with SingleTickerProviderStateM
                           if (!widget.hideDeviceName)
                             Flexible(
                               child: AnimatedDefaultTextStyle(
-                                style: context.textTheme.titleSmall?.copyWith(color: dataColor, letterSpacing: -0.55) ??
+                                style: context.textTheme.titleSmall?.copyWith(
+                                      color: dataColor,
+                                      letterSpacing: -0.55,
+                                      fontSize: widget.layoutType.deviceNameTextSize,
+                                    ) ??
                                     const TextStyle(),
                                 duration: DeviceCard.COLORS_SWITCH_DURATION,
                                 child: BlocBuilder<DevicesCubit, DevicesState>(
