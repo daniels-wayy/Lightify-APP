@@ -58,15 +58,22 @@ class _LightifyAppState extends State<LightifyApp> {
               AppTextStyles.textScaleFactorLowerLimit,
               AppTextStyles.textScaleFactorUpperLimit,
             );
-            if (mediaQueryData.orientation == Orientation.portrait) {
-              ScreenUtil.init(constraints);
-              ScreenUtil.initPaddings(mediaQueryData.padding);
-            }
+            return OrientationBuilder(builder: (context, orientation) {
+              final formattedConstraints = orientation == Orientation.portrait ? constraints : BoxConstraints(
+                maxWidth: constraints.maxHeight,
+                maxHeight: constraints.maxWidth,
+                minHeight: constraints.minWidth,
+                minWidth: constraints.minHeight,
+              );
 
-            return MediaQuery(
-              data: MediaQuery.of(context).copyWith(textScaleFactor: scale),
-              child: child ??= const SizedBox.shrink(),
-            );
+              ScreenUtil.init(formattedConstraints);
+              ScreenUtil.initPaddings(mediaQueryData.padding);
+
+              return MediaQuery(
+                data: MediaQuery.of(context).copyWith(textScaleFactor: scale),
+                child: child ??= const SizedBox.shrink(),
+              );
+            });
           },
           localizationsDelegates: const [
             GlobalMaterialLocalizations.delegate,
