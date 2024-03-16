@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_adaptive_ui/flutter_adaptive_ui.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightify/core/ui/bloc/user_pref/user_pref_cubit.dart';
 import 'package:lightify/core/ui/extensions/core_extensions.dart';
@@ -75,22 +76,12 @@ class MainPage extends StatelessWidget {
       });
 
   Widget _buildBottomNavigationBarBodyIOS(BuildContext context, TabIndex selectedTab) {
-    return ClipRRect(
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 45, sigmaY: 45),
-        child: Material(
-          color: AppColors.fullBlack.withOpacity(0.96),
-          child: SafeArea(
-            top: false,
-            child: Row(
-              children: [
-                _buildIcon(context, TabIndex.HOME, selectedTab),
-                SizedBox(width: width(24)),
-                _buildIcon(context, TabIndex.SETTINGS, selectedTab),
-              ],
-            ),
-          ),
-        ),
+    return AdaptiveBuilder(
+      defaultBuilder: (context, _) => _buildRegularIOSBottomNavigationBar(context, selectedTab),
+      layoutDelegate: AdaptiveLayoutDelegateWithMinimallScreenType(
+        tablet: (context, _) =>
+            _buildRegularIOSBottomNavigationBar(context, selectedTab, AppColors.fullBlack.withOpacity(0.6)),
+        desktop: (context, _) => _buildTabletBottomNavigationBar(context, selectedTab),
       ),
     );
   }
@@ -106,6 +97,61 @@ class MainPage extends StatelessWidget {
             SizedBox(width: width(24)),
             _buildIcon(context, TabIndex.SETTINGS, selectedTab),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRegularIOSBottomNavigationBar(BuildContext context, TabIndex selectedTab, [Color? color]) {
+    return ClipRRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 45, sigmaY: 45),
+          child: Material(
+            color: color ?? AppColors.fullBlack.withOpacity(0.8),
+            child: SafeArea(
+              top: false,
+              child: Row(
+                children: [
+                  _buildIcon(context, TabIndex.HOME, selectedTab),
+                  SizedBox(width: width(24)),
+                  _buildIcon(context, TabIndex.SETTINGS, selectedTab),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+  }
+
+  Widget _buildTabletBottomNavigationBar(BuildContext context, TabIndex selectedTab) {
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: EdgeInsets.only(bottom: height(8), right: width(16)),
+        child: Align(
+          alignment: Alignment.centerRight,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(width(14)),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 45, sigmaY: 45),
+              child: Container(
+                height: height(65),
+                width: ScreenUtil.screenWidthLp * 0.4,
+                decoration: BoxDecoration(
+                  color: AppColors.fullBlack.withOpacity(0.5),
+                  borderRadius: BorderRadius.circular(width(14)),
+                ),
+                padding: EdgeInsets.symmetric(horizontal: width(12)),
+                child: Row(
+                  children: [
+                    _buildIcon(context, TabIndex.HOME, selectedTab),
+                    SizedBox(width: width(24)),
+                    _buildIcon(context, TabIndex.SETTINGS, selectedTab),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ),
       ),
     );
