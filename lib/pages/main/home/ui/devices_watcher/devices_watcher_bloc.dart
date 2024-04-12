@@ -35,12 +35,12 @@ class DevicesWatcherBloc extends Bloc<DevicesWatcherEvent, DevicesWatcherState> 
   static const devicesCheckTimeout = Duration(milliseconds: 75);
   static const devicesCheckRetries = 2;
 
-  StreamSubscription? _devicesStream;
+  StreamSubscription? _serverUpdatesStream;
   Timer? _getTimer;
 
   void _clearTickers() {
     _getTimer?.cancel();
-    _devicesStream?.cancel();
+    _serverUpdatesStream?.cancel();
   }
 
   void _ensureConnected(Function func) {
@@ -89,10 +89,10 @@ class DevicesWatcherBloc extends Bloc<DevicesWatcherEvent, DevicesWatcherState> 
 
   Stream<DevicesWatcherState> _fetchDevices(House house) async* {
     // cancel previous streams
-    _devicesStream?.cancel();
+    _serverUpdatesStream?.cancel();
 
     // recreate the stream
-    final stream = _deviceRepo.devicesStream;
+    final stream = _deviceRepo.serverResponseStream;
 
     // if no connection to server -> disconnect
     if (stream == null) {
@@ -103,20 +103,22 @@ class DevicesWatcherBloc extends Bloc<DevicesWatcherEvent, DevicesWatcherState> 
     final devices = <Device>[];
     final expectedDevicesBuffer = List.from(house.remotes);
 
-    _devicesStream = stream!.listen((device) {
-      // if received expected device
-      if (device != null && expectedDevicesBuffer.any((remote) => device.deviceInfo.topic == remote)) {
-        // add device
-        devices.add(device);
+    _serverUpdatesStream = stream!.listen((response) {
+      response.whenOrNull(deviceState: (device) {
+        // if received expected device
+        if (expectedDevicesBuffer.any((remote) => device.deviceInfo.topic == remote)) {
+          // add device
+          devices.add(device);
 
-        // got expected device -> remove from buffer
-        expectedDevicesBuffer.removeWhere((remote) => device.deviceInfo.topic == remote);
+          // got expected device -> remove from buffer
+          expectedDevicesBuffer.removeWhere((remote) => device.deviceInfo.topic == remote);
 
-        // if buffer is cleared -> all devices were received
-        if (expectedDevicesBuffer.isEmpty) {
-          allDevicesLoaded = true;
+          // if buffer is cleared -> all devices were received
+          if (expectedDevicesBuffer.isEmpty) {
+            allDevicesLoaded = true;
+          }
         }
-      }
+      });
     });
 
     // get devices
@@ -151,20 +153,22 @@ class DevicesWatcherBloc extends Bloc<DevicesWatcherEvent, DevicesWatcherState> 
 
   Stream<DevicesWatcherState> _listenDevices(House house) async* {
     // cancel devices fetch stream
-    _devicesStream!.cancel();
+    _serverUpdatesStream!.cancel();
 
     // recreate the stream
-    final stream = _deviceRepo.devicesStream;
+    final stream = _deviceRepo.serverResponseStream;
 
     // if no connection to server -> disconnect
     if (stream == null) {
       add(const DevicesWatcherEvent.disconnect());
     }
 
-    _devicesStream = stream!.listen((device) {
-      if (device != null) {
-        add(DevicesWatcherEvent.deviceUpdateReceived(device, house));
-      }
+    _serverUpdatesStream = stream!.listen((response) {
+      response.whenOrNull(
+        deviceState: (device) => add(DevicesWatcherEvent.deviceUpdateReceived(device, house)),
+        deviceSettings: _devicesCubit.setDeviceSettings,
+        deviceWorkflows: _devicesCubit.setDeviceWorkflows,
+      );
     });
   }
 

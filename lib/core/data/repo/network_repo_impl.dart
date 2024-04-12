@@ -13,9 +13,7 @@ import 'package:mqtt_client/mqtt_server_client.dart';
 class NetworkRepoImpl implements NetworkRepo {
   final CurrentDeviceRepo currentDeviceRepo;
 
-  NetworkRepoImpl({
-    required this.currentDeviceRepo,
-  });
+  NetworkRepoImpl({required this.currentDeviceRepo});
 
   late MqttServerClient client;
 
@@ -32,7 +30,7 @@ class NetworkRepoImpl implements NetworkRepo {
 
     client.setProtocolV311();
     client.keepAlivePeriod = AppConstants.api.MQTT_KEEP_ALIVE_FREQ_SEC;
-    client.connectTimeoutPeriod = 3000; // milliseconds
+    client.connectTimeoutPeriod = 4000; // milliseconds
     client.connectionMessage = connMessage;
     client.onDisconnected = onDisconnected;
     client.onConnected = onConnected;

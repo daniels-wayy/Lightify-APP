@@ -16,24 +16,27 @@ class SettingsAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       bottom: false,
-      child: Row(
+      child: Stack(
         children: [
-          SizedBox(width: width(18)),
-          BouncingWidget(
-            onTap: () => onBack != null ? onBack!() : MainCubit.context.read<MainCubit>().changeTab(TabIndex.HOME),
-            child: Icon(
-              PlatformIcons(context).back,
-              size: height(23),
-              color: Colors.white,
+          Positioned(
+            left: width(14),
+            child: BouncingWidget(
+              onTap: () => onBack != null ? onBack!() : MainCubit.context.read<MainCubit>().changeTab(TabIndex.HOME),
+              child: Icon(
+                PlatformIcons(context).back,
+                size: height(23),
+                color: Colors.white,
+              ),
             ),
           ),
-          SizedBox(width: width(18)),
-          Text(
-            title ?? 'Settings',
-            style: context.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-              fontSize: height(21),
-              letterSpacing: -0.6,
+          Center(
+            child: Text(
+              title ?? 'Settings',
+              style: context.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+                fontSize: height(21),
+                letterSpacing: -0.6,
+              ),
             ),
           )
         ],

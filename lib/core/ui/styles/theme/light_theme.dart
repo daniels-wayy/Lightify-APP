@@ -7,8 +7,8 @@ ThemeData get lightTheme {
     colorScheme: ColorScheme.fromSwatch().copyWith(
       secondary: AppColors.primary100,
     ),
-    dividerTheme: const DividerThemeData(
-      color: AppColors.gray400,
+    dividerTheme: DividerThemeData(
+      color: Colors.grey.shade200.withOpacity(0.1),
       space: 0.0,
       thickness: 1.0,
     ),

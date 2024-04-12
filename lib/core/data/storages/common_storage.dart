@@ -6,6 +6,7 @@ import 'package:lightify/core/data/model/color_preset.dart';
 import 'package:lightify/core/data/model/device_rename_dto.dart';
 import 'package:lightify/core/data/storages/storage.dart';
 import 'package:lightify/core/data/storages/storage_keys.dart';
+import 'package:lightify/core/ui/utils/function_util.dart';
 
 @injectable
 class CommonStorage extends StorageKeys {
@@ -76,5 +77,18 @@ class CommonStorage extends StorageKeys {
           .toList();
     }
     return renames ?? [];
+  }
+
+  DateTime? getFirmwareLastCheck() {
+    final data = storage.getString(key: firmwareLastCheckKey);
+    if (data != null && data.isNotEmpty) {
+      return DateTime.parse(data);
+    }
+    return null;
+  }
+
+  Future<void> storeFirmwareLastCheck() async {
+    final nowDate = FunctionUtil.nowMinDate();
+    await storage.putString(key: firmwareLastCheckKey, value: nowDate.toIso8601String());
   }
 }

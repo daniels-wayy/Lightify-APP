@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,7 +9,6 @@ import 'package:lightify/core/data/model/device.dart';
 import 'package:lightify/core/data/model/house.dart';
 import 'package:lightify/core/ui/bloc/connectivity/connectivity_cubit.dart';
 import 'package:lightify/core/ui/bloc/connectivity/connectivity_state.dart';
-import 'package:lightify/core/ui/bloc/devices/devices_cubit.dart';
 import 'package:lightify/core/ui/bloc/home_widgets_config/home_widgets_config_cubit.dart';
 import 'package:lightify/core/ui/bloc/user_pref/user_pref_cubit.dart';
 import 'package:lightify/core/ui/bloc/user_pref/user_pref_state.dart';
@@ -52,17 +50,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   }
 
   void _initializeConnection({bool connect = true}) {
-    // // check for registration
-    // if (!getIt.isRegistered<HomeBloc>()) {
-    //   getIt.registerFactory<HomeBloc>(() => HomeBloc(
-    //         deviceRepo: getIt<DeviceRepo>(),
-    //         networkRepo: getIt<NetworkRepo>(),
-    //         devicesCubit: getIt<DevicesCubit>(),
-    //         connectivityCubit: getIt<ConnectivityCubit>(),
-    //       ));
-    // }
-    // context.read<HomeBloc>().add(HomeEvent.initConnection(house, connect: connect));
-
     if (connect) {
       context.read<DevicesWatcherBloc>().add(DevicesWatcherEvent.initialize(house));
     } else {
@@ -97,94 +84,90 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<DevicesWatcherBloc, DevicesWatcherState>(
-      listener: (_, state) => context.read<DevicesCubit>().setDevices(state.availableDevices),
-      listenWhen: (p, c) => p.devices.length != c.devices.length,
-      child: BlocListener<DevicesUpdaterBloc, DevicesUpdaterState>(
-          listener: (_, __) => context.read<DevicesWatcherBloc>().add(const DevicesWatcherEvent.disconnect()),
-          listenWhen: (p, c) => !p.isDisconnected && c.isDisconnected,
-          child: BlocBuilder<UserPrefCubit, UserPrefState>(builder: (context, userPrefState) {
-            return Scaffold(
-              backgroundColor: AppColors.fullBlack,
-              body: BlocListener<ConnectivityCubit, ConnectivityState>(
-                listener: (_, __) {},
-                listenWhen: (oldState, newState) {
-                  if (!newState.connectionEstablished) {
-                    return false;
-                  }
-                  if (oldState.connectedToNet && !newState.connectedToNet) {
-                    // Connection lost
-                    DialogUtil.showNoConnectionSnackbar(context);
-                  } else if (!oldState.connectedToNet && newState.connectedToNet) {
-                    // Connection restored
-                    DialogUtil.closeSnackBar(context);
-                    _initializeConnection();
-                  }
+    return BlocListener<DevicesUpdaterBloc, DevicesUpdaterState>(
+        listener: (_, __) => context.read<DevicesWatcherBloc>().add(const DevicesWatcherEvent.disconnect()),
+        listenWhen: (p, c) => !p.isDisconnected && c.isDisconnected,
+        child: BlocBuilder<UserPrefCubit, UserPrefState>(builder: (context, userPrefState) {
+          return Scaffold(
+            backgroundColor: AppColors.fullBlack,
+            body: BlocListener<ConnectivityCubit, ConnectivityState>(
+              listener: (_, __) {},
+              listenWhen: (oldState, newState) {
+                if (!newState.connectionEstablished) {
                   return false;
-                },
-                child: BlocBuilder< /*HomeBloc*/ DevicesWatcherBloc, /*HomeState*/ DevicesWatcherState>(
-                    builder: (_, state) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      AnimatedCrossFade(
-                        sizeCurve: Curves.ease,
-                        crossFadeState:
-                            userPrefState.showHomeSelectorBar ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-                        duration: const Duration(milliseconds: 250),
-                        secondChild: Container(),
-                        firstChild: Column(
-                          children: [
-                            SizedBox(height: height(14)),
-                            SafeArea(
-                              bottom: false,
-                              child: Row(
-                                children: [
-                                  SizedBox(width: width(6)),
-                                  HomeTabBar(context: context, controller: controller),
-                                  const Spacer(),
-                                  !userPrefState.showNavigationBar
-                                      ? Padding(
-                                          padding: EdgeInsets.only(left: width(12), right: width(18)),
-                                          child: BouncingWidget(
-                                            onTap: () =>
-                                                MainCubit.context.read<MainCubit>().changeTab(TabIndex.SETTINGS),
-                                            child: Icon(
-                                              PlatformIcons(context).settings,
-                                              size: height(Platform.isIOS ? 21 : 23),
-                                              color: Colors.white54,
-                                            ),
+                }
+                if (oldState.connectedToNet && !newState.connectedToNet) {
+                  // Connection lost
+                  DialogUtil.showNoConnectionSnackbar(context);
+                } else if (!oldState.connectedToNet && newState.connectedToNet) {
+                  // Connection restored
+                  DialogUtil.closeSnackBar(context);
+                  _initializeConnection();
+                }
+                return false;
+              },
+              child: BlocBuilder< /*HomeBloc*/ DevicesWatcherBloc, /*HomeState*/ DevicesWatcherState>(
+                  builder: (_, state) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AnimatedCrossFade(
+                      sizeCurve: Curves.ease,
+                      crossFadeState:
+                          userPrefState.showHomeSelectorBar ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                      duration: const Duration(milliseconds: 250),
+                      secondChild: Container(),
+                      firstChild: Column(
+                        children: [
+                          SizedBox(height: height(14)),
+                          SafeArea(
+                            bottom: false,
+                            child: Row(
+                              children: [
+                                SizedBox(width: width(6)),
+                                HomeTabBar(context: context, controller: controller),
+                                const Spacer(),
+                                !userPrefState.showNavigationBar
+                                    ? Padding(
+                                        padding: EdgeInsets.only(left: width(12), right: width(18)),
+                                        child: BouncingWidget(
+                                          onTap: () =>
+                                              MainCubit.context.read<MainCubit>().changeTab(TabIndex.SETTINGS),
+                                          child: Icon(
+                                            PlatformIcons(context).settings,
+                                            size: height(Platform.isIOS ? 21 : 23),
+                                            color: Colors.white54,
                                           ),
-                                        )
-                                      : const SizedBox.shrink(),
-                                ],
-                              ),
+                                        ),
+                                      )
+                                    : const SizedBox.shrink(),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      Expanded(
-                        child: Center(
-                          child: AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 800),
-                            child: state.maybeWhen(
-                              loading: _buildConnectingState,
-                              loaded: _buildConnectedState,
-                              disconnected: _buildDisconnectedState,
-                              orElse: () => const SizedBox.shrink(),
-                            ),
+                    ),
+                    Expanded(
+                      child: Center(
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 800),
+                          child: state.maybeWhen(
+                            loading: _buildConnectingState,
+                            loaded: _buildConnectedState,
+                            disconnected: _buildDisconnectedState,
+                            orElse: () => const SizedBox.shrink(),
                           ),
                         ),
                       ),
-                    ],
-                  );
-                }),
-              ),
-              floatingActionButton:
-                  !userPrefState.showNavigationBar && !userPrefState.showHomeSelectorBar ? const HomeFAB() : null,
-            );
-          })),
-    );
+                    ),
+                  ],
+                );
+              }),
+            ),
+            floatingActionButton:
+                !userPrefState.showNavigationBar && !userPrefState.showHomeSelectorBar ? const HomeFAB() : null,
+          );
+        }));
   }
 
   Widget _buildConnectingState() {

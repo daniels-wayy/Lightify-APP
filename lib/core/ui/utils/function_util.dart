@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:lightify/core/ui/constants/app_constants.dart';
+
 class FunctionUtil {
   static double mapHueTo360(int hueVal) {
     final v = hueVal * (360 / 255);
@@ -23,5 +25,18 @@ class FunctionUtil {
 
   static double reverseMapValue(double value, double min, double max) {
     return value * (max - min) + min;
+  }
+
+  static int fromPercentToBrightness(int value) {
+    return ((value / 100) * AppConstants.api.MQTT_DEVICE_MAX_BRIGHTNESS).round();
+  }
+
+  static int fromBrightnessToPercent(int value) {
+    return ((value / AppConstants.api.MQTT_DEVICE_MAX_BRIGHTNESS) * 100).round();
+  }
+
+  static DateTime nowMinDate() {
+    final now = DateTime.now();
+    return DateTime(now.year, now.month, now.day, now.hour, now.minute);
   }
 }

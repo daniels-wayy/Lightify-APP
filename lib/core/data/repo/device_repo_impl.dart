@@ -1,35 +1,73 @@
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:lightify/core/data/model/device.dart';
-import 'package:lightify/core/data/model/device_info.dart';
+import 'package:lightify/core/data/model/device_settings.dart';
 import 'package:lightify/core/data/model/house.dart';
+import 'package:lightify/core/data/model/server_response_type.dart';
+import 'package:lightify/core/data/model/workflow.dart';
 import 'package:lightify/core/domain/repo/device_repo.dart';
 import 'package:lightify/core/domain/repo/network_repo.dart';
+import 'package:lightify/core/domain/repo/parsing_repo.dart';
 import 'package:lightify/core/ui/constants/app_constants.dart';
 import 'package:lightify/core/ui/extensions/core_extensions.dart';
-import 'package:lightify/core/ui/utils/function_util.dart';
 import 'package:lightify/core/ui/utils/mqtt_util.dart';
 
-@LazySingleton(as: DeviceRepo)
+@Injectable(as: DeviceRepo)
 class DeviceRepoImpl implements DeviceRepo {
   final NetworkRepo _networkRepo;
+  final ParsingRepo _parsingRepo;
 
-  const DeviceRepoImpl(this._networkRepo);
+  const DeviceRepoImpl(this._networkRepo, this._parsingRepo);
 
   @override
-  Stream<Device?>? get devicesStream {
+  Stream<ServerResponseType>? get serverResponseStream {
     return _networkRepo.serverUpdates?.map((data) {
-      if (data == null || data.isEmpty) return null;
+      if (data == null || data.isEmpty) return const ServerResponseType.empty();
       try {
         if (data.startsWith(AppConstants.api.MQTT_PACKETS_HEADER)) {
-          final device = DeviceRepoImpl.parseDevice(data);
-          if (device != null) {
-            return device;
+
+          final formattedData = data.replaceAll(AppConstants.api.MQTT_PACKETS_HEADER, '');
+
+          // Device state
+          if (formattedData.startsWith(AppConstants.api.MQTT_DEVICE_GET_HEADER)) {
+            final device =
+                _parsingRepo.parseDevice(formattedData.replaceAll(AppConstants.api.MQTT_DEVICE_GET_HEADER, ''));
+            if (device != null) {
+              return ServerResponseType.deviceState(device);
+            }
+          }
+
+          // Device settings
+          if (formattedData.startsWith(AppConstants.api.MQTT_DEVICE_GET_SETTINGS_HEADER)) {
+            final settings = _parsingRepo
+                .parseDeviceSettings(formattedData.replaceAll(AppConstants.api.MQTT_DEVICE_GET_SETTINGS_HEADER, ''));
+            if (settings != null) {
+              return ServerResponseType.deviceSettings(settings);
+            }
+          }
+
+          // Device workflows
+          if (formattedData.startsWith(AppConstants.api.MQTT_DEVICE_GET_WORKFLOWS_HEADER)) {
+            final workflows = _parsingRepo
+                .parseDeviceWorkflows(formattedData.replaceAll(AppConstants.api.MQTT_DEVICE_GET_WORKFLOWS_HEADER, ''));
+            if (workflows != null) {
+              return ServerResponseType.deviceWorkflows(workflows);
+            }
+          }
+
+          // Device firmware update status
+          if (formattedData.startsWith(AppConstants.api.MQTT_DEVICE_GET_FIRMWARE_STATUS_HEADER)) {
+            final status = _parsingRepo.parseDeviceFirmwareUpdateStatus(
+                formattedData.replaceAll(AppConstants.api.MQTT_DEVICE_GET_FIRMWARE_STATUS_HEADER, ''));
+            if (status != null) {
+              return ServerResponseType.firmwareUpdateStatus(status);
+            }
           }
         }
-        return null;
-      } catch (_) {
-        return null;
+
+        return ServerResponseType.unknown(data);
+      } catch (e) {
+        return ServerResponseType.error(e.toString());
       }
     });
   }
@@ -45,6 +83,16 @@ class DeviceRepoImpl implements DeviceRepo {
   @override
   void getDeviceInfo(Device device) {
     _networkRepo.sendToServer(device.deviceInfo.topic, MQTT_UTIL.get_cmd());
+  }
+
+  @override
+  void getDeviceSettingsInfoFor(String topic) {
+    _networkRepo.sendToServer(topic, MQTT_UTIL.get_settings_cmd());
+  }
+
+  @override
+  void getDeviceWorkflowsInfoFor(String topic) {
+    _networkRepo.sendToServer(topic, MQTT_UTIL.get_workflows_cmd());
   }
 
   @override
@@ -87,50 +135,28 @@ class DeviceRepoImpl implements DeviceRepo {
     _networkRepo.sendToServer(device.deviceInfo.topic, MQTT_UTIL.sleep_mode_cmd());
   }
 
-  static Device? parseDevice(String data) {
-    try {
-      final substring = data.substring(AppConstants.api.MQTT_PACKETS_HEADER.length);
-      final splitted = substring.split(',');
-      if (splitted.isEmpty) return null;
+  @override
+  void updateDeviceSettings(DeviceSettings settings) {
+    _networkRepo.sendToServer(settings.topic, MQTT_UTIL.upd_device_settings_cmd(settings));
+  }
 
-      final powerState = int.tryParse(splitted[3]) == 1;
-      final brightness = int.tryParse(splitted[4]) ?? 0;
+  @override
+  void addDeviceWorkflow(String topic, Workflow workflow) {
+    _networkRepo.sendToServer(topic, MQTT_UTIL.add_workflow_cmd(workflow));
+  }
 
-      final colorHue = int.tryParse(splitted[5]) ?? 0;
-      final colorSat = int.tryParse(splitted[6]) ?? 255;
-      final colorVal = int.tryParse(splitted[7]) ?? 255;
-      final breathFactor = double.tryParse(splitted[8]) ?? 0.0;
-      final effectId = splitted.containsAt(9) ? int.tryParse(splitted[9]) ?? 0 : 0;
-      final effectSpeed = splitted.containsAt(10)
-          ? int.tryParse(splitted[10]) ?? AppConstants.api.EFFECT_MIN_SPEED
-          : AppConstants.api.EFFECT_MIN_SPEED;
-      final effectScale = splitted.containsAt(11)
-          ? int.tryParse(splitted[11]) ?? AppConstants.api.EFFECT_MIN_SCALE
-          : AppConstants.api.EFFECT_MIN_SCALE;
+  @override
+  void updateDeviceWorkflow(String topic, Workflow workflow) {
+    _networkRepo.sendToServer(topic, MQTT_UTIL.update_workflow_cmd(workflow));
+  }
 
-      final hsv = HSVColor.fromAHSV(
-        1.0,
-        FunctionUtil.mapHueTo360(colorHue),
-        colorSat / 255,
-        colorVal / 255,
-      );
+  @override
+  void deleteDeviceWorkflow(String topic, Workflow workflow) {
+    _networkRepo.sendToServer(topic, MQTT_UTIL.delete_workflow_cmd(workflow.id));
+  }
 
-      return Device(
-        powered: powerState,
-        brightness: brightness,
-        color: hsv,
-        breathFactor: breathFactor,
-        deviceInfo: DeviceInfo(
-          topic: splitted[0],
-          deviceName: splitted[1],
-          deviceGroup: splitted[2],
-        ),
-        effectId: effectId,
-        effectSpeed: effectSpeed,
-        effectScale: effectScale,
-      );
-    } catch (e) {
-      return null;
-    }
+  @override
+  void updateFirmware(String topic, String url) {
+    _networkRepo.sendToServer(topic, MQTT_UTIL.update_firmware(url));
   }
 }
