@@ -10,10 +10,12 @@ class FadingEdge extends StatelessWidget {
     super.key,
     required this.child,
     required this.scrollDirection,
+    this.stops,
   });
 
   final Widget child;
   final Axis scrollDirection;
+  final List<double>? stops;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +30,7 @@ class FadingEdge extends StatelessWidget {
             Colors.transparent,
             Colors.black,
           ],
-          stops: const [0.0, 0.06, 0.96, 1.0],
+          stops: stops ?? const [0.0, 0.06, 0.96, 1.0],
         ).createShader(rect);
       },
       blendMode: BlendMode.dstOut,

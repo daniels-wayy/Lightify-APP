@@ -2,7 +2,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:injectable/injectable.dart';
 import 'package:lightify/core/domain/repo/connectivity_repo.dart';
 
-@LazySingleton(as: ConnectivityRepo)
+@Injectable(as: ConnectivityRepo)
 class ConnectivityRepoImpl implements ConnectivityRepo {
   final Connectivity connectivity;
 

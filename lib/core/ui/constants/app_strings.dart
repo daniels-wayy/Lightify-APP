@@ -28,6 +28,7 @@ class _StringsConstants {
   final DELETE = 'Delete';
   final CUSTOM_COLOR = 'Custom color';
   final COLOR_PRESETS = 'Color presets';
+  final WORKFLOW = 'Workflow';
   final EFFECTS = 'Effects';
   final COLOR_PICKER = 'Color picker';
   final COLOR_BREATH = 'Color breath';
@@ -48,7 +49,9 @@ class _StringsConstants {
   final CLOUDS = 'Clouds';
   final FOREST = 'Forest';
   final OCEAN = 'Ocean';
+  final SPARKLES = 'Sparkles';
   final RAINBOW = 'Rainbow';
+  final FIRE = 'Fire';
 
   final SPEED = 'Speed';
   final SCALE = 'Scale';

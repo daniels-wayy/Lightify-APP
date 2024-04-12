@@ -28,15 +28,28 @@ class _SettingsConstants {
         ),
       ];
 
-  List<EffectEntity> get effects => [
-        EffectEntity(id: 0, name: AppConstants.strings.NONE, previewColor: AppColors.gray200),
-        EffectEntity(id: 1, name: AppConstants.strings.LAVA, previewColor: Colors.redAccent),
-        EffectEntity(id: 2, name: AppConstants.strings.CLOUDS, previewColor: Colors.blueAccent),
-        EffectEntity(id: 3, name: AppConstants.strings.FOREST, previewColor: Colors.green),
-        EffectEntity(id: 4, name: AppConstants.strings.OCEAN, previewColor: Colors.blue[700]!),
+  final noFx = 0;
+  final lavaFx = 1;
+  final cloudsFx = 2;
+  final forestFx = 3;
+  final oceanFx = 4;
+  final sparklesFx = 5;
+  final rainboxFx = 6;
+  final fireFx = 7;
+
+  List<int> get colorFreeEffects => [
+        sparklesFx,
+        fireFx,
       ];
 
-  //(255, 100, 18)
-  //(174, 32, 245)
-  //(10, 247, 144)
+  List<EffectEntity> get effects => [
+        EffectEntity(id: noFx, name: AppConstants.strings.NONE, previewColor: Colors.grey.shade100.withOpacity(0.25)),
+        EffectEntity(id: lavaFx, name: AppConstants.strings.LAVA, previewColor: Colors.redAccent),
+        EffectEntity(id: cloudsFx, name: AppConstants.strings.CLOUDS, previewColor: Colors.blueAccent),
+        EffectEntity(id: forestFx, name: AppConstants.strings.FOREST, previewColor: Colors.green),
+        EffectEntity(id: oceanFx, name: AppConstants.strings.OCEAN, previewColor: Colors.blue[700]!),
+        EffectEntity(id: sparklesFx, name: AppConstants.strings.SPARKLES, previewColor: Colors.lightBlue),
+        EffectEntity(id: rainboxFx, name: AppConstants.strings.RAINBOW, previewColor: Colors.purple),
+        EffectEntity(id: fireFx, name: AppConstants.strings.FIRE, previewColor: Colors.red[800]!),
+      ];
 }

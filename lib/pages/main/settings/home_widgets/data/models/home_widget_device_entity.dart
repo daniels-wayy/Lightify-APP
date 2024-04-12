@@ -63,10 +63,10 @@ class HomeWidgetDeviceEntity {
         return Icons.tv;
       case 'DSLY_Kitchen_Workspace':
         return Icons.restaurant;
-      case 'DSLY_Bedroom_Bed':
+      case 'DSLY_Bedroom_Bed_Lowerside':
         return Icons.bed_outlined;
-      case 'DSLY_Bedroom_Monitor':
-        return Icons.monitor;
+      case 'DSLY_Office_Monitor':
+        return Icons.monitor_rounded;
       case 'DSLY_Livingroom_Piano':
         return Icons.piano;
       case 'DSLY_Bedroom_Bed_Upperside':

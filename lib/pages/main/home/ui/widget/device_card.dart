@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightify/core/data/model/device.dart';
 import 'package:lightify/core/ui/bloc/devices/devices_cubit.dart';
 import 'package:lightify/core/ui/bloc/devices/devices_state.dart';
+import 'package:lightify/core/ui/bloc/firmware_update/firmware_update_cubit.dart';
 import 'package:lightify/core/ui/constants/app_constants.dart';
 import 'package:lightify/core/ui/extensions/core_extensions.dart';
 import 'package:lightify/core/ui/routes/root_routes.dart';
@@ -14,6 +15,7 @@ import 'package:lightify/core/ui/widget/common/bouncing_widget.dart';
 import 'package:lightify/pages/device_details/domain/model/device_details_page_args.dart';
 import 'package:lightify/core/ui/widget/helpers/custom_hold_detector.dart';
 import 'package:lightify/pages/main/home/ui/widget/adaptive/adaptive_layout_type.dart';
+import 'package:lightify/pages/main/main/ui/bloc/main_cubit.dart';
 
 part 'package:lightify/pages/main/home/ui/widget/effect_icon.dart';
 
@@ -72,7 +74,7 @@ class _DeviceCardState extends State<DeviceCard> with SingleTickerProviderStateM
   @override
   void initState() {
     super.initState();
-    isUnreachable = widget.device.deviceInfo.deviceGroup == AppConstants.strings.UNAVAILABLE;
+    isUnreachable = widget.device.isUnreachable;
 
     _onPowerStateSet(isInit: true);
     _onBrightnessStateSet(isInit: true);
@@ -271,6 +273,22 @@ class _DeviceCardState extends State<DeviceCard> with SingleTickerProviderStateM
                     //           : Container(),
                     //     ),
                     //   ),
+                    if (!widget.hideDetailsButton)
+                    Positioned(
+                      right: 18.0,
+                      bottom: 14.0,
+                      child: BlocBuilder<FirmwareUpdateCubit, FirmwareUpdateState>(
+                        builder: (context, _) {
+                          return AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 500),
+                            child: widget.device.needsUpdate ? BouncingWidget(
+                              onTap: () => MainCubit.context.read<MainCubit>().changeTab(TabIndex.SETTINGS),
+                              child: Icon(Icons.cloud_upload_outlined, size: height(20), color: Colors.white70),
+                            ) : const SizedBox.shrink(),
+                          );
+                        }
+                      ),
+                    ),
                   ],
                 ),
               ),

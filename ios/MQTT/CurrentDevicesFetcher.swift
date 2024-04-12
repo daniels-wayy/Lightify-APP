@@ -16,12 +16,13 @@ class CurrentDevicesFetcher {
     static private let remotes = [
         "DSLY_Kitchen_Workspace",
         "DSLY_Livingroom_TV",
-        "DSLY_Bedroom_Bed",
-        "DSLY_Bedroom_Monitor",
+        "DSLY_Bedroom_Bed_Lowerside",
+        "DSLY_Office_Monitor",
         "DSLY_Office_Desk",
         "DSLY_Bedroom_Bed_Upperside",
         "DSLY_Livingroom_Piano",
         "DSLY_Bedroom_Closet",
+//        "DSLY_Debug_Lightify",
     ]
     
     private func generateClientID() -> String {
@@ -37,7 +38,7 @@ class CurrentDevicesFetcher {
     private func sendGetDevices() async throws {
         for remote in CurrentDevicesFetcher.remotes {
             sendGet(to: remote)
-            try await Task.sleep(nanoseconds: 25 * 1_000_000)
+            try await Task.sleep(nanoseconds: 10 * 1_000_000)
         }
     }
     
@@ -66,7 +67,7 @@ class CurrentDevicesFetcher {
             connectToServer()
         }
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
             let devices = self.processResultDevices()
             completion(devices)
         }

@@ -13,6 +13,7 @@ public struct MQTTConstants {
     private static let mqttPort: UInt16 = 1883
     private static let mqttKeepAlive: UInt16 = 25
     private static let mqttPackageHeader: String = "DSLY:"
+    private static let getResponseHeader: String = "DEV"
     private static let mqttDevicePowerCommand: String = "PWR"
     
     public static func getMqttHost() -> String {
@@ -33,6 +34,10 @@ public struct MQTTConstants {
     
     public static func getMqttPackageHeader() -> String {
         return mqttPackageHeader
+    }
+    
+    public static func getGetResponseHeader() -> String {
+        return getResponseHeader
     }
     
     public static func getMqttDevicePowerCommand() -> String {

@@ -1,10 +1,17 @@
+import 'dart:io';
+
 import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:automatic_animated_list/automatic_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:lightify/core/data/model/color_preset.dart';
 import 'package:lightify/core/data/model/device.dart';
+import 'package:lightify/core/data/model/device_info.dart';
 import 'package:lightify/core/data/model/effect_entity.dart';
+import 'package:lightify/core/data/model/workflow.dart';
 import 'package:lightify/core/ui/animation/scale_fade_animation.dart';
 import 'package:lightify/core/ui/bloc/devices/devices_cubit.dart';
 import 'package:lightify/core/ui/bloc/devices/devices_state.dart';
@@ -12,23 +19,31 @@ import 'package:lightify/core/ui/bloc/user_pref/user_pref_cubit.dart';
 import 'package:lightify/core/ui/bloc/user_pref/user_pref_state.dart';
 import 'package:lightify/core/ui/constants/app_constants.dart';
 import 'package:lightify/core/ui/extensions/core_extensions.dart';
+import 'package:lightify/core/ui/routes/root_routes.dart';
 import 'package:lightify/core/ui/styles/colors/app_colors.dart';
 import 'package:lightify/core/ui/utils/dialog_util.dart';
 import 'package:lightify/core/ui/utils/function_util.dart';
 import 'package:lightify/core/ui/utils/screen_util.dart';
+import 'package:lightify/core/ui/utils/vibration_util.dart';
 import 'package:lightify/core/ui/widget/common/bouncing_widget.dart';
 import 'package:lightify/core/ui/widget/common/common_slider.dart';
 import 'package:lightify/core/ui/widget/common/fading_edge_widget.dart';
-import 'package:lightify/di/di.dart';
+import 'package:lightify/core/ui/widget/progress/loading_widget.dart';
 import 'package:lightify/pages/device_details/domain/model/device_details_page_args.dart';
 import 'package:lightify/pages/device_details/domain/model/device_rgb_color_input_dto.dart';
+import 'package:lightify/pages/device_details/ui/cubit/device_workflows_cubit.dart';
+import 'package:lightify/pages/device_details/ui/widget/slideable_time/slideable_time_widget.dart';
+import 'package:lightify/pages/device_settings/domain/args/device_settings_page_args.dart';
 import 'package:lightify/pages/main/home/ui/widget/device_card.dart';
+import 'package:lightify/pages/workflow_form/domain/args/workflow_form_page_args.dart';
 
 part 'package:lightify/pages/device_details/ui/widget/details_device_card_widget.dart';
 part 'package:lightify/pages/device_details/ui/widget/details_color_picker_widget.dart';
 part 'package:lightify/pages/device_details/ui/widget/details_preset_colors_widget.dart';
 part 'package:lightify/pages/device_details/ui/widget/details_breath_slider_widget.dart';
 part 'package:lightify/pages/device_details/ui/widget/details_effects_controls_widget.dart';
+part 'package:lightify/pages/device_details/ui/widget/workflows/device_workflows_widget.dart';
+part 'package:lightify/pages/device_details/ui/widget/workflows/workflow_item_widget.dart';
 
 class DeviceDetailsPage extends StatefulWidget {
   const DeviceDetailsPage({super.key, required this.args});
@@ -77,6 +92,12 @@ class _DeviceDetailsPageState extends State<DeviceDetailsPage> {
                 onBrightnessChanged: widget.args.onBrightnessChanged,
               ),
               SizedBox(height: height(42)),
+              _DetailsColorPickerWidget(
+                device: device,
+                onColorChanged: widget.args.onColorChanged,
+                onCustomColorTap: _onCustomColorTap,
+              ),
+              SizedBox(height: height(26)),
               _DetailsEffectsControlsWidget(
                 device: device,
                 onEffectChanged: widget.args.onEffectChanged,
@@ -84,22 +105,14 @@ class _DeviceDetailsPageState extends State<DeviceDetailsPage> {
                 onEffectScaleChanged: widget.args.onEffectScaleChanged,
               ),
               SizedBox(height: height(42)),
-              _DetailsBreathSliderWidget(
-                device: device,
-                onBreathChanged: widget.args.onBreathChanged,
-              ),
-              SizedBox(height: height(42)),
               _DetailsPresetColorsWidget(
                 onPresetTap: widget.args.onColorChanged,
                 onColorPresetRemove: _onPresetRemove,
                 onColorPresetAdd: () => _onColorPresetAdd(device.color),
               ),
-              SizedBox(height: height(42)),
-              _DetailsColorPickerWidget(
-                device: device,
-                onColorChanged: widget.args.onColorChanged,
-                onCustomColorTap: _onCustomColorTap,
-              ),
+              SizedBox(height: height(32)),
+              _DeviceWorkflows(deviceInfo: widget.args.deviceInfo),
+              SizedBox(height: height(14) + MediaQuery.of(context).padding.bottom),
             ],
           ),
         );
@@ -115,17 +128,17 @@ class _DeviceDetailsPageState extends State<DeviceDetailsPage> {
       ),
       actions: [
         BouncingWidget(
-          onTap: _onEditTap,
+          onTap: _openSettings,
           child: Padding(
             padding: EdgeInsets.only(right: width(12)),
-            child: Icon(Icons.edit_outlined, size: height(21), color: Colors.white),
+            child: Icon(PlatformIcons(context).settings, size: height(22), color: Colors.white),
           ),
         ),
       ],
       backgroundColor: AppColors.fullBlack,
       centerTitle: true,
       elevation: 0.0,
-      toolbarHeight: height(64),
+      toolbarHeight: kToolbarHeight + height(20),
       title: Column(
         children: [
           BlocBuilder<DevicesCubit, DevicesState>(builder: (context, _) {
@@ -220,31 +233,10 @@ class _DeviceDetailsPageState extends State<DeviceDetailsPage> {
     }
   }
 
-  Future<void> _onEditTap() async {
-    final device = getIt<DevicesCubit>().state.findDeviceById(widget.args.deviceInfo.topic);
-
-    final result = await showTextInputDialog(
-      context: context,
-      textFields: [
-        DialogTextField(
-            maxLines: 1,
-            maxLength: 16,
-            autocorrect: true,
-            keyboardType: TextInputType.text,
-            initialText: device?.deviceInfo.displayDeviceName,
-            hintText: AppConstants.strings.NEW_DEVICE_NAME,
-            textCapitalization: TextCapitalization.sentences),
-      ],
-      title: AppConstants.strings.RENAME_DEVICE,
-      okLabel: AppConstants.strings.SAVE,
-      fullyCapitalizedForMaterial: false,
+  void _openSettings() {
+    Navigator.of(context).pushNamed(
+      Routes.DEVICE_SETTINGS,
+      arguments: DeviceSettingsPageArgs(deviceInfo: widget.args.deviceInfo),
     );
-    if (result != null && result.isNotEmpty) {
-      if (result.first.length <= 2) {
-        DialogUtil.showToast('The name must be at least 3 characters long.');
-        return;
-      }
-      devicesCubit.renameDevice(widget.args.deviceInfo.topic, result.first.capitalizeFirstLetter);
-    }
   }
 }

@@ -11,6 +11,7 @@ import WidgetKit
 
 @available(iOS 17.0, *)
 public class MQTTDevicePowerChanger {
+    private var sendRemote: String!
     private var mqtt: CocoaMQTT!
     
     private func generateClientID() -> String {
@@ -24,6 +25,8 @@ public class MQTTDevicePowerChanger {
     }
     
     public func process(for remote: String) {
+        sendRemote = remote
+        
         let clientID = generateClientID()
         mqtt = CocoaMQTT(clientID: clientID, host: MQTTConstants.getMqttHost(), port: MQTTConstants.getMqttPort())
         mqtt.keepAlive = MQTTConstants.getMqttKeepAlive()
@@ -33,7 +36,7 @@ public class MQTTDevicePowerChanger {
         
         mqtt.didSubscribeTopics = { mqtt, success, error in
             if (mqtt.connState == CocoaMQTTConnState.connected) {
-                self.onConnectionEstablished(for: remote)
+                self.onConnectionEstablished(for: self.sendRemote)
             }
         }
         
@@ -42,7 +45,7 @@ public class MQTTDevicePowerChanger {
     
     private func onConnectionEstablished(for remote: String) {
         processDeviceChangeFromWidget(for: remote)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             self.mqtt.disconnect()
         }
     }

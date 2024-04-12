@@ -64,7 +64,7 @@ class HomeWidgetsConfigCubit extends Cubit<HomeWidgetsConfigState> with Hydrated
     if (!isWidgetsAvailable) {
       isWidgetsAvailable = await _checkIfWidgetsAvailable();
     }
-
+ 
     if (!isWidgetsAvailable || state.isNotEmpty) {
       if (state.isNotEmpty) {
         updateAllWidgets(devices);
@@ -232,12 +232,12 @@ class HomeWidgetsConfigCubit extends Cubit<HomeWidgetsConfigState> with Hydrated
     final result = <HomeWidgetDeviceEntity>[];
 
     for (final entity in entities) {
-      final icon = Icon(key: globalKey, entity.icon, size: 26.0, color: Colors.white70);
+      final icon = Icon(key: globalKey, entity.icon, size: 26.0, color: Colors.white.withOpacity(0.85));
       final iconPath = await HomeWidget.renderFlutterWidget(
         icon,
         key: '${entity.deviceTopic}_icon',
-        pixelRatio: 0.85,
-        logicalSize: const Size(512, 512),
+        pixelRatio: 1.0,
+        logicalSize: const Size(256, 256),
       );
       result.add(entity.copyWith(iconPath: iconPath));
     }

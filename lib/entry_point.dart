@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:device_preview/device_preview.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
@@ -19,9 +20,7 @@ Future<void> run() async {
   await Firebase.initializeApp();
 
   HydratedBloc.storage = await HydratedStorage.build(
-    storageDirectory: kIsWeb
-        ? HydratedStorage.webStorageDirectory
-        : await getApplicationDocumentsDirectory(),
+    storageDirectory: kIsWeb ? HydratedStorage.webStorageDirectory : await getApplicationDocumentsDirectory(),
   );
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
@@ -35,9 +34,12 @@ Future<void> run() async {
   // await HomeWidget.registerInteractivityCallback(interactiveCallback);
 
   runApp(
-    const RootRestorationScope(
-      restorationId: 'root',
-      child: LightifyApp() /*WidgetsTest()*/,
+    DevicePreview(
+      enabled: /*!kReleaseMode*/ false,
+      builder: (context) => const RootRestorationScope(
+        restorationId: 'root',
+        child: LightifyApp(),
+      ),
     ),
   );
 }

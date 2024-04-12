@@ -7,4 +7,6 @@ abstract class StorageKeys {
 
   final String devicesGroupOrderKey = '_DEVICES_GROUP_ORDER_KEY';
   final String deviceRenamesKey = '_DEVICES_RENAMES_KEY';
+
+  final String firmwareLastCheckKey = '_FIRMWARE_LAST_CHECK_KEY';
 }

@@ -1,7 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lightify/core/data/model/color_preset.dart';
+import 'package:lightify/core/data/model/device_info.dart';
 import 'package:lightify/core/data/model/effect_entity.dart';
-import 'package:lightify/core/ui/styles/colors/app_colors.dart';
 import 'package:lightify/core/ui/utils/screen_util.dart';
 
 part 'api_constants.dart';

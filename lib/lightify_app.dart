@@ -1,8 +1,10 @@
+import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightify/core/domain/repo/connectivity_repo.dart';
 import 'package:lightify/core/ui/bloc/connectivity/connectivity_cubit.dart';
 import 'package:lightify/core/ui/bloc/devices/devices_cubit.dart';
+import 'package:lightify/core/ui/bloc/firmware_update/firmware_update_cubit.dart';
 import 'package:lightify/core/ui/bloc/home_widgets_config/home_widgets_config_cubit.dart';
 import 'package:lightify/core/ui/bloc/user_pref/user_pref_cubit.dart';
 import 'package:lightify/core/ui/constants/app_constants.dart';
@@ -48,10 +50,12 @@ class _LightifyAppState extends State<LightifyApp> {
           BlocProvider(create: (_) => getIt<ConnectivityCubit>()),
           BlocProvider(create: (_) => getIt<HomeWidgetsConfigCubit>()),
           BlocProvider(create: (_) => getIt<DevicesWatcherBloc>()),
+          BlocProvider(create: (_) => getIt<FirmwareUpdateCubit>()),
         ],
         child: MaterialApp(
           title: AppConstants.strings.APP_TITLE,
           restorationScopeId: 'lightify_app',
+          locale: DevicePreview.locale(context),
           builder: (context, child) {
             final mediaQueryData = MediaQuery.of(context);
             final scale = mediaQueryData.textScaleFactor.clamp(
@@ -71,7 +75,7 @@ class _LightifyAppState extends State<LightifyApp> {
 
               return MediaQuery(
                 data: MediaQuery.of(context).copyWith(textScaleFactor: scale),
-                child: child ??= const SizedBox.shrink(),
+                child: DevicePreview.appBuilder(context, child),
               );
             });
           },

@@ -18,12 +18,33 @@ class _DetailsEffectsControlsWidget extends StatefulWidget {
 }
 
 class _DetailsEffectsControlsWidgetState extends State<_DetailsEffectsControlsWidget> {
+  final controller = ScrollController();
+  var isScrolled = false;
+
   @override
   void didUpdateWidget(covariant _DetailsEffectsControlsWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.device.effectId != widget.device.effectId) {
       setState(() {});
     }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (widget.device.effectId > 3 && !isScrolled) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        isScrolled = true;
+        controller.animateTo(widget.device.effectId * width(64),
+            duration: const Duration(milliseconds: 400), curve: Curves.ease);
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
   }
 
   @override
@@ -42,11 +63,11 @@ class _DetailsEffectsControlsWidgetState extends State<_DetailsEffectsControlsWi
           child: FadingEdge(
             scrollDirection: Axis.horizontal,
             child: ListView.separated(
-              controller: ScrollController(),
+              controller: controller,
               scrollDirection: Axis.horizontal,
               itemCount: AppConstants.settings.effects.length,
               padding: EdgeInsets.symmetric(horizontal: width(18)),
-              separatorBuilder: (_, __) => SizedBox(width: width(18)),
+              separatorBuilder: (_, __) => SizedBox(width: width(12)),
               itemBuilder: (_, index) {
                 final effect = AppConstants.settings.effects[index];
                 return _buildEffectBubble(context, effect);

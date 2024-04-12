@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lightify/core/data/model/device_info.dart';
+import 'package:lightify/core/ui/bloc/firmware_update/firmware_update_cubit.dart';
 import 'package:lightify/core/ui/constants/app_constants.dart';
 import 'package:lightify/core/ui/styles/colors/app_colors.dart';
+import 'package:lightify/di/di.dart';
 
 class Device {
   final bool powered;
@@ -26,16 +28,12 @@ class Device {
   });
 
   factory Device.unreachable(String remote) {
-    var deviceName = remote;
-    deviceName = deviceName.replaceAll('${AppConstants.api.COMMUNICATION_HEADER}_', '');
-    deviceName = deviceName.replaceAll('${AppConstants.api.COMMUNICATION_HEADER2}_', '');
     return Device.empty().copyWith(
       color: HSVColor.fromColor(Colors.grey.shade300),
-      deviceInfo: DeviceInfo(
-        deviceName: deviceName,
-        deviceGroup: AppConstants.strings.UNAVAILABLE,
-        topic: remote,
-      ),
+      deviceInfo: AppConstants.api.DEVICES_INFO[remote]?.copyWith(
+            deviceGroup: AppConstants.strings.UNAVAILABLE,
+          ) ??
+          DeviceInfo.empty().copyWith(topic: remote, deviceGroup: AppConstants.strings.UNAVAILABLE),
     );
   }
 
@@ -47,9 +45,13 @@ class Device {
     if (!powered) {
       return AppColors.gray200;
     }
-    if (effectRunning) {
-      final effectColor = AppConstants.settings.effects.firstWhere((e) => e.id == effectId).previewColor;
-      return effectColor;
+    if (effectRunning && !AppConstants.settings.colorFreeEffects.any((fx) => fx == effectId)) {
+      try {
+        final effectColor = AppConstants.settings.effects.firstWhere((e) => e.id == effectId).previewColor;
+        return effectColor;
+      } on StateError {
+        return getColor;
+      }
     }
     return getColor;
   }
@@ -99,4 +101,12 @@ class Device {
   int get intPowerState => powered ? 1 : 0;
 
   double get brightnessFactor => brightness / AppConstants.api.MQTT_DEVICE_MAX_BRIGHTNESS;
+
+  bool get needsUpdate {
+    final toUpdate = getIt<FirmwareUpdateCubit>().state.latestAvailableVersion;
+    if (toUpdate.isVersion && (deviceInfo.firmwareVersion != null && deviceInfo.firmwareVersion!.isVersion)) {
+      return toUpdate > deviceInfo.firmwareVersion!;
+    }
+    return false;
+  }
 }

@@ -32,6 +32,10 @@ extension BoolExtensions on bool {
   int get intState => this ? 1 : 0;
 }
 
+extension IntExtensions on int {
+  bool get boolState => this == 1;
+}
+
 extension DoubleExtensions on double {
   double toPrecision(int n) => double.parse(toStringAsFixed(n));
 }
