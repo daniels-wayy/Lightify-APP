@@ -13,7 +13,7 @@ part 'settings_constants.dart';
 class AppConstants {
   const AppConstants._();
 
-  static const api = _ApiConstants();
+  static final api = _ApiConstants();
   static const widget = _WidgetConstants();
   static const strings = _StringsConstants();
   static const settings = _SettingsConstants();

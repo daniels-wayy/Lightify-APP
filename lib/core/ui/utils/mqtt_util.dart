@@ -29,8 +29,8 @@ class MQTT_UTIL {
 
   static String upd_device_settings_cmd(DeviceSettings settings) => '${AppConstants.api.MQTT_UPDATE_SETTINGS_KEY}${settings.toStringData()}';
 
-  static String add_workflow_cmd(Workflow workflow) => '${AppConstants.api.MQTT_ADD_WORKFLOW_KEY}${workflow.toStringData()}';
-  static String update_workflow_cmd(Workflow workflow) => '${AppConstants.api.MQTT_UPDATE_WORKFLOW_KEY}${workflow.toStringData()}';
+  static String add_workflow_cmd(Workflow workflow) => '${AppConstants.api.MQTT_ADD_WORKFLOW_KEY}${workflow.toMqttPacket()}';
+  static String update_workflow_cmd(Workflow workflow) => '${AppConstants.api.MQTT_UPDATE_WORKFLOW_KEY}${workflow.toMqttPacket()}';
   static String delete_workflow_cmd(int workflowId) => '${AppConstants.api.MQTT_DELETE_WORKFLOW_KEY}$workflowId';
 
   static String update_firmware(String firmwareUrl) => '${AppConstants.api.MQTT_FIRMWARE_UPDATE_KEY}$firmwareUrl';

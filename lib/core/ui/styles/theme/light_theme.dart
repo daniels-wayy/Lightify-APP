@@ -3,8 +3,9 @@ part of 'app_theme.dart';
 ThemeData get lightTheme {
   return ThemeData(
     useMaterial3: Platform.isAndroid,
-    brightness: Brightness.light,
+    brightness: Brightness.dark,
     colorScheme: ColorScheme.fromSwatch().copyWith(
+      brightness: Brightness.dark,
       secondary: AppColors.primary100,
     ),
     dividerTheme: DividerThemeData(

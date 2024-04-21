@@ -121,17 +121,15 @@ class ParsingRepoImpl implements ParsingRepo {
             continue;
           }
           final isEnabled = (int.parse(workflow[1])).boolState;
-          final isPowerOn = (int.parse(workflow[2])).boolState;
-          final day = int.parse(workflow[3]);
-          final hour = int.parse(workflow[4]);
-          final minute = int.parse(workflow[5]);
-          final duration = int.parse(workflow[6]);
-          final brightness = int.parse(workflow[7]);
+          final day = int.parse(workflow[2]);
+          final hour = int.parse(workflow[3]);
+          final minute = int.parse(workflow[4]);
+          final duration = int.parse(workflow[5]);
+          final brightness = int.parse(workflow[6]);
 
           items.add(Workflow(
             id: id,
             isEnabled: isEnabled,
-            isPowerOn: isPowerOn,
             day: day,
             hour: hour,
             minute: minute,

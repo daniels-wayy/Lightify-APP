@@ -30,7 +30,7 @@ class Device {
   factory Device.unreachable(String remote) {
     return Device.empty().copyWith(
       color: HSVColor.fromColor(Colors.grey.shade300),
-      deviceInfo: AppConstants.api.DEVICES_INFO[remote]?.copyWith(
+      deviceInfo: AppConstants.api.devicesInfo[remote]?.copyWith(
             deviceGroup: AppConstants.strings.UNAVAILABLE,
           ) ??
           DeviceInfo.empty().copyWith(topic: remote, deviceGroup: AppConstants.strings.UNAVAILABLE),
@@ -64,6 +64,10 @@ class Device {
     if (!powered) return false;
     return ((color.saturation >= 0.0 && color.saturation <= 0.6) && color.value > 0.7) ||
         ((color.hue >= 30 && color.hue <= 110));
+  }
+
+  Color? get cardTextColor {
+    return inBrightRange ? AppColors.fullBlack.withOpacity(0.9) : null;
   }
 
   Device.empty()

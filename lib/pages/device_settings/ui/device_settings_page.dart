@@ -93,32 +93,34 @@ class _DeviceSettingsPageState extends State<DeviceSettingsPage> {
                                     children: [
                                       SizedBox(height: height(18)),
                                       _buildDeviceName(),
-                                      SizedBox(height: height(50)),
+                                      SizedBox(height: height(42)),
                                       if (widget.args.deviceInfo.firmwareVersion != null &&
                                           widget.args.deviceInfo.firmwareVersion!.isVersion) ...[
                                         _buildDeviceVersion(),
-                                        SizedBox(height: height(50)),
+                                        SizedBox(height: height(42)),
                                       ],
                                       _buildDeviceIP(),
-                                      SizedBox(height: height(42)),
+                                      SizedBox(height: height(24)),
+                                      const Divider(),
+                                      SizedBox(height: height(20)),
                                       _buildTextFieldRow(
                                         title: 'Device port:',
                                         hint: 'Enter port',
                                         controller: portController,
                                       ),
-                                      SizedBox(height: height(32)),
+                                      SizedBox(height: height(18)),
                                       _buildTextFieldRow(
                                         title: 'Current limit (mAh):',
                                         hint: 'Enter limit(mAh)',
                                         controller: currentLimitController,
                                       ),
-                                      SizedBox(height: height(32)),
+                                      SizedBox(height: height(18)),
                                       _buildTextFieldRow(
                                         title: 'LED count:',
                                         hint: 'Enter count',
                                         controller: ledCountController,
                                       ),
-                                      SizedBox(height: height(32)),
+                                      SizedBox(height: height(18)),
                                       _buildTextFieldRow(
                                         title: 'Time zone (GMT):',
                                         hint: 'Enter time zone',
