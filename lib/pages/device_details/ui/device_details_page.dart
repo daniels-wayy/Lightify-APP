@@ -124,7 +124,7 @@ class _DeviceDetailsPageState extends State<DeviceDetailsPage> {
     return AppBar(
       leading: BouncingWidget(
         onTap: Navigator.of(context).pop,
-        child: Icon(Icons.arrow_back_ios_new, color: AppColors.white, size: height(22)),
+        child: Icon(PlatformIcons(context).back, size: height(23), color: Colors.white),
       ),
       actions: [
         BouncingWidget(

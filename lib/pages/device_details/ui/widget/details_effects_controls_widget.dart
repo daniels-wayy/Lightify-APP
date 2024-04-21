@@ -123,7 +123,11 @@ class _DetailsEffectsControlsWidgetState extends State<_DetailsEffectsControlsWi
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         decoration: BoxDecoration(
-          color: !isSelected ? null : effectEntity.previewColor,
+          color: !isSelected
+              ? null
+              : AppConstants.settings.colorFreeEffects.contains(effectEntity.id)
+                  ? widget.device.getColor
+                  : effectEntity.previewColor,
           borderRadius: BorderRadius.circular(
             height(12),
           ),
@@ -134,7 +138,10 @@ class _DetailsEffectsControlsWidgetState extends State<_DetailsEffectsControlsWi
           child: Center(
             child: Text(
               effectEntity.name,
-              style: context.textTheme.displaySmall?.copyWith(fontWeight: FontWeight.w600),
+              style: context.textTheme.displaySmall?.copyWith(
+                color: _getFxTextColor(isSelected, effectEntity),
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ),
@@ -145,7 +152,7 @@ class _DetailsEffectsControlsWidgetState extends State<_DetailsEffectsControlsWi
   double getSpeedValue() {
     final value = !widget.device.effectRunning
         ? 0.0
-        : FunctionUtil.mapValue(
+        : 1.0 - FunctionUtil.mapValue(
             widget.device.effectSpeed.toDouble(),
             AppConstants.api.EFFECT_MIN_SPEED.toDouble(),
             AppConstants.api.EFFECT_MAX_SPEED.toDouble(),
@@ -166,7 +173,7 @@ class _DetailsEffectsControlsWidgetState extends State<_DetailsEffectsControlsWi
 
   void _onEffectSpeedChanged(double value) {
     final mappedValue = FunctionUtil.reverseMapValue(
-        value, AppConstants.api.EFFECT_MIN_SPEED.toDouble(), AppConstants.api.EFFECT_MAX_SPEED.toDouble());
+        value, AppConstants.api.EFFECT_MAX_SPEED.toDouble(), AppConstants.api.EFFECT_MIN_SPEED.toDouble());
     widget.onEffectSpeedChanged(mappedValue);
   }
 
@@ -174,5 +181,14 @@ class _DetailsEffectsControlsWidgetState extends State<_DetailsEffectsControlsWi
     final mappedValue = FunctionUtil.reverseMapValue(
         value, AppConstants.api.EFFECT_MIN_SCALE.toDouble(), AppConstants.api.EFFECT_MAX_SCALE.toDouble());
     widget.onEffectScaleChanged(mappedValue);
+  }
+
+  Color? _getFxTextColor(bool isSelected, EffectEntity effectEntity) {
+    if (isSelected) {
+      if (AppConstants.settings.colorFreeEffects.contains(effectEntity.id)) {
+        return widget.device.cardTextColor;
+      }
+    }
+    return null;
   }
 }

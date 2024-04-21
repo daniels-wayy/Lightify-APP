@@ -24,7 +24,6 @@ class Workflow {
 
   final int id;
   final bool isEnabled;
-  final bool isPowerOn;
   final int day;
   final int hour;
   final int minute;
@@ -34,7 +33,6 @@ class Workflow {
   Workflow(
       {required this.id,
       required this.isEnabled,
-      required this.isPowerOn,
       required this.day,
       required this.hour,
       required this.minute,
@@ -45,7 +43,6 @@ class Workflow {
     return Workflow(
       id: 62,
       isEnabled: true,
-      isPowerOn: true,
       day: 5,
       hour: 23,
       minute: 55,
@@ -60,7 +57,6 @@ class Workflow {
       Workflow(
           id: id,
           isEnabled: isEnabled ?? this.isEnabled,
-          isPowerOn: isPowerOn,
           day: day,
           hour: hour,
           minute: minute,
@@ -80,8 +76,8 @@ class Workflow {
     );
   }
 
-  String toStringData() {
-    return '$id,${isEnabled.intState},${isPowerOn.intState},$day,$hour,$minute,$durationMin,$brightness';
+  String toMqttPacket() {
+    return '$id,${isEnabled.intState},$day,$hour,$minute,$durationMin,$brightness';
   }
 
   String get whatTimeText {

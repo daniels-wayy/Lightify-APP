@@ -5,8 +5,8 @@ import 'package:lightify/entry_point.dart';
 
 void main() {
   final houses = <House>[
-    House(name: 'My home', remotes: AppConstants.api.DS_MQTT_DEVICES_REMOTES, isPrimary: true),
-    House(name: 'Nick\'s home', remotes: AppConstants.api.DN_MQTT_DEVICES_REMOTES),
+    House(name: 'My home', remotes: AppConstants.api.dsRemotes, isPrimary: true),
+    House(name: 'Nick\'s home', remotes: AppConstants.api.dnRemotes),
   ];
 
   Config.init(

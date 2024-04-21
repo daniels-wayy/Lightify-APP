@@ -316,12 +316,11 @@ class _WorkflowFormPageState extends State<WorkflowFormPage> {
 
   void _onAdd() {
     final state = context.read<WorkflowFormCubit>().state;
-    final id = state.currentId + (Random().nextInt(30));
+    final id = min(255, state.currentId + (Random().nextInt(40)));
     if (!widget.args.isExist(id)) {
       final workflow = Workflow(
         id: id,
         isEnabled: true,
-        isPowerOn: false,
         day: state.day,
         hour: state.hour,
         minute: state.minute,
@@ -350,7 +349,6 @@ class _WorkflowFormPageState extends State<WorkflowFormPage> {
         Navigator.of(context).pop(Workflow(
           id: widget.args.workflow!.id,
           isEnabled: widget.args.workflow!.isEnabled,
-          isPowerOn: false,
           day: state.day,
           hour: state.hour,
           minute: state.minute,

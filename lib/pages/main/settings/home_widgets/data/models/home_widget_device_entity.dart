@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:lightify/core/data/model/device.dart';
+import 'package:lightify/core/ui/constants/app_constants.dart';
 
 part 'home_widget_device_entity.g.dart';
 
@@ -58,23 +59,6 @@ class HomeWidgetDeviceEntity {
   }
 
   IconData get icon {
-    switch (deviceTopic) {
-      case 'DSLY_Livingroom_TV':
-        return Icons.tv;
-      case 'DSLY_Kitchen_Workspace':
-        return Icons.restaurant;
-      case 'DSLY_Bedroom_Bed_Lowerside':
-        return Icons.bed_outlined;
-      case 'DSLY_Office_Monitor':
-        return Icons.monitor_rounded;
-      case 'DSLY_Livingroom_Piano':
-        return Icons.piano;
-      case 'DSLY_Bedroom_Bed_Upperside':
-        return Icons.bedroom_parent_outlined;
-      case 'DSLY_Office_Desk':
-        return Icons.desk;
-      default:
-        return Icons.light;
-    }
+    return AppConstants.api.devicesInfo[deviceTopic]?.icon ?? Icons.light;
   }
 }

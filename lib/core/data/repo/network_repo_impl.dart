@@ -24,9 +24,9 @@ class NetworkRepoImpl implements NetworkRepo {
     final connMessage = MqttConnectMessage().withWillQos(MqttQos.atMostOnce).withClientIdentifier(
           currentDeviceInfo.deviceId ?? FunctionUtil.generateRandomString(12),
         );
-    client = MqttServerClient(AppConstants.api.MQTT_BROKER_HOST, '',
-        maxConnectionAttempts: AppConstants.api.MQTT_CONNECTION_ATTEMPTS);
-    client.port = AppConstants.api.MQTT_PORT;
+    client = MqttServerClient(AppConstants.api.mqttHost, '',
+        maxConnectionAttempts: AppConstants.api.mqttConnectionAttempts);
+    client.port = AppConstants.api.mqttPort;
 
     client.setProtocolV311();
     client.keepAlivePeriod = AppConstants.api.MQTT_KEEP_ALIVE_FREQ_SEC;
@@ -51,7 +51,7 @@ class NetworkRepoImpl implements NetworkRepo {
     }
 
     if (client.connectionStatus?.state == MqttConnectionState.connected) {
-      client.subscribe(AppConstants.api.MQTT_TOPIC, MqttQos.atMostOnce);
+      client.subscribe(AppConstants.api.appMqttTopic, MqttQos.atMostOnce);
     }
   }
 

@@ -3,53 +3,117 @@
 part of 'app_constants.dart';
 
 class _ApiConstants {
-  const _ApiConstants();
+  _ApiConstants();
 
-  final MQTT_BROKER_HOST = 'broker.mqttdashboard.com';
-  final COMMUNICATION_HEADER = 'DSLY';
-  final COMMUNICATION_HEADER2 = 'DNLY';
-  final MQTT_TOPIC = 'DSLY_App';
-  final MQTT_PORT = 1883;
-  // final MQTT_CLIENT_ID = 'DSLYAPPID';
-  final MQTT_CONNECTION_ATTEMPTS = 3;
+  final mqttPort = 1883;
+  final mqttHost = 'broker.mqttdashboard.com';
+  final appMqttTopic = 'DSLY_App';
+  final mqttConnectionAttempts = 3;
+
+  static const dsPacketHeader = 'DSLY';
+  static const dnPacketHeader = 'DNLY';
+
+  static const debugDeviceRemote = '${dsPacketHeader}_Debug_Lightify'; // debug
+  static const kitchenWorkspaceRemote = '${dsPacketHeader}_Kitchen_Workspace';
+  static const livingRoomTVRemote = '${dsPacketHeader}_Livingroom_TV';
+  static const livingRoomPianoRemote = '${dsPacketHeader}_Livingroom_Piano';
+  static const officePCMonitorRemote = '${dsPacketHeader}_Office_Monitor';
+  static const officeDeskRemote = '${dsPacketHeader}_Office_Desk';
+  static const officeMacMonitorRemote = '${dsPacketHeader}_Office_Mac_Monitor';
+  static const bedroomBedLowersideRemote = '${dsPacketHeader}_Bedroom_Bed_Lowerside';
+  static const bedroomBedUppersideRemote = '${dsPacketHeader}_Bedroom_Bed_Upperside';
+  static const bedroomClosetRemote = '${dsPacketHeader}_Bedroom_Closet';
+  static const dnKitchenCeiling = '${dnPacketHeader}_Kitchen_Ceiling';
 
   // D&V
-  final List<String> DS_MQTT_DEVICES_REMOTES = const [
-    'DSLY_Kitchen_Workspace',
-    'DSLY_Livingroom_TV',
-    'DSLY_Bedroom_Bed_Lowerside',
-    'DSLY_Office_Monitor',
-    'DSLY_Office_Desk',
-    'DSLY_Bedroom_Bed_Upperside',
-    'DSLY_Livingroom_Piano',
-    'DSLY_Bedroom_Closet',
-    if (!kReleaseMode) 'DSLY_Debug_Lightify',
+  final dsRemotes = [
+    kitchenWorkspaceRemote,
+    livingRoomTVRemote,
+    bedroomBedLowersideRemote,
+    officePCMonitorRemote,
+    officeDeskRemote,
+    officeMacMonitorRemote,
+    bedroomBedUppersideRemote,
+    livingRoomPianoRemote,
+    bedroomClosetRemote,
+    if (!kReleaseMode) debugDeviceRemote,
   ];
-
-  final Map<String, DeviceInfo> DEVICES_INFO = const {
-    // DS
-    'DSLY_Kitchen_Workspace':
-        DeviceInfo(topic: 'DSLY_Kitchen_Workspace', deviceName: 'Workspace', deviceGroup: 'Kitchen'),
-    'DSLY_Livingroom_TV': DeviceInfo(topic: 'DSLY_Livingroom_TV', deviceName: 'TV', deviceGroup: 'Living Room'),
-    'DSLY_Bedroom_Bed_Lowerside':
-        DeviceInfo(topic: 'DSLY_Bedroom_Bed_Lowerside', deviceName: 'Bed Lowerside', deviceGroup: 'Bedroom'),
-    'DSLY_Bedroom_Bed_Upperside':
-        DeviceInfo(topic: 'DSLY_Bedroom_Bed_Upperside', deviceName: 'Bed Upperside', deviceGroup: 'Bedroom'),
-    'DSLY_Office_Monitor': DeviceInfo(topic: 'DSLY_Office_Monitor', deviceName: 'Monitor', deviceGroup: 'Office'),
-    'DSLY_Office_Desk': DeviceInfo(topic: 'DSLY_Office_Desk', deviceName: 'Desk', deviceGroup: 'Office'),
-    'DSLY_Livingroom_Piano':
-        DeviceInfo(topic: 'DSLY_Livingroom_Piano', deviceName: 'Piano', deviceGroup: 'Living Room'),
-    'DSLY_Bedroom_Closet': DeviceInfo(topic: 'DSLY_Bedroom_Closet', deviceName: 'Closet', deviceGroup: 'Bedroom'),
-    'DSLY_Debug_Lightify': DeviceInfo(topic: 'DSLY_Debug_Lightify', deviceName: 'Debug', deviceGroup: 'Debug Room'),
-
-    // DN
-    'DNLY_Kitchen_Ceiling': DeviceInfo(topic: 'DNLY_Kitchen_Ceiling', deviceName: 'Ceiling', deviceGroup: 'Kitchen'),
-  };
 
   // Nick
-  final List<String> DN_MQTT_DEVICES_REMOTES = const [
-    'DNLY_Kitchen_Ceiling',
+  final dnRemotes = const [
+    dnKitchenCeiling,
   ];
+
+  final devicesInfo = const <String, DeviceInfo>{
+    // DS
+    kitchenWorkspaceRemote: DeviceInfo(
+      topic: kitchenWorkspaceRemote,
+      deviceName: 'Workspace',
+      deviceGroup: 'Kitchen',
+      icon: Icons.restaurant,
+    ),
+    livingRoomTVRemote: DeviceInfo(
+      topic: livingRoomTVRemote,
+      deviceName: 'TV',
+      deviceGroup: 'Living Room',
+      icon: Icons.tv,
+    ),
+    bedroomBedLowersideRemote: DeviceInfo(
+      topic: bedroomBedLowersideRemote,
+      deviceName: 'Bed Lowerside',
+      deviceGroup: 'Bedroom',
+      icon: Icons.bed_outlined,
+    ),
+    bedroomBedUppersideRemote: DeviceInfo(
+      topic: bedroomBedUppersideRemote,
+      deviceName: 'Bed Upperside',
+      deviceGroup: 'Bedroom',
+      icon: Icons.bedroom_parent_outlined,
+    ),
+    officePCMonitorRemote: DeviceInfo(
+      topic: officePCMonitorRemote,
+      deviceName: 'PC Monitor',
+      deviceGroup: 'Office',
+      icon: Icons.monitor_rounded,
+    ),
+    officeDeskRemote: DeviceInfo(
+      topic: officeDeskRemote,
+      deviceName: 'Desk',
+      deviceGroup: 'Office',
+      icon: Icons.desk,
+    ),
+    livingRoomPianoRemote: DeviceInfo(
+      topic: livingRoomPianoRemote,
+      deviceName: 'Piano',
+      deviceGroup: 'Living Room',
+      icon: Icons.piano,
+    ),
+    bedroomClosetRemote: DeviceInfo(
+      topic: bedroomClosetRemote,
+      deviceName: 'Closet',
+      deviceGroup: 'Bedroom',
+      icon: Icons.beach_access,
+    ),
+    officeMacMonitorRemote: DeviceInfo(
+      topic: officeMacMonitorRemote,
+      deviceName: 'Mac Monitor',
+      deviceGroup: 'Office',
+      icon: Icons.laptop_mac,
+    ),
+    debugDeviceRemote: DeviceInfo(
+      topic: debugDeviceRemote,
+      deviceName: 'Debug',
+      deviceGroup: 'Debug Room',
+    ),
+
+    // DN
+    dnKitchenCeiling: DeviceInfo(
+      topic: dnKitchenCeiling,
+      deviceName: 'Ceiling',
+      deviceGroup: 'Kitchen',
+      icon: Icons.restaurant,
+    ),
+  };
 
   final MQTT_PACKETS_HEADER = 'DSLY:';
   final MQTT_DEVICE_GET_HEADER = 'DEV';
@@ -88,8 +152,8 @@ class _ApiConstants {
   final MQTT_GET_REQUEST_FREQ = const Duration(seconds: 30);
   final MQTT_KEEP_ALIVE_FREQ_SEC = 25;
 
-  final EFFECT_MIN_SPEED = 1;
-  final EFFECT_MAX_SPEED = 40;
+  final EFFECT_MIN_SPEED = 10;
+  final EFFECT_MAX_SPEED = 100;
 
   final EFFECT_MIN_SCALE = 0;
   final EFFECT_MAX_SCALE = 255;

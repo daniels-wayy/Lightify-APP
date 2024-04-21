@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:lightify/core/data/model/firmware_version.dart';
 import 'package:lightify/core/ui/bloc/devices/devices_cubit.dart';
 import 'package:lightify/core/ui/constants/app_constants.dart';
@@ -9,12 +10,14 @@ class DeviceInfo {
   final String topic;
 
   final FirmwareVersion? firmwareVersion;
+  final IconData? icon;
 
   const DeviceInfo({
     required this.deviceName,
     required this.deviceGroup,
     required this.topic,
     this.firmwareVersion,
+    this.icon,
   });
 
   String get displayDeviceName {
@@ -30,10 +33,11 @@ class DeviceInfo {
       : deviceName = '',
         deviceGroup = '',
         topic = '',
-        firmwareVersion = null;
+        firmwareVersion = null,
+        icon = null;
 
   factory DeviceInfo.fromTopic(String topic) {
-    final info = AppConstants.api.DEVICES_INFO[topic] ?? DeviceInfo.empty().copyWith(topic: topic);
+    final info = AppConstants.api.devicesInfo[topic] ?? DeviceInfo.empty().copyWith(topic: topic);
     return info;
   }
 
@@ -48,6 +52,7 @@ class DeviceInfo {
       deviceGroup: deviceGroup ?? this.deviceGroup,
       topic: topic ?? this.topic,
       firmwareVersion: firmwareVersion ?? this.firmwareVersion,
+      icon: icon,
     );
   }
 
