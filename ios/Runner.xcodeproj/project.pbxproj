@@ -14,7 +14,6 @@
 		65095E732B7D96A400A28BA3 /* DevicesPowerStateWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65095E722B7D96A400A28BA3 /* DevicesPowerStateWidgetBundle.swift */; };
 		65095E752B7D96A400A28BA3 /* DevicesPowerStateWidgetLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65095E742B7D96A400A28BA3 /* DevicesPowerStateWidgetLiveActivity.swift */; };
 		65095E772B7D96A400A28BA3 /* DevicesPowerStateWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65095E762B7D96A400A28BA3 /* DevicesPowerStateWidget.swift */; };
-		65095E792B7D96A400A28BA3 /* AppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65095E782B7D96A400A28BA3 /* AppIntent.swift */; };
 		65095E7B2B7D96A600A28BA3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 65095E7A2B7D96A600A28BA3 /* Assets.xcassets */; };
 		65095E7F2B7D96A600A28BA3 /* DevicesPowerStateWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 65095E6C2B7D96A400A28BA3 /* DevicesPowerStateWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		651A12C82A261ECC00A79611 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 651A12C72A261ECB00A79611 /* GoogleService-Info.plist */; };
@@ -97,7 +96,6 @@
 		65095E722B7D96A400A28BA3 /* DevicesPowerStateWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevicesPowerStateWidgetBundle.swift; sourceTree = "<group>"; };
 		65095E742B7D96A400A28BA3 /* DevicesPowerStateWidgetLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevicesPowerStateWidgetLiveActivity.swift; sourceTree = "<group>"; };
 		65095E762B7D96A400A28BA3 /* DevicesPowerStateWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevicesPowerStateWidget.swift; sourceTree = "<group>"; };
-		65095E782B7D96A400A28BA3 /* AppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntent.swift; sourceTree = "<group>"; };
 		65095E7A2B7D96A600A28BA3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		65095E7C2B7D96A600A28BA3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		65095E852B7D96BC00A28BA3 /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
@@ -177,7 +175,6 @@
 				65095E722B7D96A400A28BA3 /* DevicesPowerStateWidgetBundle.swift */,
 				65095E742B7D96A400A28BA3 /* DevicesPowerStateWidgetLiveActivity.swift */,
 				65095E762B7D96A400A28BA3 /* DevicesPowerStateWidget.swift */,
-				65095E782B7D96A400A28BA3 /* AppIntent.swift */,
 				65095E7A2B7D96A600A28BA3 /* Assets.xcassets */,
 				65095E7C2B7D96A600A28BA3 /* Info.plist */,
 			);
@@ -510,7 +507,6 @@
 				65FF2A262B80226500665BC8 /* DevicesData.swift in Sources */,
 				65E6EB682B8E8DF80000CDD6 /* MQTTDevicePowerChanger.swift in Sources */,
 				65FF2A2C2B80262000665BC8 /* WidgetSystemSmall.swift in Sources */,
-				65095E792B7D96A400A28BA3 /* AppIntent.swift in Sources */,
 				65FF2A302B80269200665BC8 /* DeviceGridItemView.swift in Sources */,
 				65FF2A362B8027D700665BC8 /* WidgetSystemLarge.swift in Sources */,
 				65FF2A2E2B80266500665BC8 /* DevicesGridView.swift in Sources */,

@@ -19,6 +19,7 @@ class CurrentDevicesFetcher {
         "DSLY_Bedroom_Bed_Lowerside",
         "DSLY_Office_Monitor",
         "DSLY_Office_Desk",
+        "DSLY_Office_Mac_Monitor",
         "DSLY_Bedroom_Bed_Upperside",
         "DSLY_Livingroom_Piano",
         "DSLY_Bedroom_Closet",

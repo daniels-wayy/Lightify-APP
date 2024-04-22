@@ -29,9 +29,9 @@ public struct BackgroundIntent: AppIntent {
     }
     
     public func perform() async throws -> some IntentResult {
-        try await delay(ms: 50)
+        try await delay(ms: 100)
         MQTTDevicePowerChanger().process(for: method)
-        try await delay(ms: 200)
+        try await delay(ms: 300)
         return .result()
     }
 }

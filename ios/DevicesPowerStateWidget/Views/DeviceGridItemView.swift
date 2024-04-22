@@ -41,11 +41,11 @@ struct DeviceGridItemView: View {
     var CircleProgress: some View {
         ZStack {
             IconWidget
-                .frame(width: 24, height: 24)
-                .opacity(deviceData.currentPowerState ? 1.0 : 0.65)
+                .frame(width: 22, height: 22)
+                .opacity(deviceData.currentPowerState ? 1.0 : 0.8)
             Circle()
                 .stroke(lineWidth: lineWidth)
-                .opacity(0.3)
+                .opacity(0.15)
                 .foregroundColor(Color.gray)
             
             Circle()
@@ -67,13 +67,13 @@ struct DeviceGridItemView: View {
                 let brightnessPercent = calculateBrightnessPercent(brightnessFactor: self.deviceData.currentBrightness)
                 
                 Spacer(minLength: 14)
-                Text("\(brightnessPercent.description)%").font(.callout).fontWeight(.medium).opacity(deviceData.currentPowerState ? 0.9 : 0.45)
+                Text("\(brightnessPercent.description)%").font(.callout).fontWeight(.medium).opacity(deviceData.currentPowerState ? 0.9 : 0.6)
             }
         }
     }
     
     private var foregroundColor: Color {
-        return deviceData.currentPowerState ? Color(hex: deviceData.colorHex) : Color.gray
+        return deviceData.currentPowerState ? Color(hex: deviceData.colorHex) : Color.gray.opacity(0.6)
     }
     
     private func calculateBrightnessPercent(brightnessFactor: Double) -> Int {

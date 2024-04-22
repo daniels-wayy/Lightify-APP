@@ -19,6 +19,6 @@ struct WidgetSystemLarge: View {
     ]
     
     var body: some View {
-        DevicesGridView(devices: devices, columns: columns, showBrightnessPercent: true, itemPadding: 3.5, isGeometryReader: true)
+        DevicesGridView(devices: devices, columns: columns, showBrightnessPercent: true, itemPadding: 3.0, isGeometryReader: true)
     }
 }
