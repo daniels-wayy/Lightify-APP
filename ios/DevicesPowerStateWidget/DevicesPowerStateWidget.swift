@@ -74,6 +74,8 @@ struct DevicesPowerStateWidgetEntryView : View {
                 }
             }
         }
+        .containerBackground(.black.gradient.tertiary.secondary, for: .widget)
+        .edgesIgnoringSafeArea(.all)
     }
 }
 
@@ -83,14 +85,7 @@ struct DevicesPowerStateWidget: Widget {
     
     var body: some WidgetConfiguration {
       StaticConfiguration(kind: kind, provider: Provider()) { entry in
-        if #available(iOS 17.0, *) {
-            DevicesPowerStateWidgetEntryView(entry: entry)
-            .containerBackground(.fill.tertiary, for: .widget)
-        } else {
-            DevicesPowerStateWidgetEntryView(entry: entry)
-//            .padding()
-            .background()
-        }
+        DevicesPowerStateWidgetEntryView(entry: entry)
       }
       .configurationDisplayName("Power")
       .description("Manage the power status of your luminaires.")
@@ -101,11 +96,34 @@ struct DevicesPowerStateWidget: Widget {
 #Preview(as: .systemSmall) {
     DevicesPowerStateWidget()
 } timeline: {
-//    let deviceEntity = DeviceData(currentPowerState: true, currentBrightness: 0.5, deviceTopic: "test", colorHex: 0, iconPath: "")
-//    let deviceEntity2 = DeviceData(currentPowerState: true, currentBrightness: 0.5, deviceTopic: "test", colorHex: 0, iconPath: "")
-//    let deviceEntity3 = DeviceData(currentPowerState: true, currentBrightness: 0.5, deviceTopic: "test", colorHex: 0, iconPath: "")
-//    let deviceEntity4 = DeviceData(currentPowerState: true, currentBrightness: 0.5, deviceTopic: "test", colorHex: 0, iconPath: "")
-//    let deviceEntity5 = DeviceData(currentPowerState: true, currentBrightness: 0.5, deviceTopic: "test", colorHex: 0, iconPath: "")
-//    let devices = DevicesLists(smallWidget: [deviceEntity, deviceEntity2, deviceEntity3], mediumWidget: [deviceEntity, deviceEntity2, deviceEntity3, deviceEntity], bigWidget: [deviceEntity, deviceEntity2, deviceEntity3, deviceEntity4, deviceEntity5, deviceEntity, deviceEntity])
-    SimpleEntry(date: .now, devices: nil)
+    let deviceEntity = DeviceData(currentPowerState: true, currentBrightness: 0.5, deviceTopic: "test", colorHex: 0, iconPath: "")
+    let deviceEntity2 = DeviceData(currentPowerState: true, currentBrightness: 0.5, deviceTopic: "test", colorHex: 0, iconPath: "")
+    let deviceEntity3 = DeviceData(currentPowerState: true, currentBrightness: 0.5, deviceTopic: "test", colorHex: 0, iconPath: "")
+    let deviceEntity4 = DeviceData(currentPowerState: true, currentBrightness: 0.5, deviceTopic: "test", colorHex: 0, iconPath: "")
+    let deviceEntity5 = DeviceData(currentPowerState: true, currentBrightness: 0.5, deviceTopic: "test", colorHex: 0xFFFFFF, iconPath: "")
+    let deviceEntity6 = DeviceData(currentPowerState: true, currentBrightness: 0.5, deviceTopic: "test", colorHex: 0xFFFFFF, iconPath: "")
+    let deviceEntity7 = DeviceData(currentPowerState: true, currentBrightness: 0.5, deviceTopic: "test", colorHex: 0xFFFFFF, iconPath: "")
+    let deviceEntity8 = DeviceData(currentPowerState: true, currentBrightness: 0.5, deviceTopic: "test", colorHex: 0xFFFFFF, iconPath: "")
+    let deviceEntity9 = DeviceData(currentPowerState: false, currentBrightness: 0.3, deviceTopic: "test", colorHex: 0xFFFFFF, iconPath: "")
+    let devices = DevicesLists(
+           smallWidget: [
+            deviceEntity,
+            deviceEntity2,
+            deviceEntity3,
+            deviceEntity9,
+           ],
+           mediumWidget: [],
+           bigWidget: [
+            deviceEntity,
+            deviceEntity2,
+            deviceEntity3,
+            deviceEntity4,
+            deviceEntity5,
+            deviceEntity6,
+            deviceEntity7,
+            deviceEntity8,
+            deviceEntity9
+           ]
+    )
+    SimpleEntry(date: .now, devices: devices)
 }
