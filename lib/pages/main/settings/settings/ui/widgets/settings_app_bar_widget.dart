@@ -24,7 +24,7 @@ class SettingsAppBar extends StatelessWidget {
               onTap: () => onBack != null ? onBack!() : MainCubit.context.read<MainCubit>().changeTab(TabIndex.HOME),
               child: Icon(
                 PlatformIcons(context).back,
-                size: height(23),
+                size: height(26),
                 color: Colors.white,
               ),
             ),

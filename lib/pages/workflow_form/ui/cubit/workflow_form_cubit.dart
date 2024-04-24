@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:intl/intl.dart';
+import 'package:lightify/core/data/model/device.dart';
 import 'package:lightify/core/data/model/workflow.dart';
 import 'package:lightify/core/ui/extensions/core_extensions.dart';
 import 'package:lightify/core/ui/utils/function_util.dart';
@@ -14,9 +15,14 @@ part 'workflow_form_cubit.freezed.dart';
 class WorkflowFormCubit extends Cubit<WorkflowFormState> {
   WorkflowFormCubit({
     @factoryParam this.workflow,
-  }) : super(WorkflowFormState.initial(workflow: workflow));
+    @factoryParam required this.currentDevice,
+  }) : super(WorkflowFormState.initial(
+          workflow: workflow,
+          currentDevice: currentDevice,
+        ));
 
   final Workflow? workflow;
+  late final Device currentDevice;
 
   static const defaultRepeat = 1;
   static const defaultDuration = 1;
@@ -52,5 +58,18 @@ class WorkflowFormCubit extends Cubit<WorkflowFormState> {
 
   void onBrightnessChanged(int value) {
     emit(state.copyWith(brightness: value * WorkflowFormCubit.brightnessScaleDivisions));
+  }
+
+  void onApplyDeviceFor(Device device) {
+    if (currentDevice.deviceInfo.topic == device.deviceInfo.topic) { // if current
+      return;
+    }
+    final currentSelection = [...state.selectedDevices];
+    if (currentSelection.any((e) => e.deviceInfo.topic == device.deviceInfo.topic)) {
+      currentSelection.removeWhere((e) => e.deviceInfo.topic == device.deviceInfo.topic);
+    } else {
+      currentSelection.add(device);
+    }
+    emit(state.copyWith(selectedDevices: currentSelection));
   }
 }

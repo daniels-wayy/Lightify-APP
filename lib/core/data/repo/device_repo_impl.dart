@@ -141,18 +141,18 @@ class DeviceRepoImpl implements DeviceRepo {
   }
 
   @override
-  void addDeviceWorkflow(String topic, Workflow workflow) {
-    _networkRepo.sendToServer(topic, MQTT_UTIL.add_workflow_cmd(workflow));
+  void addDeviceWorkflow(Device device, Workflow workflow) {
+    _networkRepo.sendToServer(device.deviceInfo.topic, MQTT_UTIL.add_workflow_cmd(workflow));
   }
 
   @override
-  void updateDeviceWorkflow(String topic, Workflow workflow) {
-    _networkRepo.sendToServer(topic, MQTT_UTIL.update_workflow_cmd(workflow));
+  void updateDeviceWorkflow(Device device, Workflow workflow) {
+    _networkRepo.sendToServer(device.deviceInfo.topic, MQTT_UTIL.update_workflow_cmd(workflow));
   }
 
   @override
-  void deleteDeviceWorkflow(String topic, Workflow workflow) {
-    _networkRepo.sendToServer(topic, MQTT_UTIL.delete_workflow_cmd(workflow.id));
+  void deleteDeviceWorkflow(Device device, Workflow workflow) {
+    _networkRepo.sendToServer(device.deviceInfo.topic, MQTT_UTIL.delete_workflow_cmd(workflow.id));
   }
 
   @override

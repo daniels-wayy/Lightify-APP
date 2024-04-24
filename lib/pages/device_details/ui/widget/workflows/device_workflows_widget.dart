@@ -11,12 +11,18 @@ class _DeviceWorkflows extends StatefulWidget {
 
 class _DeviceWorkflowsState extends State<_DeviceWorkflows> {
   late final DeviceWorkflowsCubit cubit;
+  late final Device? currentDevice;
 
   @override
   void initState() {
     super.initState();
     cubit = context.read<DeviceWorkflowsCubit>();
     cubit.getCurrentWorkflows(widget.deviceInfo.topic);
+    currentDevice = context
+        .read<DevicesCubit>()
+        .state
+        .availableDevices
+        .firstWhereOrNull((e) => e.deviceInfo.topic == widget.deviceInfo.topic);
   }
 
   @override
@@ -97,9 +103,9 @@ class _DeviceWorkflowsState extends State<_DeviceWorkflows> {
 
   Future<void> _addWorkflow(bool canAdd) async {
     if (canAdd) {
-      final workflow = await _openWorkflowForm(null);
-      if (workflow != null) {
-        cubit.addWorkflow(widget.deviceInfo.topic, workflow);
+      final result = await _openWorkflowForm(null);
+      if (result?.workflow != null) {
+        cubit.addWorkflow(result!.selectedDevices, result.workflow!);
       }
     } else {
       DialogUtil.showToast('Maximum of ${AppConstants.api.MAX_WORKFLOWS_COUNT} workflows can be scheduled');
@@ -107,23 +113,29 @@ class _DeviceWorkflowsState extends State<_DeviceWorkflows> {
   }
 
   void _onSwitchTap(Workflow item) {
-    cubit.updateWorkflow(widget.deviceInfo.topic, item.copyWith(isEnabled: !item.isEnabled));
+    if (currentDevice == null) return;
+    cubit.updateWorkflow([currentDevice!], item.copyWith(isEnabled: !item.isEnabled));
   }
 
   void _onDeleteWorkflow(Workflow workflow) {
-    cubit.deleteWorkflow(widget.deviceInfo.topic, workflow);
+    if (currentDevice == null) return;
+    cubit.deleteWorkflow([currentDevice!], workflow);
   }
 
   Future<void> _onItemTap(Workflow item) async {
-    final workflow = await _openWorkflowForm(item);
-    if (workflow != null) {
-      cubit.updateWorkflow(widget.deviceInfo.topic, workflow);
+    final result = await _openWorkflowForm(item);
+    if (result?.workflow != null) {
+      cubit.updateWorkflow(result!.selectedDevices, result.workflow!);
     }
   }
 
-  Future<Workflow?> _openWorkflowForm(Workflow? workflow) async {
+  Future<WorkflowFormPageResult?> _openWorkflowForm(Workflow? workflow) async {
+    if (currentDevice == null) {
+      return null;
+    }
     final result = await Navigator.of(context).pushNamed(Routes.WORKFLOW_FORM,
         arguments: WorkflowFormPageArgs(
+          currentDevice: currentDevice!,
           workflow: workflow,
           onDelete: () {
             if (workflow != null) {
@@ -134,7 +146,7 @@ class _DeviceWorkflowsState extends State<_DeviceWorkflows> {
                 (item) => item.id == id,
               ),
         ));
-    if (result != null && result is Workflow) {
+    if (result != null && result is WorkflowFormPageResult) {
       return result;
     }
     return null;
