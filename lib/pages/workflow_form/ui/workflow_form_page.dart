@@ -12,7 +12,9 @@ import 'package:lightify/core/ui/widget/common/bouncing_widget.dart';
 import 'package:lightify/core/ui/widget/common/custom_pop_scope.dart';
 import 'package:lightify/core/ui/widget/common/fading_edge_widget.dart';
 import 'package:lightify/pages/workflow_form/domain/args/workflow_form_page_args.dart';
+import 'package:lightify/pages/workflow_form/domain/args/workflow_form_page_result.dart';
 import 'package:lightify/pages/workflow_form/ui/cubit/workflow_form_cubit.dart';
+import 'package:lightify/pages/workflow_form/ui/widgets/apply_for_widget.dart';
 import 'package:lightify/pages/workflow_form/ui/widgets/wheel_horizontal_selector.dart';
 import 'package:lightify/pages/workflow_form/ui/widgets/wheel_time_selector.dart';
 
@@ -90,7 +92,9 @@ class _WorkflowFormPageState extends State<WorkflowFormPage> {
           body: FadingEdge(
             scrollDirection: Axis.vertical,
             child: ListView(
-              padding: EdgeInsets.symmetric(horizontal: width(16)),
+              padding: EdgeInsets.symmetric(horizontal: width(16)).copyWith(
+                bottom: MediaQuery.of(context).padding.bottom + height(12),
+              ),
               children: [
                 SizedBox(height: height(14)),
                 WheelTimeSelector(
@@ -125,7 +129,17 @@ class _WorkflowFormPageState extends State<WorkflowFormPage> {
                 _buildOverview(),
                 SizedBox(height: height(18)),
                 if (isEdit) _buildDelete() else _buildAdd(),
-                SizedBox(height: height(32)),
+                SizedBox(height: height(12)),
+                if (!isEdit) ...[
+                  BlocBuilder<WorkflowFormCubit, WorkflowFormState>(
+                    builder: (context, state) => ApplyFor(
+                      currentDevice: widget.args.currentDevice,
+                      selectedDevices: state.selectedDevices,
+                      onApplyFor: context.read<WorkflowFormCubit>().onApplyDeviceFor,
+                    ),
+                  ),
+                  SizedBox(height: height(32)),
+                ],
               ],
             ),
           )),
@@ -327,7 +341,10 @@ class _WorkflowFormPageState extends State<WorkflowFormPage> {
         duration: Duration(minutes: state.duration),
         brightness: FunctionUtil.fromPercentToBrightness(state.brightness),
       );
-      Navigator.of(context).pop(workflow);
+      Navigator.of(context).pop(WorkflowFormPageResult(
+        selectedDevices: state.selectedDevices,
+        workflow: workflow,
+      ));
     } else {
       DialogUtil.showToast('This workflow has already been added');
     }
@@ -346,7 +363,7 @@ class _WorkflowFormPageState extends State<WorkflowFormPage> {
       }
 
       if (!widget.args.isExist(id)) {
-        Navigator.of(context).pop(Workflow(
+        final workflow = Workflow(
           id: widget.args.workflow!.id,
           isEnabled: widget.args.workflow!.isEnabled,
           day: state.day,
@@ -354,6 +371,10 @@ class _WorkflowFormPageState extends State<WorkflowFormPage> {
           minute: state.minute,
           duration: Duration(minutes: state.duration),
           brightness: FunctionUtil.fromPercentToBrightness(state.brightness),
+        );
+        Navigator.of(context).pop(WorkflowFormPageResult(
+          selectedDevices: state.selectedDevices,
+          workflow: workflow,
         ));
       } else {
         if (!isUnderstood) {

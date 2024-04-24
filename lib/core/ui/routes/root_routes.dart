@@ -41,7 +41,9 @@ final RouteFactory rootRouteFactory = (RouteSettings settings) {
         return CrossFadeScalePageRoute(
           settings: settings,
           builder: (_) => BlocProvider(
-            create: (_) => getIt<DeviceWorkflowsCubit>(),
+            create: (_) => getIt<DeviceWorkflowsCubit>(
+              param1: args.deviceInfo.topic,
+            ),
             child: DeviceDetailsPage(args: args),
           ),
         );
@@ -49,7 +51,9 @@ final RouteFactory rootRouteFactory = (RouteSettings settings) {
         return MaterialPageRoute<void>(
           settings: settings,
           builder: (_) => BlocProvider(
-            create: (_) => getIt<DeviceWorkflowsCubit>(),
+            create: (_) => getIt<DeviceWorkflowsCubit>(
+              param1: args.deviceInfo.topic,
+            ),
             child: DeviceDetailsPage(args: args),
           ),
         );
@@ -79,7 +83,10 @@ final RouteFactory rootRouteFactory = (RouteSettings settings) {
         return CrossFadeScalePageRoute<Object>(
           settings: settings,
           builder: (_) => BlocProvider(
-            create: (_) => getIt<WorkflowFormCubit>(param1: args.workflow),
+            create: (_) => getIt<WorkflowFormCubit>(
+              param1: args.workflow,
+              param2: args.currentDevice,
+            ),
             child: WorkflowFormPage(args: args),
           ),
         );

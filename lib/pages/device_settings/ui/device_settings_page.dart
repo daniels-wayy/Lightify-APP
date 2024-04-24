@@ -67,75 +67,79 @@ class _DeviceSettingsPageState extends State<DeviceSettingsPage> {
               state.receivedDeviceSettings!,
             ),
         listenWhen: (p, c) => c.receivedDeviceSettings != null,
-        child: Scaffold(
-          backgroundColor: AppColors.fullBlack,
-          body: BlocSelector<DeviceSettingsCubit, DeviceSettingsState, bool>(
-              selector: (state) => state.isLoading,
-              builder: (context, isLoading) {
-                return RepaintBoundary(
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 400),
-                    child: isLoading
-                        ? const Center(child: LoadingWidget())
-                        : Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(height: height(26)),
-                              SettingsAppBar(onBack: () => Navigator.of(context).pop(), title: 'Device settings'),
-                              SizedBox(height: height(14)),
-                              Expanded(
-                                child: FadingEdge(
-                                  scrollDirection: Axis.vertical,
-                                  child: ListView(
-                                    padding: EdgeInsets.symmetric(horizontal: width(18), vertical: height(12)).copyWith(
-                                      bottom: ScreenUtil.bottomPadding + height(70),
-                                    ),
-                                    children: [
-                                      SizedBox(height: height(18)),
-                                      _buildDeviceName(),
-                                      SizedBox(height: height(42)),
-                                      if (widget.args.deviceInfo.firmwareVersion != null &&
-                                          widget.args.deviceInfo.firmwareVersion!.isVersion) ...[
-                                        _buildDeviceVersion(),
+        child: GestureDetector(
+          onTap: primaryFocus?.unfocus,
+          child: Scaffold(
+            backgroundColor: AppColors.fullBlack,
+            body: BlocSelector<DeviceSettingsCubit, DeviceSettingsState, bool>(
+                selector: (state) => state.isLoading,
+                builder: (context, isLoading) {
+                  return RepaintBoundary(
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 400),
+                      child: isLoading
+                          ? const Center(child: LoadingWidget())
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(height: height(26)),
+                                SettingsAppBar(onBack: () => Navigator.of(context).pop(), title: 'Device settings'),
+                                SizedBox(height: height(14)),
+                                Expanded(
+                                  child: FadingEdge(
+                                    scrollDirection: Axis.vertical,
+                                    child: ListView(
+                                      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                                      padding: EdgeInsets.symmetric(horizontal: width(18), vertical: height(12)).copyWith(
+                                        bottom: ScreenUtil.bottomPadding + height(70),
+                                      ),
+                                      children: [
+                                        SizedBox(height: height(18)),
+                                        _buildDeviceName(),
                                         SizedBox(height: height(42)),
+                                        if (widget.args.deviceInfo.firmwareVersion != null &&
+                                            widget.args.deviceInfo.firmwareVersion!.isVersion) ...[
+                                          _buildDeviceVersion(),
+                                          SizedBox(height: height(42)),
+                                        ],
+                                        _buildDeviceIP(),
+                                        SizedBox(height: height(24)),
+                                        const Divider(),
+                                        SizedBox(height: height(20)),
+                                        _buildTextFieldRow(
+                                          title: 'Device port:',
+                                          hint: 'Enter port',
+                                          controller: portController,
+                                        ),
+                                        SizedBox(height: height(18)),
+                                        _buildTextFieldRow(
+                                          title: 'Current limit (mAh):',
+                                          hint: 'Enter limit(mAh)',
+                                          controller: currentLimitController,
+                                        ),
+                                        SizedBox(height: height(18)),
+                                        _buildTextFieldRow(
+                                          title: 'LED count:',
+                                          hint: 'Enter count',
+                                          controller: ledCountController,
+                                        ),
+                                        SizedBox(height: height(18)),
+                                        _buildTextFieldRow(
+                                          title: 'Time zone (GMT):',
+                                          hint: 'Enter time zone',
+                                          controller: gmtController,
+                                        ),
                                       ],
-                                      _buildDeviceIP(),
-                                      SizedBox(height: height(24)),
-                                      const Divider(),
-                                      SizedBox(height: height(20)),
-                                      _buildTextFieldRow(
-                                        title: 'Device port:',
-                                        hint: 'Enter port',
-                                        controller: portController,
-                                      ),
-                                      SizedBox(height: height(18)),
-                                      _buildTextFieldRow(
-                                        title: 'Current limit (mAh):',
-                                        hint: 'Enter limit(mAh)',
-                                        controller: currentLimitController,
-                                      ),
-                                      SizedBox(height: height(18)),
-                                      _buildTextFieldRow(
-                                        title: 'LED count:',
-                                        hint: 'Enter count',
-                                        controller: ledCountController,
-                                      ),
-                                      SizedBox(height: height(18)),
-                                      _buildTextFieldRow(
-                                        title: 'Time zone (GMT):',
-                                        hint: 'Enter time zone',
-                                        controller: gmtController,
-                                      ),
-                                    ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                              _buildSaveCTA(),
-                            ],
-                          ),
-                  ),
-                );
-              }),
+                                _buildSaveCTA(),
+                              ],
+                            ),
+                    ),
+                  );
+                }),
+          ),
         ),
       ),
     );

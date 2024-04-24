@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
+import 'package:lightify/core/data/model/device.dart';
 import 'package:lightify/core/data/model/workflow.dart';
 import 'package:lightify/core/data/model/workflow_response.dart';
 import 'package:lightify/core/domain/repo/device_repo.dart';
@@ -22,10 +23,13 @@ class DeviceWorkflowsCubit extends Cubit<DeviceWorkflowsState> {
   final NetworkRepo _networkRepo;
 
   DeviceWorkflowsCubit(
+    @factoryParam this._currentDeviceTopic,
     this._deviceRepo,
     this._connectivityCubit,
     this._networkRepo,
   ) : super(DeviceWorkflowsState.initial());
+
+  late final String _currentDeviceTopic;
 
   Timer? _loadingTimer;
   Timer? _sendTimer;
@@ -67,26 +71,30 @@ class DeviceWorkflowsCubit extends Cubit<DeviceWorkflowsState> {
     }
   }
 
-  void addWorkflow(String topic, Workflow workflow) {
-    _send(topic, () => _deviceRepo.addDeviceWorkflow(topic, workflow));
+  void addWorkflow(List<Device> devices, Workflow workflow) {
+    _send(devices, (device) => _deviceRepo.addDeviceWorkflow(device, workflow));
   }
 
-  void updateWorkflow(String topic, Workflow workflow) {
-    _send(topic, () => _deviceRepo.updateDeviceWorkflow(topic, workflow));
+  void updateWorkflow(List<Device> devices, Workflow workflow) {
+    _send(devices, (device) => _deviceRepo.updateDeviceWorkflow(device, workflow));
   }
 
-  void deleteWorkflow(String topic, Workflow workflow) {
-    _send(topic, () => _deviceRepo.deleteDeviceWorkflow(topic, workflow));
+  void deleteWorkflow(List<Device> devices, Workflow workflow) {
+    _send(devices, (device) => _deviceRepo.deleteDeviceWorkflow(device, workflow));
   }
 
-  void _send(String topic, Function sendDataFunction) {
+  void _send(List<Device> devices, Function(Device) sendDataFunction) {
     _ensureConnected(() {
       _sendTimer?.cancel();
       _sendTimer = Timer(AppConstants.api.MQTT_SEND_REQUEST_THRESHOLD, () async {
         try {
-          sendDataFunction();
-          await Future<void>.delayed(AppConstants.api.MQTT_SEND_REQUEST_THRESHOLD);
-          _deviceRepo.getDeviceWorkflowsInfoFor(topic);
+          for (final device in devices) {
+            sendDataFunction(device);
+            await Future<void>.delayed(AppConstants.api.MQTT_SEND_REQUEST_THRESHOLD);
+            if (device.deviceInfo.topic == _currentDeviceTopic) {
+              _deviceRepo.getDeviceWorkflowsInfoFor(_currentDeviceTopic);
+            }
+          }
         } catch (e) {
           debugPrint('DeviceWorkflowsCubit _send error occured: $e');
         }

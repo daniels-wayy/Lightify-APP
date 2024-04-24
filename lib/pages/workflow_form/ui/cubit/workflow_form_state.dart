@@ -9,10 +9,12 @@ class WorkflowFormState with _$WorkflowFormState {
     @Default(0) int minute,
     @Default(0) int duration,
     @Default(0) int brightness,
+    @Default(<Device>[]) List<Device> selectedDevices,
   }) = _WorkflowFormState;
 
   factory WorkflowFormState.initial({
     required Workflow? workflow,
+    required Device currentDevice,
   }) =>
       WorkflowFormState(
         day: _getInitialDay(workflow),
@@ -20,6 +22,7 @@ class WorkflowFormState with _$WorkflowFormState {
         minute: _getInitialMinute(workflow),
         duration: _getInitialDuration(workflow),
         brightness: _getInitialBrightness(workflow),
+        selectedDevices: [currentDevice],
       );
 
   static int _getInitialDay(Workflow? workflow) {

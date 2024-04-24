@@ -36,6 +36,8 @@ import 'package:lightify/pages/device_details/ui/widget/slideable_time/slideable
 import 'package:lightify/pages/device_settings/domain/args/device_settings_page_args.dart';
 import 'package:lightify/pages/main/home/ui/widget/device_card.dart';
 import 'package:lightify/pages/workflow_form/domain/args/workflow_form_page_args.dart';
+import 'package:collection/collection.dart';
+import 'package:lightify/pages/workflow_form/domain/args/workflow_form_page_result.dart';
 
 part 'package:lightify/pages/device_details/ui/widget/details_device_card_widget.dart';
 part 'package:lightify/pages/device_details/ui/widget/details_color_picker_widget.dart';
@@ -124,7 +126,7 @@ class _DeviceDetailsPageState extends State<DeviceDetailsPage> {
     return AppBar(
       leading: BouncingWidget(
         onTap: Navigator.of(context).pop,
-        child: Icon(PlatformIcons(context).back, size: height(23), color: Colors.white),
+        child: Icon(PlatformIcons(context).back, size: height(26), color: Colors.white),
       ),
       actions: [
         BouncingWidget(
