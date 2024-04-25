@@ -156,6 +156,11 @@ class DeviceRepoImpl implements DeviceRepo {
   }
 
   @override
+  void deleteDeviceWorkflows(Device device) {
+    _networkRepo.sendToServer(device.deviceInfo.topic, MQTT_UTIL.delete_workflows_cmd());
+  }
+
+  @override
   void updateFirmware(String topic, String url) {
     _networkRepo.sendToServer(topic, MQTT_UTIL.update_firmware(url));
   }

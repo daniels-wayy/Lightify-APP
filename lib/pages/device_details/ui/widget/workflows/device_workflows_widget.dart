@@ -45,6 +45,18 @@ class _DeviceWorkflowsState extends State<_DeviceWorkflows> {
                     children: [
                       Text(AppConstants.strings.WORKFLOW, style: context.textTheme.titleMedium),
                       const Spacer(),
+                      AnimatedScale(
+                        scale: workflowState.workflows.isNotEmpty ? 1.0 : 0.0,
+                        duration: const Duration(milliseconds: 200),
+                        curve: Curves.bounceInOut,
+                        child: BouncingWidget(
+                          onTap: _deleteWorkflows,
+                          child: Padding(
+                            padding: EdgeInsets.all(width(12)),
+                            child: Icon(PlatformIcons(context).delete, size: height(20), color: Colors.white),
+                          ),
+                        ),
+                      ),
                       BouncingWidget(
                         onTap: () => _addWorkflow(workflowState.canAdd),
                         child: Padding(
@@ -99,6 +111,11 @@ class _DeviceWorkflowsState extends State<_DeviceWorkflows> {
         ],
       ),
     );
+  }
+
+  void _deleteWorkflows() {
+    if (currentDevice == null) return;
+    cubit.deleteWorkflows([currentDevice!]);
   }
 
   Future<void> _addWorkflow(bool canAdd) async {

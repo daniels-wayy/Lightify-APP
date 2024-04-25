@@ -8,7 +8,6 @@ import 'package:flutter/services.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:lightify/core/ui/bloc/home_widgets_config/utils/home_widgets_config.dart';
-// import 'package:lightify/core/ui/bloc/home_widgets_config/utils/home_widgets_functions.dart';
 import 'package:lightify/di/di.dart';
 import 'package:lightify/di/services/debug_print_service.dart';
 import 'package:lightify/lightify_app.dart';
@@ -31,7 +30,6 @@ Future<void> run() async {
   PlatformDispatcher.instance.onError = _recordZoneError;
 
   await HomeWidget.setAppGroupId(HomeWidgetsConfig.appGroupId);
-  // await HomeWidget.registerInteractivityCallback(interactiveCallback);
 
   runApp(
     DevicePreview(
