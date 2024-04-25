@@ -71,6 +71,10 @@ class DeviceWorkflowsCubit extends Cubit<DeviceWorkflowsState> {
     }
   }
 
+  void deleteWorkflows(List<Device> devices) {
+    _send(devices, _deviceRepo.deleteDeviceWorkflows);
+  }
+
   void addWorkflow(List<Device> devices, Workflow workflow) {
     _send(devices, (device) => _deviceRepo.addDeviceWorkflow(device, workflow));
   }

@@ -3,7 +3,7 @@ description: Lightify application
 
 publish_to: 'none' 
 
-version: 1.4.3+46
+version: 1.4.4+48
 
 environment:
   sdk: '>=3.0.0 <3.13.9'
