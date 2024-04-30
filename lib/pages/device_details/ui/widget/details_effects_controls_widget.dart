@@ -153,11 +153,11 @@ class _DetailsEffectsControlsWidgetState extends State<_DetailsEffectsControlsWi
     final value = !widget.device.effectRunning
         ? 0.0
         : 1.0 - FunctionUtil.mapValue(
-            widget.device.effectSpeed.toDouble(),
+            max(AppConstants.api.EFFECT_MIN_SPEED.toDouble(), widget.device.effectSpeed.toDouble()),
             AppConstants.api.EFFECT_MIN_SPEED.toDouble(),
             AppConstants.api.EFFECT_MAX_SPEED.toDouble(),
-          );
-    return value < 0.0 ? 0.0 : value;
+          );       
+    return value <= 0.01 ? 0.01 : value;
   }
 
   double getScaleValue() {

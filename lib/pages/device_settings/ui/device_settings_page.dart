@@ -1,7 +1,9 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lightify/core/data/model/device.dart';
 import 'package:lightify/core/data/model/device_settings.dart';
 import 'package:lightify/core/ui/bloc/devices/devices_cubit.dart';
 import 'package:lightify/core/ui/bloc/devices/devices_state.dart';
@@ -15,8 +17,10 @@ import 'package:lightify/core/ui/widget/common/fading_edge_widget.dart';
 import 'package:lightify/core/ui/widget/progress/loading_widget.dart';
 import 'package:lightify/di/di.dart';
 import 'package:lightify/pages/device_settings/domain/args/device_settings_page_args.dart';
+import 'package:lightify/pages/device_settings/domain/args/device_settings_page_result.dart';
 import 'package:lightify/pages/device_settings/ui/cubit/device_settings_cubit.dart';
 import 'package:lightify/pages/main/settings/settings/ui/widgets/settings_app_bar_widget.dart';
+import 'package:collection/collection.dart';
 
 class DeviceSettingsPage extends StatefulWidget {
   const DeviceSettingsPage({super.key, required this.args});
@@ -34,11 +38,15 @@ class _DeviceSettingsPageState extends State<DeviceSettingsPage> {
   late final TextEditingController gmtController = TextEditingController();
 
   late final DevicesCubit cubit;
+  late final DeviceSettingsCubit settingsCubit;
+  late final Device? device;
 
   @override
   void initState() {
     super.initState();
     cubit = context.read<DevicesCubit>();
+    settingsCubit = context.read<DeviceSettingsCubit>();
+    device = cubit.state.availableDevices.firstWhereOrNull((e) => e.deviceInfo.topic == widget.args.deviceInfo.topic);
     context.read<DeviceSettingsCubit>().fetch(widget.args.deviceInfo.topic);
   }
 
@@ -90,7 +98,8 @@ class _DeviceSettingsPageState extends State<DeviceSettingsPage> {
                                     scrollDirection: Axis.vertical,
                                     child: ListView(
                                       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                                      padding: EdgeInsets.symmetric(horizontal: width(18), vertical: height(12)).copyWith(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: width(18), vertical: height(12)).copyWith(
                                         bottom: ScreenUtil.bottomPadding + height(70),
                                       ),
                                       children: [
@@ -129,11 +138,36 @@ class _DeviceSettingsPageState extends State<DeviceSettingsPage> {
                                           hint: 'Enter time zone',
                                           controller: gmtController,
                                         ),
+                                        SizedBox(height: height(28)),
+                                        BlocSelector<DeviceSettingsCubit, DeviceSettingsState, bool>(
+                                            selector: (state) => state.usePortal,
+                                            builder: (context, state) {
+                                              return _buildSwitchRow(
+                                                title: 'Use web interface',
+                                                subTitle:
+                                                    'Create a local web interface to manage device state. Can be accessed in browser by device\'s IP address',
+                                                onTap: context.read<DeviceSettingsCubit>().onUsePortalChanged,
+                                                currentState: state,
+                                              );
+                                            }),
                                       ],
                                     ),
                                   ),
                                 ),
-                                _buildSaveCTA(),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      bottom: height(20) + MediaQuery.of(context).padding.bottom / 2,
+                                      left: width(18),
+                                      right: width(18),
+                                      top: height(14)),
+                                  child: Row(
+                                    children: [
+                                      Expanded(child: _buildResetCTA()),
+                                      SizedBox(width: width(14)),
+                                      Expanded(child: _buildSaveCTA()),
+                                    ],
+                                  ),
+                                ),
                               ],
                             ),
                     ),
@@ -212,6 +246,53 @@ class _DeviceSettingsPageState extends State<DeviceSettingsPage> {
     );
   }
 
+  Widget _buildSwitchRow({
+    required String title,
+    required String? subTitle,
+    required bool currentState,
+    required VoidCallback onTap,
+  }) {
+    return Row(
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: context.textTheme.titleSmall?.copyWith(
+                  fontSize: height(18),
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: -0.6,
+                ),
+              ),
+              if (subTitle != null && subTitle.isNotEmpty) ...[
+                SizedBox(height: height(6)),
+                Text(
+                  subTitle,
+                  style: context.textTheme.titleSmall?.copyWith(
+                    fontSize: height(12),
+                    fontWeight: FontWeight.w400,
+                    color: Colors.grey.shade300.withOpacity(0.7),
+                    letterSpacing: -0.2,
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+        SizedBox(width: width(12)),
+        Switch.adaptive(
+          value: currentState,
+          onChanged: (_) {
+            VibrationUtil.vibrate();
+            onTap();
+          },
+        ),
+      ],
+    );
+  }
+
   Widget _buildDeviceIP() {
     return Row(
       children: [
@@ -256,38 +337,69 @@ class _DeviceSettingsPageState extends State<DeviceSettingsPage> {
         ),
         const Spacer(),
         Text(
-              widget.args.deviceInfo.firmwareVersion!.version.toString(),
-              style: context.textTheme.displayMedium?.copyWith(
-                fontSize: height(18),
-                color: AppColors.gray200,
-                fontWeight: FontWeight.w300,
-                letterSpacing: -0.05,
-              ),
-            ),
+          widget.args.deviceInfo.firmwareVersion!.version.toString(),
+          style: context.textTheme.displayMedium?.copyWith(
+            fontSize: height(18),
+            color: AppColors.gray200,
+            fontWeight: FontWeight.w300,
+            letterSpacing: -0.05,
+          ),
+        ),
       ],
     );
   }
 
   Widget _buildSaveCTA() {
-    return Padding(
-      padding: EdgeInsets.only(
-          bottom: height(14) + MediaQuery.of(context).padding.bottom,
-          left: width(32),
-          right: width(32),
-          top: height(14)),
-      child: MaterialButton(
-        onPressed: _onSave,
-        color: AppColors.primary100,
-        height: height(48),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        child: Center(
-          child: Text(
-            'Save',
-            style: context.textTheme.titleSmall?.copyWith(
-              fontSize: height(18),
-              fontWeight: FontWeight.w500,
-              letterSpacing: -0.6,
-            ),
+    return MaterialButton(
+      onPressed: _onSave,
+      color: AppColors.primary100,
+      height: height(48),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      child: Center(
+        child: Text(
+          'Save',
+          style: context.textTheme.titleSmall?.copyWith(
+            fontSize: height(16),
+            fontWeight: FontWeight.w500,
+            letterSpacing: -0.1,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildResetCTA() {
+    return OutlinedButton(
+      style: ButtonStyle(
+        fixedSize: MaterialStateProperty.resolveWith((states) => Size.fromHeight(height(48))),
+        shape: MaterialStateProperty.resolveWith(
+            (states) => RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+      ),
+      onPressed: () async {
+        final result = await showOkCancelAlertDialog(
+          context: context,
+          title: 'Factory reset',
+          message: 'Are you sure you want to reset your device to default settings?',
+          okLabel: 'Reset',
+          fullyCapitalizedForMaterial: false,
+          defaultType: OkCancelAlertDefaultType.cancel,
+        );
+        if (result == OkCancelResult.ok) {
+          if (device != null) {
+            settingsCubit.onReset(device!);
+            DialogUtil.showToast('Factory reset complete. Device is about to reboot...');
+            Navigator.of(context).pop(const DeviceSettingsPageResult.factoryReset());
+          }
+        }
+      },
+      child: Center(
+        child: Text(
+          'Reset',
+          style: context.textTheme.titleSmall?.copyWith(
+            fontSize: height(16),
+            fontWeight: FontWeight.w500,
+            color: Colors.grey.shade300,
+            letterSpacing: -0.1,
           ),
         ),
       ),
@@ -308,6 +420,7 @@ class _DeviceSettingsPageState extends State<DeviceSettingsPage> {
             ledCount: ledCount,
             gmt: timeZone,
             ip: context.read<DeviceSettingsCubit>().state.ip,
+            usePortal: context.read<DeviceSettingsCubit>().state.usePortal,
           ));
       Navigator.of(context).pop();
       DialogUtil.showToast('Changes saved. Resetting...');

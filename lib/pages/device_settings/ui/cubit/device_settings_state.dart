@@ -9,6 +9,7 @@ abstract class DeviceSettingsState with _$DeviceSettingsState {
     @Default(0) int ledCount,
     @Default(0) int gmt,
     @Default('') String ip,
+    @Default(false) bool usePortal,
     String? isError,
   }) = _DeviceSettingsState;
 

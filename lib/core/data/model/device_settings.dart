@@ -1,3 +1,5 @@
+import 'package:lightify/core/ui/extensions/core_extensions.dart';
+
 class DeviceSettings {
   final String topic;
   final int port;
@@ -5,6 +7,7 @@ class DeviceSettings {
   final int ledCount;
   final int gmt;
   final String ip;
+  final bool usePortal;
 
   const DeviceSettings({
     required this.topic,
@@ -13,9 +16,10 @@ class DeviceSettings {
     required this.ledCount,
     required this.gmt,
     required this.ip,
+    required this.usePortal,
   });
 
   String toStringData() {
-    return '$port,$currentLimit,$ledCount,$gmt';
+    return '$port,$currentLimit,$ledCount,$gmt,${usePortal.intState}';
   }
 }

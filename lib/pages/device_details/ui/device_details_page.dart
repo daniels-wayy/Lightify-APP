@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:automatic_animated_list/automatic_animated_list.dart';
@@ -34,6 +35,7 @@ import 'package:lightify/pages/device_details/domain/model/device_rgb_color_inpu
 import 'package:lightify/pages/device_details/ui/cubit/device_workflows_cubit.dart';
 import 'package:lightify/pages/device_details/ui/widget/slideable_time/slideable_time_widget.dart';
 import 'package:lightify/pages/device_settings/domain/args/device_settings_page_args.dart';
+import 'package:lightify/pages/device_settings/domain/args/device_settings_page_result.dart';
 import 'package:lightify/pages/main/home/ui/widget/device_card.dart';
 import 'package:lightify/pages/workflow_form/domain/args/workflow_form_page_args.dart';
 import 'package:collection/collection.dart';
@@ -236,9 +238,15 @@ class _DeviceDetailsPageState extends State<DeviceDetailsPage> {
   }
 
   void _openSettings() {
-    Navigator.of(context).pushNamed(
+    Navigator.of(context)
+        .pushNamed(
       Routes.DEVICE_SETTINGS,
       arguments: DeviceSettingsPageArgs(deviceInfo: widget.args.deviceInfo),
-    );
+    )
+        .then((result) {
+      if (result != null && (result is DeviceSettingsPageResult && result.isFactoryReset)) {
+        context.read<DeviceWorkflowsCubit>().resetState();
+      }
+    });
   }
 }

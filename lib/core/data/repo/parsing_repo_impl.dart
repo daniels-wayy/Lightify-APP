@@ -82,6 +82,8 @@ class ParsingRepoImpl implements ParsingRepo {
       final ip4 = int.tryParse(splitted[8]) ?? 0;
       final ip = '$ip1.$ip2.$ip3.$ip4';
 
+      final usePortal = splitted.containsAt(9) ? int.tryParse(splitted[9]) ?? 0 : 0; 
+
       return DeviceSettings(
         topic: topic,
         port: port,
@@ -89,6 +91,7 @@ class ParsingRepoImpl implements ParsingRepo {
         ledCount: ledCount,
         gmt: gmt,
         ip: ip,
+        usePortal: usePortal.boolState,
       );
     } catch (e) {
       debugPrint('parseDeviceSettings error: $e');

@@ -133,6 +133,7 @@ class _ApiConstants {
   final MQTT_EFFECT_SPEED_KEY = 'SPD';
   final MQTT_EFFECT_SCALE_KEY = 'SCL';
   final MQTT_UPDATE_SETTINGS_KEY = 'STGPD';
+  final MQTT_RESET_SETTINGS_KEY = 'STGRT';
 
   // Workflows
   final MQTT_ADD_WORKFLOW_KEY = 'WFLDD';

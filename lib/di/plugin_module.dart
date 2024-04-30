@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 @module
 abstract class PluginModule {
   @preResolve
-  Future<SharedPreferences> get prefs async => await SharedPreferences.getInstance();
+  Future<SharedPreferences> prefs() => SharedPreferences.getInstance();
 
   @LazySingleton()
   Connectivity provideConnectivity() => Connectivity();
@@ -16,5 +16,5 @@ abstract class PluginModule {
   DeviceInfoPlugin provideDeviceInfo() => DeviceInfoPlugin();
 
   @preResolve
-  Future<PackageInfo> get packageInfo async => await PackageInfo.fromPlatform();
+  Future<PackageInfo> packageInfo() => PackageInfo.fromPlatform();
 }

@@ -23,6 +23,7 @@ abstract class DeviceRepo {
   void sleepDevice(Device device);
 
   void updateDeviceSettings(DeviceSettings settings);
+  void resetDeviceSettings(Device device);
   void addDeviceWorkflow(Device device, Workflow workflow);
   void updateDeviceWorkflow(Device device, Workflow workflow);
   void deleteDeviceWorkflow(Device device, Workflow workflow);

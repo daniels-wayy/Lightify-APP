@@ -1,9 +1,5 @@
-import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lightify/core/ui/extensions/core_extensions.dart';
-import 'package:lightify/core/ui/styles/colors/app_colors.dart';
 import 'package:lightify/core/ui/utils/screen_util.dart';
 import 'package:lightify/core/ui/utils/vibration_util.dart';
 
@@ -38,22 +34,6 @@ class TitleSwitchWidget extends StatelessWidget {
             VibrationUtil.vibrate();
             onChanged?.call(value);
           },
-          trackOutlineColor: MaterialStateColor.resolveWith(
-            (states) {
-              if (states.isNotEmpty && states.first == MaterialState.selected) {
-                return Colors.transparent;
-              }
-              return AppColors.gray100.withOpacity(.6);
-            },
-          ),
-          thumbColor: Platform.isAndroid ? MaterialStateColor.resolveWith(
-            (states) {
-              if (!states.contains(MaterialState.selected)) {
-                return Colors.black;
-              }
-              return Colors.white;
-            },
-          ) : null,
         ),
       ],
     );

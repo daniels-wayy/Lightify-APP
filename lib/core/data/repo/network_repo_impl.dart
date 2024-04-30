@@ -24,8 +24,8 @@ class NetworkRepoImpl implements NetworkRepo {
     final connMessage = MqttConnectMessage().withWillQos(MqttQos.atMostOnce).withClientIdentifier(
           currentDeviceInfo.deviceId ?? FunctionUtil.generateRandomString(12),
         );
-    client = MqttServerClient(AppConstants.api.mqttHost, '',
-        maxConnectionAttempts: AppConstants.api.mqttConnectionAttempts);
+    client =
+        MqttServerClient(AppConstants.api.mqttHost, '', maxConnectionAttempts: AppConstants.api.mqttConnectionAttempts);
     client.port = AppConstants.api.mqttPort;
 
     client.setProtocolV311();
