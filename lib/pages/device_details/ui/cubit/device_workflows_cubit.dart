@@ -105,4 +105,8 @@ class DeviceWorkflowsCubit extends Cubit<DeviceWorkflowsState> {
       });
     });
   }
+
+  void resetState() {
+    emit(DeviceWorkflowsState.initial());
+  }
 }

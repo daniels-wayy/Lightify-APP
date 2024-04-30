@@ -35,4 +35,6 @@ class MQTT_UTIL {
   static String delete_workflows_cmd() => AppConstants.api.MQTT_CLEAR_WORKFLOWS_KEY;
 
   static String update_firmware(String firmwareUrl) => '${AppConstants.api.MQTT_FIRMWARE_UPDATE_KEY}$firmwareUrl';
+
+  static String settings_reset() => AppConstants.api.MQTT_RESET_SETTINGS_KEY;
 }

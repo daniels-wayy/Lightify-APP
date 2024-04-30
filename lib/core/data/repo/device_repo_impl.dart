@@ -141,6 +141,11 @@ class DeviceRepoImpl implements DeviceRepo {
   }
 
   @override
+  void resetDeviceSettings(Device device) {
+    _networkRepo.sendToServer(device.deviceInfo.topic, MQTT_UTIL.settings_reset());
+  }
+
+  @override
   void addDeviceWorkflow(Device device, Workflow workflow) {
     _networkRepo.sendToServer(device.deviceInfo.topic, MQTT_UTIL.add_workflow_cmd(workflow));
   }

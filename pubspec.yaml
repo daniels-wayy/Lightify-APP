@@ -3,7 +3,7 @@ description: Lightify application
 
 publish_to: 'none' 
 
-version: 1.4.4+48
+version: 1.4.5+50
 
 environment:
   sdk: '>=3.0.0 <3.13.9'
@@ -36,7 +36,7 @@ dependencies:
   # fading_edge_scrollview: ^3.0.0
   fluttertoast: ^8.2.2
   adaptive_dialog: ^1.10.1
-  flutter_platform_widgets: ^3.3.5
+  flutter_platform_widgets: ^6.1.0
   flutter_slidable: ^3.1.0
   device_preview: ^1.1.0
   automatic_animated_list: ^1.1.0

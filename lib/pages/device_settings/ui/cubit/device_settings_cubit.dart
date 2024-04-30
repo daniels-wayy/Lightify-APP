@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
+import 'package:lightify/core/data/model/device.dart';
 import 'package:lightify/core/data/model/device_settings.dart';
 import 'package:lightify/core/domain/repo/device_repo.dart';
 
@@ -41,12 +42,21 @@ class DeviceSettingsCubit extends Cubit<DeviceSettingsState> {
         ledCount: settings.ledCount,
         gmt: settings.gmt,
         ip: settings.ip,
+        usePortal: settings.usePortal,
         isLoading: false,
       ));
     }
   }
 
+  void onUsePortalChanged() {
+    emit(state.copyWith(usePortal: !state.usePortal));
+  }
+
   void onSave(DeviceSettings settings) {
     _deviceRepo.updateDeviceSettings(settings);
+  }
+
+  void onReset(Device device) {
+    _deviceRepo.resetDeviceSettings(device);
   }
 }
