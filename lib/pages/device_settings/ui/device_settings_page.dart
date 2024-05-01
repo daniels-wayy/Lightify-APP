@@ -36,6 +36,7 @@ class _DeviceSettingsPageState extends State<DeviceSettingsPage> {
   late final TextEditingController currentLimitController = TextEditingController();
   late final TextEditingController ledCountController = TextEditingController();
   late final TextEditingController gmtController = TextEditingController();
+  late final TextEditingController btnPinController = TextEditingController();
 
   late final DevicesCubit cubit;
   late final DeviceSettingsCubit settingsCubit;
@@ -57,6 +58,7 @@ class _DeviceSettingsPageState extends State<DeviceSettingsPage> {
     currentLimitController.dispose();
     ledCountController.dispose();
     gmtController.dispose();
+    btnPinController.dispose();
   }
 
   @override
@@ -67,6 +69,7 @@ class _DeviceSettingsPageState extends State<DeviceSettingsPage> {
         currentLimitController.text = state.currentLimit.toString();
         ledCountController.text = state.ledCount.toString();
         gmtController.text = state.gmt.toString();
+        btnPinController.text = state.btnPin.toString();
       },
       listenWhen: (p, c) => p.isLoading && !c.isLoading,
       child: BlocListener<DevicesCubit, DevicesState>(
@@ -138,6 +141,12 @@ class _DeviceSettingsPageState extends State<DeviceSettingsPage> {
                                           hint: 'Enter time zone',
                                           controller: gmtController,
                                         ),
+                                        SizedBox(height: height(18)),
+                                        _buildTextFieldRow(
+                                          title: 'Button pin',
+                                          hint: 'Enter button pin',
+                                          controller: btnPinController,
+                                        ),
                                         SizedBox(height: height(28)),
                                         BlocSelector<DeviceSettingsCubit, DeviceSettingsState, bool>(
                                             selector: (state) => state.usePortal,
@@ -147,6 +156,17 @@ class _DeviceSettingsPageState extends State<DeviceSettingsPage> {
                                                 subTitle:
                                                     'Create a local web interface to manage device state. Can be accessed in browser by device\'s IP address',
                                                 onTap: context.read<DeviceSettingsCubit>().onUsePortalChanged,
+                                                currentState: state,
+                                              );
+                                            }),
+                                        SizedBox(height: height(28)),
+                                        BlocSelector<DeviceSettingsCubit, DeviceSettingsState, bool>(
+                                            selector: (state) => state.useButton,
+                                            builder: (context, state) {
+                                              return _buildSwitchRow(
+                                                title: 'Use button',
+                                                subTitle: 'Handle button tap actions',
+                                                onTap: context.read<DeviceSettingsCubit>().onUseButtonChanged,
                                                 currentState: state,
                                               );
                                             }),
@@ -411,16 +431,19 @@ class _DeviceSettingsPageState extends State<DeviceSettingsPage> {
     final currentLimit = int.tryParse(currentLimitController.text) ?? 0;
     final ledCount = int.tryParse(ledCountController.text) ?? 0;
     final timeZone = int.tryParse(gmtController.text);
+    final btnPin = int.tryParse(btnPinController.text);
 
-    if (port > 0 && currentLimit > 0 && ledCount > 0 && timeZone != null) {
+    if (port > 0 && currentLimit > 0 && ledCount > 0 && timeZone != null && btnPin != null) {
       context.read<DeviceSettingsCubit>().onSave(DeviceSettings(
             topic: widget.args.deviceInfo.topic,
             port: port,
             currentLimit: currentLimit,
             ledCount: ledCount,
             gmt: timeZone,
+            btnPin: btnPin,
             ip: context.read<DeviceSettingsCubit>().state.ip,
             usePortal: context.read<DeviceSettingsCubit>().state.usePortal,
+            useButton: context.read<DeviceSettingsCubit>().state.useButton,
           ));
       Navigator.of(context).pop();
       DialogUtil.showToast('Changes saved. Resetting...');

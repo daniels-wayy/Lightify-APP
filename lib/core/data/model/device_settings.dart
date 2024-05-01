@@ -6,8 +6,10 @@ class DeviceSettings {
   final int currentLimit;
   final int ledCount;
   final int gmt;
+  final int btnPin;
   final String ip;
   final bool usePortal;
+  final bool useButton;
 
   const DeviceSettings({
     required this.topic,
@@ -15,11 +17,13 @@ class DeviceSettings {
     required this.currentLimit,
     required this.ledCount,
     required this.gmt,
+    required this.btnPin,
     required this.ip,
     required this.usePortal,
+    required this.useButton,
   });
 
   String toStringData() {
-    return '$port,$currentLimit,$ledCount,$gmt,${usePortal.intState}';
+    return '$port,$currentLimit,$ledCount,$gmt,${usePortal.intState},$btnPin,${useButton.intState}';
   }
 }
