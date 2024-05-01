@@ -8,8 +8,10 @@ abstract class DeviceSettingsState with _$DeviceSettingsState {
     @Default(0) int currentLimit,
     @Default(0) int ledCount,
     @Default(0) int gmt,
+    @Default(0) int btnPin,
     @Default('') String ip,
     @Default(false) bool usePortal,
+    @Default(false) bool useButton,
     String? isError,
   }) = _DeviceSettingsState;
 

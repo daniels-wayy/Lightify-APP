@@ -41,8 +41,10 @@ class DeviceSettingsCubit extends Cubit<DeviceSettingsState> {
         currentLimit: settings.currentLimit,
         ledCount: settings.ledCount,
         gmt: settings.gmt,
+        btnPin: settings.btnPin,
         ip: settings.ip,
         usePortal: settings.usePortal,
+        useButton: settings.useButton,
         isLoading: false,
       ));
     }
@@ -50,6 +52,10 @@ class DeviceSettingsCubit extends Cubit<DeviceSettingsState> {
 
   void onUsePortalChanged() {
     emit(state.copyWith(usePortal: !state.usePortal));
+  }
+
+  void onUseButtonChanged() {
+    emit(state.copyWith(useButton: !state.useButton));
   }
 
   void onSave(DeviceSettings settings) {
