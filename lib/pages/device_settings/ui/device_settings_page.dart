@@ -61,6 +61,10 @@ class _DeviceSettingsPageState extends State<DeviceSettingsPage> {
     btnPinController.dispose();
   }
 
+  TextStyle? titleStyle(BuildContext context) {
+    return context.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500);
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<DeviceSettingsCubit, DeviceSettingsState>(
@@ -108,11 +112,11 @@ class _DeviceSettingsPageState extends State<DeviceSettingsPage> {
                                       children: [
                                         SizedBox(height: height(18)),
                                         _buildDeviceName(),
-                                        SizedBox(height: height(42)),
+                                        SizedBox(height: height(34)),
                                         if (widget.args.deviceInfo.firmwareVersion != null &&
                                             widget.args.deviceInfo.firmwareVersion!.isVersion) ...[
                                           _buildDeviceVersion(),
-                                          SizedBox(height: height(42)),
+                                          SizedBox(height: height(34)),
                                         ],
                                         _buildDeviceIP(),
                                         SizedBox(height: height(24)),
@@ -204,11 +208,7 @@ class _DeviceSettingsPageState extends State<DeviceSettingsPage> {
       children: [
         Text(
           'Device name: ',
-          style: context.textTheme.titleSmall?.copyWith(
-            fontSize: height(18),
-            fontWeight: FontWeight.w500,
-            letterSpacing: -0.6,
-          ),
+          style: titleStyle(context),
         ),
         const Spacer(),
         GestureDetector(
@@ -217,11 +217,9 @@ class _DeviceSettingsPageState extends State<DeviceSettingsPage> {
           child: BlocBuilder<DevicesCubit, DevicesState>(builder: (context, _) {
             return Text(
               widget.args.deviceInfo.displayDeviceName,
-              style: context.textTheme.displayMedium?.copyWith(
-                fontSize: height(18),
-                color: AppColors.gray200,
+              style: context.textTheme.titleSmall?.copyWith(
+                color: Colors.grey.shade400,
                 fontWeight: FontWeight.w300,
-                letterSpacing: -0.05,
               ),
             );
           }),
@@ -245,18 +243,14 @@ class _DeviceSettingsPageState extends State<DeviceSettingsPage> {
       children: [
         Text(
           title,
-          style: context.textTheme.titleSmall?.copyWith(
-            fontSize: height(18),
-            fontWeight: FontWeight.w500,
-            letterSpacing: -0.6,
-          ),
+          style: titleStyle(context),
         ),
         const Spacer(),
         SizedBox(
           width: width(120),
           child: TextField(
             controller: controller,
-            style: context.textTheme.displayMedium,
+            style: context.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.normal),
             decoration: InputDecoration(hintText: hint),
             keyboardType: TextInputType.number,
             textInputAction: TextInputAction.next,
@@ -280,21 +274,14 @@ class _DeviceSettingsPageState extends State<DeviceSettingsPage> {
             children: [
               Text(
                 title,
-                style: context.textTheme.titleSmall?.copyWith(
-                  fontSize: height(18),
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: -0.6,
-                ),
+                style: titleStyle(context),
               ),
               if (subTitle != null && subTitle.isNotEmpty) ...[
                 SizedBox(height: height(6)),
                 Text(
                   subTitle,
-                  style: context.textTheme.titleSmall?.copyWith(
-                    fontSize: height(12),
-                    fontWeight: FontWeight.w400,
+                  style: context.textTheme.bodyLarge?.copyWith(
                     color: Colors.grey.shade300.withOpacity(0.7),
-                    letterSpacing: -0.2,
                   ),
                 ),
               ],
@@ -318,11 +305,7 @@ class _DeviceSettingsPageState extends State<DeviceSettingsPage> {
       children: [
         Text(
           'IP Address: ',
-          style: context.textTheme.titleSmall?.copyWith(
-            fontSize: height(18),
-            fontWeight: FontWeight.w500,
-            letterSpacing: -0.6,
-          ),
+          style: titleStyle(context),
         ),
         const Spacer(),
         BlocBuilder<DeviceSettingsCubit, DeviceSettingsState>(builder: (context, state) {
@@ -331,11 +314,9 @@ class _DeviceSettingsPageState extends State<DeviceSettingsPage> {
             onLongPress: () => _saveIP(state.ip),
             child: Text(
               state.ip,
-              style: context.textTheme.displayMedium?.copyWith(
-                fontSize: height(18),
-                color: AppColors.gray200,
+              style: context.textTheme.titleSmall?.copyWith(
+                color: Colors.grey.shade400,
                 fontWeight: FontWeight.w300,
-                letterSpacing: -0.05,
               ),
             ),
           );
@@ -349,21 +330,15 @@ class _DeviceSettingsPageState extends State<DeviceSettingsPage> {
       children: [
         Text(
           'Device version:',
-          style: context.textTheme.titleSmall?.copyWith(
-            fontSize: height(18),
-            fontWeight: FontWeight.w500,
-            letterSpacing: -0.6,
-          ),
+          style: titleStyle(context),
         ),
         const Spacer(),
         Text(
           widget.args.deviceInfo.firmwareVersion!.version.toString(),
-          style: context.textTheme.displayMedium?.copyWith(
-            fontSize: height(18),
-            color: AppColors.gray200,
-            fontWeight: FontWeight.w300,
-            letterSpacing: -0.05,
-          ),
+          style: context.textTheme.titleSmall?.copyWith(
+                color: Colors.grey.shade400,
+                fontWeight: FontWeight.w300,
+              ),
         ),
       ],
     );
@@ -378,10 +353,9 @@ class _DeviceSettingsPageState extends State<DeviceSettingsPage> {
       child: Center(
         child: Text(
           'Save',
-          style: context.textTheme.titleSmall?.copyWith(
-            fontSize: height(16),
+          style: context.textTheme.displayMedium?.copyWith(
             fontWeight: FontWeight.w500,
-            letterSpacing: -0.1,
+            color: Colors.grey.shade200,
           ),
         ),
       ),
@@ -389,11 +363,12 @@ class _DeviceSettingsPageState extends State<DeviceSettingsPage> {
   }
 
   Widget _buildResetCTA() {
-    return OutlinedButton(
-      style: ButtonStyle(
-        fixedSize: MaterialStateProperty.resolveWith((states) => Size.fromHeight(height(48))),
-        shape: MaterialStateProperty.resolveWith(
-            (states) => RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+    return MaterialButton(
+      color: AppColors.fullBlack,
+      height: height(48),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+        side: BorderSide(color: Colors.grey.shade300.withOpacity(0.8)),
       ),
       onPressed: () async {
         final result = await showOkCancelAlertDialog(
@@ -402,7 +377,6 @@ class _DeviceSettingsPageState extends State<DeviceSettingsPage> {
           message: 'Are you sure you want to reset your device to default settings?',
           okLabel: 'Reset',
           fullyCapitalizedForMaterial: false,
-          defaultType: OkCancelAlertDefaultType.cancel,
         );
         if (result == OkCancelResult.ok) {
           if (device != null) {
@@ -415,11 +389,9 @@ class _DeviceSettingsPageState extends State<DeviceSettingsPage> {
       child: Center(
         child: Text(
           'Reset',
-          style: context.textTheme.titleSmall?.copyWith(
-            fontSize: height(16),
+          style: context.textTheme.displayMedium?.copyWith(
             fontWeight: FontWeight.w500,
-            color: Colors.grey.shade300,
-            letterSpacing: -0.1,
+            color: Colors.grey.shade200,
           ),
         ),
       ),

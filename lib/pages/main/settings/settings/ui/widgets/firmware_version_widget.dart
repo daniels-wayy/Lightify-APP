@@ -33,9 +33,7 @@ class _FirmwareVersion extends StatelessWidget {
         Text(
           'Firmware update:',
           style: context.textTheme.titleSmall?.copyWith(
-            fontSize: height(18),
             fontWeight: FontWeight.w500,
-            letterSpacing: -0.6,
           ),
         ),
         const Spacer(),
@@ -104,10 +102,7 @@ class _FirmwareVersion extends StatelessWidget {
         child: Text(
           title,
           style: context.textTheme.displayMedium?.copyWith(
-            fontSize: height(14),
             color: color ?? Colors.lightBlueAccent,
-            fontWeight: FontWeight.w400,
-            letterSpacing: 0.15,
           ),
           textAlign: TextAlign.center,
         ),

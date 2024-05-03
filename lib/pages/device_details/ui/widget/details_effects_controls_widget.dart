@@ -140,7 +140,7 @@ class _DetailsEffectsControlsWidgetState extends State<_DetailsEffectsControlsWi
               effectEntity.name,
               style: context.textTheme.displaySmall?.copyWith(
                 color: _getFxTextColor(isSelected, effectEntity),
-                fontWeight: FontWeight.w600,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
               ),
             ),
           ),
@@ -189,6 +189,6 @@ class _DetailsEffectsControlsWidgetState extends State<_DetailsEffectsControlsWi
         return widget.device.cardTextColor;
       }
     }
-    return null;
+    return Colors.grey.shade100;
   }
 }

@@ -3,7 +3,7 @@ description: Lightify application
 
 publish_to: 'none' 
 
-version: 1.4.5+51
+version: 1.4.6+53
 
 environment:
   sdk: '>=3.0.0 <=3.19.6'
@@ -31,13 +31,17 @@ dependencies:
   cupertino_icons: ^1.0.8
   intl: ^0.18.1
   simple_animations: ^5.0.2
-  flutter_colorpicker: ^1.0.3
+  # flutter_colorpicker: ^1.0.3
   fluttertoast: ^8.2.5
   adaptive_dialog: ^2.1.0
   flutter_platform_widgets: ^6.1.0
   flutter_slidable: ^3.1.0
   device_preview: ^1.1.0
   automatic_animated_list: ^1.1.0
+  flutter_colorpicker:
+    git:
+      url: https://github.com/mchome/flutter_colorpicker.git
+      ref: master
 
   # Local DB
   shared_preferences: ^2.2.3

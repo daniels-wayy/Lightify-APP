@@ -52,12 +52,12 @@ class DeviceCard extends StatefulWidget {
     this.mainAxisAlignment = MainAxisAlignment.spaceBetween,
     this.brightnessIconSize = 26,
     this.brightnessTextSize = 12,
-    this.scaleFactor = 1.08,
+    this.scaleFactor = 1.06,
     this.showEffectIndication = true,
     this.layoutType = AdaptiveLayoutType.regular,
   });
 
-  static const COLORS_SWITCH_DURATION = Duration(milliseconds: 250);
+  static const COLORS_SWITCH_DURATION = Duration(milliseconds: 350);
 
   @override
   State<DeviceCard> createState() => _DeviceCardState();
@@ -231,7 +231,7 @@ class _DeviceCardState extends State<DeviceCard> with SingleTickerProviderStateM
                               child: AnimatedDefaultTextStyle(
                                 style: context.textTheme.titleSmall?.copyWith(
                                       color: dataColor,
-                                      letterSpacing: -0.55,
+                                      letterSpacing: -0.25,
                                       fontSize: widget.layoutType.deviceNameTextSize,
                                     ) ??
                                     const TextStyle(),

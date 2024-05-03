@@ -100,11 +100,9 @@ class _DetailsPresetColorsWidget extends StatelessWidget {
             SizedBox(height: height(8)),
             Text(
               preset.colorName,
-              style: context.textTheme.displaySmall?.copyWith(
-                color: AppColors.gray200,
-                fontSize: height(10),
-                letterSpacing: -0.1,
-                fontWeight: FontWeight.w600,
+              style: context.textTheme.bodyMedium?.copyWith(
+                color: Colors.grey.shade300.withOpacity(0.8),
+                fontWeight: FontWeight.w500,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,

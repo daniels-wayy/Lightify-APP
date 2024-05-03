@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:lightify/core/ui/extensions/core_extensions.dart';
-import 'package:lightify/core/ui/utils/screen_util.dart';
 import 'package:lightify/core/ui/utils/vibration_util.dart';
 
 class TitleSwitchWidget extends StatelessWidget {
@@ -22,9 +21,7 @@ class TitleSwitchWidget extends StatelessWidget {
         Text(
           title,
           style: context.textTheme.titleSmall?.copyWith(
-            fontSize: height(18),
             fontWeight: FontWeight.w500,
-            letterSpacing: -0.6,
           ),
         ),
         const Spacer(),

@@ -106,6 +106,8 @@ class Device {
 
   double get brightnessFactor => brightness / AppConstants.api.MQTT_DEVICE_MAX_BRIGHTNESS;
 
+  int get brightnessPercent => (brightnessFactor * 100).toInt();
+
   bool get needsUpdate {
     final toUpdate = getIt<FirmwareUpdateCubit>().state.latestAvailableVersion;
     if (toUpdate.isVersion && (deviceInfo.firmwareVersion != null && deviceInfo.firmwareVersion!.isVersion)) {

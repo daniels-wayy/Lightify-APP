@@ -64,7 +64,7 @@ class _WorkflowItem extends StatelessWidget {
     return Row(
       children: [
         SlideableTime(
-          time: workflow.dateTime,
+          time: workflow.relativeDateTime,
           color: workflow.isEnabled ? Colors.white : Colors.white60,
         ),
         if (workflow.durationMin > 0) ...[
@@ -117,18 +117,32 @@ class _WorkflowItem extends StatelessWidget {
   Widget _buildSubtitle(BuildContext context) {
     final text = '${workflow.whatPowerText},  ${workflow.whatDaysText}';
 
-    return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 300),
-      child: Text(
-        text,
-        key: ValueKey(text),
-        style: context.textTheme.displayMedium?.copyWith(
-          fontSize: height(13),
-          color: workflow.isEnabled ? Colors.white : Colors.white60,
-          fontWeight: FontWeight.normal,
-          letterSpacing: -0.1,
+    return Row(
+      children: [
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          child: workflow.isRunning
+              ? Padding(
+                padding: EdgeInsets.only(right: width(3)),
+                child: Icon(
+                    Icons.play_arrow_rounded,
+                    color: Colors.white,
+                    size: height(14),
+                  ),
+              )
+              : Container(),
         ),
-      ),
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          child: Text(
+            text,
+            key: ValueKey(text),
+            style: context.textTheme.displaySmall?.copyWith(
+              color: workflow.isEnabled ? Colors.white : Colors.white60,
+            ),
+          ),
+        ),
+      ],
     );
   }
 

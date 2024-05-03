@@ -23,7 +23,7 @@ class ApplyFor extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: Colors.grey.shade400.withOpacity(0.04),
+        color: Colors.grey.shade300.withOpacity(0.04),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
@@ -32,7 +32,7 @@ class ApplyFor extends StatelessWidget {
           SizedBox(height: height(18)),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: width(18)),
-            child: Text('Apply for:', style: context.textTheme.displayMedium?.copyWith(fontWeight: FontWeight.w600)),
+            child: Text('Apply for:', style: context.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
           ),
           SizedBox(height: height(14)),
           BlocBuilder<DevicesCubit, DevicesState>(
@@ -51,13 +51,13 @@ class ApplyFor extends StatelessWidget {
                     splashColor: Colors.grey.shade400.withOpacity(0.1),
                     highlightColor: Colors.transparent,
                     child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: height(13), horizontal: width(18)),
+                      padding: EdgeInsets.symmetric(vertical: height(12), horizontal: width(18)),
                       child: Row(
                         children: [
                           Expanded(
                             child: Text(
                               device.deviceInfo.deviceName,
-                              style: context.textTheme.displaySmall
+                              style: context.textTheme.displayMedium
                                   ?.copyWith(color: isSelected ? Colors.white : Colors.grey.shade300.withOpacity(0.8)),
                             ),
                           ),

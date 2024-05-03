@@ -50,7 +50,7 @@ class _WheelTimeSelectorState extends State<WheelTimeSelector> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: height(200),
+      height: height(230),
       width: double.maxFinite,
       child: Stack(
         children: [
@@ -107,7 +107,7 @@ class _WheelTimeSelectorState extends State<WheelTimeSelector> {
                 width: double.maxFinite,
                 height: 48.0,
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade400.withOpacity(0.04),
+                  color: Colors.grey.shade300.withOpacity(0.04),
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
@@ -131,7 +131,10 @@ class _Hour extends StatelessWidget {
       child: Center(
         child: Text(
           hours < 10 ? '0$hours' : hours.toString(),
-          style: context.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w500),
+          style: context.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w500,
+            fontSize: height(28),
+          ),
         ),
       ),
     );
@@ -150,7 +153,10 @@ class _Minute extends StatelessWidget {
       child: Center(
         child: Text(
           mins < 10 ? '0$mins' : mins.toString(),
-          style: context.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w500),
+          style: context.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w500,
+            fontSize: height(28),
+          ),
         ),
       ),
     );

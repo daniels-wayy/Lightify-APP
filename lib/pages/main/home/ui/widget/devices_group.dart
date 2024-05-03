@@ -52,11 +52,7 @@ class DevicesGroup extends StatelessWidget {
             children: [
               Text(
                 groupName,
-                style: context.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  fontSize: height(24),
-                  letterSpacing: -0.2,
-                ),
+                style: context.textTheme.titleLarge,
               ),
               if (layoutType != AdaptiveLayoutType.desktop) const Spacer(),
               SizedBox(width: width(layoutType != AdaptiveLayoutType.desktop ? 8 : 12)),
