@@ -13,9 +13,7 @@ class _HomeWidgetsPrefBarWidget extends StatelessWidget {
         Text(
           'Home widgets',
           style: context.textTheme.titleSmall?.copyWith(
-            fontSize: height(18),
             fontWeight: FontWeight.w500,
-            letterSpacing: -0.6,
           ),
         ),
         const Spacer(),

@@ -150,7 +150,7 @@ class _ApiConstants {
 
   final SLEEP_MODE_BRIGHTNESS = 5;
   final MQTT_DEVICE_MAX_BRIGHTNESS = 255;
-  final MQTT_SEND_REQUEST_THRESHOLD = const Duration(milliseconds: 150);
+  final MQTT_SEND_REQUEST_THRESHOLD = const Duration(milliseconds: 120);
   final MQTT_GET_REQUEST_FREQ = const Duration(seconds: 30);
   final MQTT_KEEP_ALIVE_FREQ_SEC = 25;
 

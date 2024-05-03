@@ -70,11 +70,7 @@ class _WorkflowFormPageState extends State<WorkflowFormPage> {
       toolbarHeight: kToolbarHeight + height(20),
       title: Text(
         '${isEdit ? 'Edit' : 'Add'} Workflow',
-        style: context.textTheme.titleMedium?.copyWith(
-          fontWeight: FontWeight.w600,
-          fontSize: height(21),
-          letterSpacing: -0.6,
-        ),
+        style: context.textTheme.titleMedium,
       ),
     );
   }
@@ -105,7 +101,7 @@ class _WorkflowFormPageState extends State<WorkflowFormPage> {
                 SizedBox(height: height(18)),
                 DecoratedBox(
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade400.withOpacity(0.04),
+                    color: Colors.grey.shade300.withOpacity(0.04),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Padding(
@@ -151,11 +147,9 @@ class _WorkflowFormPageState extends State<WorkflowFormPage> {
       children: [
         Text(
           'Repeat',
-          style: context.textTheme.displayMedium?.copyWith(
-            fontSize: height(16),
-            color: Colors.white.withOpacity(0.6),
+          style: context.textTheme.titleSmall?.copyWith(
+            color: Colors.white.withOpacity(0.7),
             fontWeight: FontWeight.w500,
-            letterSpacing: 0.15,
           ),
         ),
         SizedBox(width: width(52)),
@@ -184,11 +178,9 @@ class _WorkflowFormPageState extends State<WorkflowFormPage> {
       children: [
         Text(
           'Duration',
-          style: context.textTheme.displayMedium?.copyWith(
-            fontSize: height(16),
-            color: Colors.white.withOpacity(0.6),
+          style: context.textTheme.titleSmall?.copyWith(
+            color: Colors.white.withOpacity(0.7),
             fontWeight: FontWeight.w500,
-            letterSpacing: 0.15,
           ),
         ),
         SizedBox(width: width(40)),
@@ -210,11 +202,9 @@ class _WorkflowFormPageState extends State<WorkflowFormPage> {
       children: [
         Text(
           'Brightness',
-          style: context.textTheme.displayMedium?.copyWith(
-            fontSize: height(16),
-            color: Colors.white.withOpacity(0.6),
+          style: context.textTheme.titleSmall?.copyWith(
+            color: Colors.white.withOpacity(0.7),
             fontWeight: FontWeight.w500,
-            letterSpacing: 0.15,
           ),
         ),
         SizedBox(width: width(28)),
@@ -241,11 +231,8 @@ class _WorkflowFormPageState extends State<WorkflowFormPage> {
       child: BlocBuilder<WorkflowFormCubit, WorkflowFormState>(builder: (context, state) {
         return Text(
           state.overviewText(),
-          style: context.textTheme.displayMedium?.copyWith(
-            fontSize: height(12),
-            color: Colors.grey.shade600,
-            fontWeight: FontWeight.w400,
-            letterSpacing: 0.05,
+          style: context.textTheme.displaySmall?.copyWith(
+            color: Colors.grey.shade500,
           ),
           textAlign: TextAlign.center,
         );
@@ -262,7 +249,7 @@ class _WorkflowFormPageState extends State<WorkflowFormPage> {
       },
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: Colors.grey.shade400.withOpacity(0.04),
+          color: Colors.grey.shade300.withOpacity(0.04),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Padding(
@@ -271,10 +258,7 @@ class _WorkflowFormPageState extends State<WorkflowFormPage> {
             child: Text(
               'Delete',
               style: context.textTheme.displayMedium?.copyWith(
-                fontSize: height(14),
                 color: Colors.red,
-                fontWeight: FontWeight.w400,
-                letterSpacing: 0.15,
               ),
               textAlign: TextAlign.center,
             ),
@@ -290,7 +274,7 @@ class _WorkflowFormPageState extends State<WorkflowFormPage> {
       onTap: _onAdd,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: Colors.grey.shade400.withOpacity(0.04),
+          color: Colors.grey.shade300.withOpacity(0.04),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Padding(
@@ -299,10 +283,7 @@ class _WorkflowFormPageState extends State<WorkflowFormPage> {
             child: Text(
               'Add',
               style: context.textTheme.displayMedium?.copyWith(
-                fontSize: height(14),
                 color: Colors.green,
-                fontWeight: FontWeight.w400,
-                letterSpacing: 0.15,
               ),
               textAlign: TextAlign.center,
             ),

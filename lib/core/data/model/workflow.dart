@@ -1,5 +1,7 @@
 import 'package:intl/intl.dart';
+import 'package:lightify/core/data/model/device.dart';
 import 'package:lightify/core/ui/extensions/core_extensions.dart';
+import 'package:lightify/core/ui/utils/date_time_util.dart';
 import 'package:lightify/core/ui/utils/function_util.dart';
 
 class Workflow {
@@ -8,6 +10,7 @@ class Workflow {
   static const everydayNum = 9;
 
   static const maxDurationMin = 90;
+  static const overviewTextNoticeHours = 2; // display before at least "n" hours 
 
   static const dayNameMapper = <int, String>{
     0: 'every Sunday',
@@ -65,15 +68,46 @@ class Workflow {
 
   int get durationMin => duration.inMinutes;
 
-  DateTime get dateTime {
-    final now = DateTime.now();
-    return DateTime(
-      now.year,
-      now.month,
-      now.day,
-      hour,
-      minute,
-    );
+  int get minutesRemaining {
+    return relativeDateTime.difference(DateTimeUtil.nowAbsoluteDate()).inMinutes;
+  }
+
+  DateTime get relativeDateTime {
+    final date = nonRelativeDateTime;
+    final dif = date.difference(DateTimeUtil.nowAbsoluteDate()).inMinutes;
+    return date.add(Duration(days: dif <= 0 ? 1 : 0));
+  }
+
+  DateTime get nonRelativeDateTime {
+    final now = DateTimeUtil.nowAbsoluteDate();
+    return DateTime(now.year, now.month, now.day, hour, minute);
+  }
+
+  DateTime get startTime {
+    final time = nonRelativeDateTime;
+    return time.subtract(duration);
+  }
+
+  DateTime get endTime {
+    return startTime.add(duration);
+  }
+
+  bool get isDay {
+    final now = DateTimeUtil.nowAbsoluteDate();
+    final nowWeekday = isoToNtpWeekday(now.weekday);
+    return /*if everyday*/ day == everydayNum ||
+        /*if same day*/ day == nowWeekday ||
+        /*if weekday*/ day == everyWeekdaysNum && (nowWeekday > 0 && nowWeekday < 6) ||
+        /*if weekend*/ day == everyWeekendsNum && (nowWeekday == 6 || nowWeekday == 0);
+  }
+
+  bool get isTime {
+    final now = DateTimeUtil.nowAbsoluteDate();
+    return (now.isAfter(startTime.subtract(const Duration(seconds: 1))) && now.isBefore(endTime));
+  }
+
+  bool get isRunning {
+    return isEnabled && isDay && isTime;
   }
 
   String toMqttPacket() {
@@ -81,7 +115,7 @@ class Workflow {
   }
 
   String get whatTimeText {
-    final time = DateFormat('HH:mm').format(dateTime);
+    final time = DateFormat('HH:mm').format(relativeDateTime);
     return time;
   }
 
@@ -100,5 +134,46 @@ class Workflow {
 
   int get brightnessPercent {
     return FunctionUtil.fromBrightnessToPercent(brightness);
+  }
+
+  bool get showOverviewText {
+    final minutes = minutesRemaining;
+    final showOverview = minutes <= overviewTextNoticeHours * 60; // 4 hours
+    return isEnabled && isDay && showOverview;
+  }
+
+  String overviewText(Device device) {
+    final workflowTime = relativeDateTime;
+    final minutes = minutesRemaining;
+    final showInMinutes = minutes > 0 && minutes < 60;
+    final isRun = isRunning;
+
+    var result = '${isRun ? 'Running' : 'Upcoming'} ';
+    result += brightness <= 0
+        ? 'fade out'
+        : 'fade ${device.brightnessPercent < brightnessPercent ? 'in' : 'out'} to $brightnessPercent%';
+    result += ' ';
+
+    final formatEndingTime = DateFormat.Hm().format(workflowTime);
+
+    if (showInMinutes) {
+      result += '${isRun ? 'within' : 'in'} $minutes ${minutes > 1 ? 'minutes' : 'minute'}';
+    } else if (durationMin <= 0) {
+      result += 'at $formatEndingTime';
+    } else {
+      final startingTime = workflowTime.subtract(Duration(minutes: durationMin));
+      final formatStartingTime = DateFormat.Hm().format(startingTime);
+      result += 'from $formatStartingTime to $formatEndingTime';
+    }
+    return result;
+  }
+
+  int isoToNtpWeekday(int isoWeekday) {
+    return isoWeekday != 7 ? isoWeekday : 0;
+  }
+
+  @override
+  String toString() {
+    return 'Workflow($id, ${isEnabled ? 'enabled' : 'disabled'}, time: $hour:$minute, day: ${dayNameMapper[day]}, duration: ${durationMin}min)';
   }
 }

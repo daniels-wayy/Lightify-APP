@@ -192,7 +192,7 @@ class DevicesWatcherBloc extends Bloc<DevicesWatcherEvent, DevicesWatcherState> 
       }).toList();
     }
 
-    _devicesCubit.setDevices(_retrieveOnlyAvailableDevices(currentDevices).toList());
+    _devicesCubit.setDevices(_retrieveOnlyAvailableDevices(house, currentDevices).toList());
 
     final unreachableDevices = _checkUnreachableDevices(house, currentDevices);
     if (unreachableDevices.isNotEmpty) {
@@ -234,7 +234,7 @@ class DevicesWatcherBloc extends Bloc<DevicesWatcherEvent, DevicesWatcherState> 
     return unreachableDevices;
   }
 
-  Iterable<Device> _retrieveOnlyAvailableDevices(List<Device> fetchedDevices) {
-    return fetchedDevices.where((e) => !e.isUnreachable);
+  Iterable<Device> _retrieveOnlyAvailableDevices(House house, List<Device> fetchedDevices) {
+    return fetchedDevices.where((e) => !e.isUnreachable && house.remotes.any((x) => e.deviceInfo.topic == x));
   }
 }

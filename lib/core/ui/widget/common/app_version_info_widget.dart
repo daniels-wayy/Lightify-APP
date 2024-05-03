@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:lightify/core/ui/extensions/core_extensions.dart';
-import 'package:lightify/core/ui/styles/colors/app_colors.dart';
-import 'package:lightify/core/ui/utils/screen_util.dart';
 import 'package:lightify/di/di.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -16,10 +14,7 @@ class AppVersionInfo extends StatelessWidget {
       child: Text(
         '${packageInfo.packageName}: Version: ${packageInfo.version}, build: ${packageInfo.buildNumber}',
         style: context.textTheme.displayMedium?.copyWith(
-          fontSize: height(15),
-          color: AppColors.gray200,
-          fontWeight: FontWeight.w300,
-          letterSpacing: -0.05,
+          color: Colors.grey.shade500,
         ),
       ),
     );

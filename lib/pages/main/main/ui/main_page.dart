@@ -175,11 +175,10 @@ class MainPage extends StatelessWidget {
               Icon(tab.icon(context), color: color, size: tab.iconSize()),
               const SizedBox(height: 2),
               Text(tab.getName(),
-                  style: context.textTheme.displaySmall?.copyWith(
-                    fontSize: height(13),
-                    fontWeight: FontWeight.w600,
+                  style: context.textTheme.bodyLarge?.copyWith(
+                    // fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                    fontWeight: FontWeight.w500,
                     color: color,
-                    letterSpacing: -0.25,
                   )),
             ],
           ),

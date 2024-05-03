@@ -10,14 +10,14 @@ class AppTextStyles {
   static TextStyle defaultStyle() {
     return const TextStyle(
       fontFamily: 'Montserrat',
-      letterSpacing: -0.25,
+      letterSpacing: -0.1,
     );
   }
 
   static TextStyle displaySmall() {
     return defaultStyle().copyWith(
       color: AppColors.white,
-      fontSize: 13,
+      fontSize: 12,
       fontWeight: FontWeight.w400,
     );
   }
@@ -25,7 +25,7 @@ class AppTextStyles {
   static TextStyle displayMedium() {
     return defaultStyle().copyWith(
       color: AppColors.white,
-      fontSize: 16,
+      fontSize: 14,
       fontWeight: FontWeight.w400,
     );
   }
@@ -66,32 +66,31 @@ class AppTextStyles {
   static TextStyle titleSmall() {
     return defaultStyle().copyWith(
       color: AppColors.white,
-      fontSize: 18,
-      fontWeight: FontWeight.bold,
+      fontSize: 16,
+      fontWeight: FontWeight.w600,
     );
   }
 
   static TextStyle titleMedium() {
     return defaultStyle().copyWith(
       color: AppColors.white,
-      fontWeight: FontWeight.w700,
+      fontWeight: FontWeight.w600,
       fontSize: 20,
-      letterSpacing: 0.0,
     );
   }
 
   static TextStyle titleLarge() {
     return defaultStyle().copyWith(
       color: AppColors.white,
-      fontSize: 28,
-      fontWeight: FontWeight.bold,
+      fontSize: 22,
+      fontWeight: FontWeight.w600,
     );
   }
 
   static TextStyle labelLarge() {
     return defaultStyle().copyWith(
       color: AppColors.white,
-      fontSize: 15,
+      fontSize: 16,
       fontWeight: FontWeight.w500,
     );
   }

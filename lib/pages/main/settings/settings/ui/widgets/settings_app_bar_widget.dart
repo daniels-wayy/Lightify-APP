@@ -32,11 +32,7 @@ class SettingsAppBar extends StatelessWidget {
           Center(
             child: Text(
               title ?? 'Settings',
-              style: context.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-                fontSize: height(21),
-                letterSpacing: -0.6,
-              ),
+              style: context.textTheme.titleMedium,
             ),
           )
         ],

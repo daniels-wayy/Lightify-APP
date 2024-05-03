@@ -3,7 +3,9 @@ import 'dart:math';
 
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:automatic_animated_list/automatic_animated_list.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
@@ -22,6 +24,7 @@ import 'package:lightify/core/ui/constants/app_constants.dart';
 import 'package:lightify/core/ui/extensions/core_extensions.dart';
 import 'package:lightify/core/ui/routes/root_routes.dart';
 import 'package:lightify/core/ui/styles/colors/app_colors.dart';
+import 'package:lightify/core/ui/utils/date_time_util.dart';
 import 'package:lightify/core/ui/utils/dialog_util.dart';
 import 'package:lightify/core/ui/utils/function_util.dart';
 import 'package:lightify/core/ui/utils/screen_util.dart';
@@ -48,6 +51,7 @@ part 'package:lightify/pages/device_details/ui/widget/details_breath_slider_widg
 part 'package:lightify/pages/device_details/ui/widget/details_effects_controls_widget.dart';
 part 'package:lightify/pages/device_details/ui/widget/workflows/device_workflows_widget.dart';
 part 'package:lightify/pages/device_details/ui/widget/workflows/workflow_item_widget.dart';
+part 'package:lightify/pages/device_details/ui/widget/details_upcoming_workflow_widget.dart';
 
 class DeviceDetailsPage extends StatefulWidget {
   const DeviceDetailsPage({super.key, required this.args});
@@ -74,57 +78,63 @@ class _DeviceDetailsPageState extends State<DeviceDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.fullBlack,
-      appBar: _buildAppBar(context),
-      body: BlocBuilder<DevicesCubit, DevicesState>(builder: (_, state) {
-        final device = state.findDeviceById(widget.args.deviceInfo.topic);
-        if (device == null) {
-          return const SizedBox.shrink();
-        }
-        return FadingEdge(
-          scrollDirection: Axis.vertical,
-          child: ListView(
-            controller: ScrollController(),
-            padding: EdgeInsets.only(bottom: height(64) + ScreenUtil.bottomPadding, top: height(18)),
-            physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-            children: [
-              SizedBox(height: height(14)),
-              _DetailsDeviceCardWidget(
-                device: device,
-                onPowerChanged: widget.args.onPowerChanged,
-                onBrightnessChanged: widget.args.onBrightnessChanged,
+    return BlocBuilder<DevicesCubit, DevicesState>(builder: (_, state) {
+      final device = state.findDeviceById(widget.args.deviceInfo.topic);
+      return AnimatedSwitcher(
+        duration: const Duration(milliseconds: 400),
+        child: device == null
+            ? Scaffold(
+                backgroundColor: AppColors.fullBlack,
+                appBar: _buildAppBar(context, null),
+                body: const Center(child: LoadingWidget()),
+              )
+            : Scaffold(
+                backgroundColor: AppColors.fullBlack,
+                appBar: _buildAppBar(context, device),
+                body: FadingEdge(
+                  scrollDirection: Axis.vertical,
+                  stops: const [0.0, 0.03, 0.96, 1.0],
+                  child: ListView(
+                    controller: ScrollController(),
+                    padding: EdgeInsets.only(bottom: height(64) + ScreenUtil.bottomPadding, top: height(18)),
+                    physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                    children: [
+                      _DetailsDeviceCardWidget(
+                        device: device,
+                        onPowerChanged: widget.args.onPowerChanged,
+                        onBrightnessChanged: widget.args.onBrightnessChanged,
+                      ),
+                      SizedBox(height: height(42)),
+                      _DetailsColorPickerWidget(
+                        device: device,
+                        onColorChanged: widget.args.onColorChanged,
+                        onCustomColorTap: _onCustomColorTap,
+                      ),
+                      SizedBox(height: height(26)),
+                      _DetailsEffectsControlsWidget(
+                        device: device,
+                        onEffectChanged: widget.args.onEffectChanged,
+                        onEffectSpeedChanged: widget.args.onEffectSpeedChanged,
+                        onEffectScaleChanged: widget.args.onEffectScaleChanged,
+                      ),
+                      SizedBox(height: height(42)),
+                      _DetailsPresetColorsWidget(
+                        onPresetTap: widget.args.onColorChanged,
+                        onColorPresetRemove: _onPresetRemove,
+                        onColorPresetAdd: () => _onColorPresetAdd(device.color),
+                      ),
+                      SizedBox(height: height(32)),
+                      _DeviceWorkflows(deviceInfo: widget.args.deviceInfo),
+                      SizedBox(height: height(14) + MediaQuery.of(context).padding.bottom),
+                    ],
+                  ),
+                ),
               ),
-              SizedBox(height: height(42)),
-              _DetailsColorPickerWidget(
-                device: device,
-                onColorChanged: widget.args.onColorChanged,
-                onCustomColorTap: _onCustomColorTap,
-              ),
-              SizedBox(height: height(26)),
-              _DetailsEffectsControlsWidget(
-                device: device,
-                onEffectChanged: widget.args.onEffectChanged,
-                onEffectSpeedChanged: widget.args.onEffectSpeedChanged,
-                onEffectScaleChanged: widget.args.onEffectScaleChanged,
-              ),
-              SizedBox(height: height(42)),
-              _DetailsPresetColorsWidget(
-                onPresetTap: widget.args.onColorChanged,
-                onColorPresetRemove: _onPresetRemove,
-                onColorPresetAdd: () => _onColorPresetAdd(device.color),
-              ),
-              SizedBox(height: height(32)),
-              _DeviceWorkflows(deviceInfo: widget.args.deviceInfo),
-              SizedBox(height: height(14) + MediaQuery.of(context).padding.bottom),
-            ],
-          ),
-        );
-      }),
-    );
+      );
+    });
   }
 
-  AppBar _buildAppBar(BuildContext context) {
+  AppBar _buildAppBar(BuildContext context, Device? device) {
     return AppBar(
       leading: BouncingWidget(
         onTap: Navigator.of(context).pop,
@@ -142,26 +152,17 @@ class _DeviceDetailsPageState extends State<DeviceDetailsPage> {
       backgroundColor: AppColors.fullBlack,
       centerTitle: true,
       elevation: 0.0,
-      toolbarHeight: kToolbarHeight + height(20),
+      toolbarHeight: kToolbarHeight + height(14),
       title: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           BlocBuilder<DevicesCubit, DevicesState>(builder: (context, _) {
             return Text(
               widget.args.deviceInfo.displayDeviceName,
-              style: context.textTheme.titleMedium?.copyWith(
-                letterSpacing: 0.3,
-              ),
+              style: context.textTheme.titleMedium,
             );
           }),
-          SizedBox(height: height(2)),
-          Text(
-            widget.args.deviceInfo.deviceGroup,
-            style: context.textTheme.displaySmall?.copyWith(
-              color: AppColors.gray200,
-              fontWeight: FontWeight.w600,
-              letterSpacing: -0.25,
-            ),
-          ),
+          if (device != null) _DetailsUpcomingWorkflow(device),
         ],
       ),
     );

@@ -63,7 +63,7 @@ class DeviceWorkflowsCubit extends Cubit<DeviceWorkflowsState> {
     if (topic == workflow.topic) {
       _loadingTimer?.cancel();
       final filtered = workflow.items.unique((x) => x.id);
-      final sorted = filtered..sort((a, b) => a.dateTime.isBefore(b.dateTime) ? -1 : 1);
+      final sorted = filtered..sort((a, b) => a.minutesRemaining.compareTo(b.minutesRemaining));
       emit(state.copyWith(
         workflows: sorted,
         isLoading: false,
@@ -73,6 +73,7 @@ class DeviceWorkflowsCubit extends Cubit<DeviceWorkflowsState> {
 
   void deleteWorkflows(List<Device> devices) {
     _send(devices, _deviceRepo.deleteDeviceWorkflows);
+    emit(state.copyWith(workflows: []));
   }
 
   void addWorkflow(List<Device> devices, Workflow workflow) {

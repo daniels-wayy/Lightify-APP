@@ -8,13 +8,11 @@ import 'package:lightify/core/ui/bloc/firmware_update/firmware_update_cubit.dart
 import 'package:lightify/core/ui/bloc/home_widgets_config/home_widgets_config_cubit.dart';
 import 'package:lightify/core/ui/bloc/user_pref/user_pref_cubit.dart';
 import 'package:lightify/core/ui/constants/app_constants.dart';
-import 'package:lightify/core/ui/styles/text_styles/app_text_styles.dart';
 import 'package:lightify/core/ui/styles/theme/app_theme.dart';
 import 'package:lightify/core/ui/utils/screen_util.dart';
 import 'package:lightify/core/ui/routes/root_routes.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:lightify/di/di.dart';
-import 'package:lightify/lightify_app_wrapper.dart';
 import 'package:lightify/pages/main/home/ui/devices_watcher/devices_watcher_bloc.dart';
 
 class LightifyApp extends StatefulWidget {
@@ -42,7 +40,7 @@ class _LightifyAppState extends State<LightifyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return LightifyAppWrapper(appBody: LayoutBuilder(builder: (context, constraints) {
+    return LayoutBuilder(builder: (context, constraints) {
       return MultiBlocProvider(
         providers: [
           BlocProvider(create: (_) => getIt<DevicesCubit>()),
@@ -58,10 +56,6 @@ class _LightifyAppState extends State<LightifyApp> {
           locale: DevicePreview.locale(context),
           builder: (context, child) {
             final mediaQueryData = MediaQuery.of(context);
-            final scale = mediaQueryData.textScaleFactor.clamp(
-              AppTextStyles.textScaleFactorLowerLimit,
-              AppTextStyles.textScaleFactorUpperLimit,
-            );
             return OrientationBuilder(builder: (context, orientation) {
               final formattedConstraints = orientation == Orientation.portrait ? constraints : BoxConstraints(
                 maxWidth: constraints.maxHeight,
@@ -69,14 +63,9 @@ class _LightifyAppState extends State<LightifyApp> {
                 minHeight: constraints.minWidth,
                 minWidth: constraints.minHeight,
               );
-
               ScreenUtil.init(formattedConstraints);
               ScreenUtil.initPaddings(mediaQueryData.padding);
-
-              return MediaQuery(
-                data: MediaQuery.of(context).copyWith(textScaleFactor: scale),
-                child: DevicePreview.appBuilder(context, child),
-              );
+              return DevicePreview.appBuilder(context, child);
             });
           },
           localizationsDelegates: const [
@@ -89,6 +78,6 @@ class _LightifyAppState extends State<LightifyApp> {
           initialRoute: Routes.MAIN,
         ),
       );
-    }));
+    });
   }
 }

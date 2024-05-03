@@ -113,9 +113,20 @@ class _DeviceWorkflowsState extends State<_DeviceWorkflows> {
     );
   }
 
-  void _deleteWorkflows() {
+  Future<void> _deleteWorkflows() async {
     if (currentDevice == null) return;
-    cubit.deleteWorkflows([currentDevice!]);
+    final result = await showOkCancelAlertDialog(
+      context: context,
+      title: 'Delete workflows',
+      message: 'Your workflows will be deleted, are you sure you want to proceed?',
+      okLabel: 'Delete',
+      fullyCapitalizedForMaterial: false,
+      isDestructiveAction: true,
+    );
+    if (result == OkCancelResult.ok) {
+      cubit.deleteWorkflows([currentDevice!]);
+      DialogUtil.showToast('Workflows deleted');
+    }
   }
 
   Future<void> _addWorkflow(bool canAdd) async {
