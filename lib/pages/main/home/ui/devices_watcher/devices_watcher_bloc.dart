@@ -103,7 +103,7 @@ class DevicesWatcherBloc extends Bloc<DevicesWatcherEvent, DevicesWatcherState> 
     final devices = <Device>[];
     final expectedDevicesBuffer = List.from(house.remotes);
 
-    _serverUpdatesStream = stream!.listen((response) {
+    _serverUpdatesStream = stream?.listen((response) {
       response.whenOrNull(deviceState: (device) {
         // if received expected device
         if (expectedDevicesBuffer.any((remote) => device.deviceInfo.topic == remote)) {
