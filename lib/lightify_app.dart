@@ -1,4 +1,4 @@
-import 'package:device_preview/device_preview.dart';
+// import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lightify/core/domain/repo/connectivity_repo.dart';
@@ -53,7 +53,7 @@ class _LightifyAppState extends State<LightifyApp> {
         child: MaterialApp(
           title: AppConstants.strings.APP_TITLE,
           restorationScopeId: 'lightify_app',
-          locale: DevicePreview.locale(context),
+          // locale: DevicePreview.locale(context),
           builder: (context, child) {
             final mediaQueryData = MediaQuery.of(context);
             return OrientationBuilder(builder: (context, orientation) {
@@ -65,7 +65,8 @@ class _LightifyAppState extends State<LightifyApp> {
               );
               ScreenUtil.init(formattedConstraints);
               ScreenUtil.initPaddings(mediaQueryData.padding);
-              return DevicePreview.appBuilder(context, child);
+              // return DevicePreview.appBuilder(context, child);
+              return child!;
             });
           },
           localizationsDelegates: const [

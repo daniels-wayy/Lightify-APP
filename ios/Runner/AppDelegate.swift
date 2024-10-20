@@ -6,7 +6,7 @@ import WidgetKit
 //private let devicesUpdateBackgroundTaskId = "lightify.ds.devicesUpdate.backgroundTask"
 //private let devicesUpdateBackgroundTaskFreq = 60 // mins
 
-@UIApplicationMain
+@main
 @objc class AppDelegate: FlutterAppDelegate {
     
     override func application(

@@ -23,21 +23,23 @@ class NetworkRepoImpl implements NetworkRepo {
     final currentDeviceInfo = await currentDeviceRepo.getCurrentDeviceInfo();
     final connMessage = MqttConnectMessage().withWillQos(MqttQos.atMostOnce).withClientIdentifier(
           currentDeviceInfo.deviceId ?? FunctionUtil.generateRandomString(12),
-        );
+        ).startClean();
     client =
         MqttServerClient(AppConstants.api.mqttHost, '', maxConnectionAttempts: AppConstants.api.mqttConnectionAttempts);
     client.port = AppConstants.api.mqttPort;
 
-    client.setProtocolV311();
+    client.secure = true;
     client.keepAlivePeriod = AppConstants.api.MQTT_KEEP_ALIVE_FREQ_SEC;
-    client.connectTimeoutPeriod = 4000; // milliseconds
+    client.connectTimeoutPeriod = 25000; // milliseconds
     client.connectionMessage = connMessage;
     client.onDisconnected = onDisconnected;
     client.onConnected = onConnected;
     client.onSubscribed = onSubscribed;
+    client.setProtocolV311();
 
     try {
-      await client.connect();
+      // await client.connect();
+      await client.connect('thisisffftestilumuser', 'Denpro98!!!!');
       await Future<void>.delayed(const Duration(milliseconds: 50));
     } on NoConnectionException catch (e) {
       debugPrint('MQTT Connection NoConnectionException! $e');

@@ -5,10 +5,11 @@ part of 'app_constants.dart';
 class _ApiConstants {
   _ApiConstants();
 
-  final mqttPort = 1883;
-  final mqttHost = 'broker.mqttdashboard.com';
+  // final mqttPort = 1883;
+  final mqttPort = 8883;
+  final mqttHost = 'broker.hivemq.com';
   final appMqttTopic = 'DSLY_App';
-  final mqttConnectionAttempts = 3;
+  final mqttConnectionAttempts = 15;
 
   static const dsPacketHeader = 'DSLY';
   static const dnPacketHeader = 'DNLY';
