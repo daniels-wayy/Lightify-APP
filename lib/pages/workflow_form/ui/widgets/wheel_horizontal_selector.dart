@@ -26,7 +26,8 @@ class WheelHorizontalSelector extends StatefulWidget {
   State<WheelHorizontalSelector> createState() => _WheelHorizontalSelectorState();
 }
 
-class _WheelHorizontalSelectorState extends State<WheelHorizontalSelector> {
+class _WheelHorizontalSelectorState extends State<WheelHorizontalSelector>
+    with AutomaticKeepAliveClientMixin<WheelHorizontalSelector> {
   late final List<Widget> elements;
 
   @override
@@ -37,6 +38,7 @@ class _WheelHorizontalSelectorState extends State<WheelHorizontalSelector> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return SizedBox(
       height: height(55),
       width: double.maxFinite,
@@ -62,6 +64,9 @@ class _WheelHorizontalSelectorState extends State<WheelHorizontalSelector> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class _Item extends StatelessWidget {

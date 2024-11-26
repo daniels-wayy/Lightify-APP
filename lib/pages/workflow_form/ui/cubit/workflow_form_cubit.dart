@@ -25,7 +25,7 @@ class WorkflowFormCubit extends Cubit<WorkflowFormState> {
   late final Device currentDevice;
 
   static const defaultRepeat = 1;
-  static const defaultDuration = 1;
+  static const defaultDuration = 0;
   static const defaultBrightness = 0;
   static const brightnessScaleDivisions = 5; // 100% / 5
   static const brightnessGradientColors = [Colors.red, Colors.orange, Colors.yellow, Colors.green];

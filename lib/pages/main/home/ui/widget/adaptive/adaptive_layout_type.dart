@@ -46,7 +46,7 @@ extension AdaptiveLayoutTypeX on AdaptiveLayoutType {
   int get detailsButtonSize {
     switch (this) {
       case AdaptiveLayoutType.regular:
-        return 26;
+        return 28;
       case AdaptiveLayoutType.tablet:
       case AdaptiveLayoutType.desktop:
         return 20;

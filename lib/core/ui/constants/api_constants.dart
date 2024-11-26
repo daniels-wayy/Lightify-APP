@@ -7,36 +7,39 @@ class _ApiConstants {
 
   // final mqttPort = 1883;
   final mqttPort = 8883;
-  final mqttHost = 'broker.hivemq.com';
+  final mqttHost = 'l5ddbad7.ala.eu-central-1.emqxsl.com';
   final appMqttTopic = 'DSLY_App';
   final mqttConnectionAttempts = 15;
+  final mqttUsername = 'lightifytestproj550132';
+  final mqttPass = 'Denpro98!';
 
   static const dsPacketHeader = 'DSLY';
   static const dnPacketHeader = 'DNLY';
 
   static const debugDeviceRemote = '${dsPacketHeader}_Debug_Lightify'; // debug
   static const kitchenWorkspaceRemote = '${dsPacketHeader}_Kitchen_Workspace';
-  static const livingRoomTVRemote = '${dsPacketHeader}_Livingroom_TV';
-  static const livingRoomPianoRemote = '${dsPacketHeader}_Livingroom_Piano';
-  static const officePCMonitorRemote = '${dsPacketHeader}_Office_Monitor';
-  static const officeDeskRemote = '${dsPacketHeader}_Office_Desk';
-  static const officeMacMonitorRemote = '${dsPacketHeader}_Office_Mac_Monitor';
-  static const bedroomBedLowersideRemote = '${dsPacketHeader}_Bedroom_Bed_Lowerside';
-  static const bedroomBedUppersideRemote = '${dsPacketHeader}_Bedroom_Bed_Upperside';
-  static const bedroomClosetRemote = '${dsPacketHeader}_Bedroom_Closet';
+  static const tv1Remote = '${dsPacketHeader}_Livingroom_TV';
+  static const pianoRemote = '${dsPacketHeader}_Office_Piano';
+  static const pcMonitorRemote = '${dsPacketHeader}_Office_PC_Monitor';
+  static const macMonitorRemote = '${dsPacketHeader}_Balcony_Mac_Monitor';
+  static const deskRemote = '${dsPacketHeader}_Office_Desk';
+  static const bedLowersideRemote = '${dsPacketHeader}_Bedroom_Bed_Lowerside';
+  static const bedUppersideRemote = '${dsPacketHeader}_Bedroom_Bed_Upperside';
+  static const closetRemote = '${dsPacketHeader}_Bedroom_Closet';
+
   static const dnKitchenCeiling = '${dnPacketHeader}_Kitchen_Ceiling';
 
   // D&V
   final dsRemotes = [
     kitchenWorkspaceRemote,
-    livingRoomTVRemote,
-    bedroomBedLowersideRemote,
-    officePCMonitorRemote,
-    officeDeskRemote,
-    officeMacMonitorRemote,
-    bedroomBedUppersideRemote,
-    livingRoomPianoRemote,
-    bedroomClosetRemote,
+    tv1Remote,
+    bedLowersideRemote,
+    pcMonitorRemote,
+    deskRemote,
+    macMonitorRemote,
+    bedUppersideRemote,
+    pianoRemote,
+    closetRemote,
     if (!kReleaseMode) debugDeviceRemote,
   ];
 
@@ -53,52 +56,52 @@ class _ApiConstants {
       deviceGroup: 'Kitchen',
       icon: Icons.restaurant,
     ),
-    livingRoomTVRemote: DeviceInfo(
-      topic: livingRoomTVRemote,
+    tv1Remote: DeviceInfo(
+      topic: tv1Remote,
       deviceName: 'TV',
       deviceGroup: 'Living Room',
       icon: Icons.tv,
     ),
-    bedroomBedLowersideRemote: DeviceInfo(
-      topic: bedroomBedLowersideRemote,
+    bedLowersideRemote: DeviceInfo(
+      topic: bedLowersideRemote,
       deviceName: 'Bed Lowerside',
       deviceGroup: 'Bedroom',
       icon: Icons.bed_outlined,
     ),
-    bedroomBedUppersideRemote: DeviceInfo(
-      topic: bedroomBedUppersideRemote,
+    bedUppersideRemote: DeviceInfo(
+      topic: bedUppersideRemote,
       deviceName: 'Bed Upperside',
       deviceGroup: 'Bedroom',
       icon: Icons.bedroom_parent_outlined,
     ),
-    officePCMonitorRemote: DeviceInfo(
-      topic: officePCMonitorRemote,
+    pcMonitorRemote: DeviceInfo(
+      topic: pcMonitorRemote,
       deviceName: 'PC Monitor',
       deviceGroup: 'Office',
       icon: Icons.monitor_rounded,
     ),
-    officeDeskRemote: DeviceInfo(
-      topic: officeDeskRemote,
+    deskRemote: DeviceInfo(
+      topic: deskRemote,
       deviceName: 'Desk',
       deviceGroup: 'Office',
       icon: Icons.desk,
     ),
-    livingRoomPianoRemote: DeviceInfo(
-      topic: livingRoomPianoRemote,
+    pianoRemote: DeviceInfo(
+      topic: pianoRemote,
       deviceName: 'Piano',
-      deviceGroup: 'Living Room',
+      deviceGroup: 'Office',
       icon: Icons.piano,
     ),
-    bedroomClosetRemote: DeviceInfo(
-      topic: bedroomClosetRemote,
+    closetRemote: DeviceInfo(
+      topic: closetRemote,
       deviceName: 'Closet',
       deviceGroup: 'Bedroom',
       icon: Icons.beach_access,
     ),
-    officeMacMonitorRemote: DeviceInfo(
-      topic: officeMacMonitorRemote,
+    macMonitorRemote: DeviceInfo(
+      topic: macMonitorRemote,
       deviceName: 'Mac Monitor',
-      deviceGroup: 'Office',
+      deviceGroup: 'Balcony',
       icon: Icons.laptop_mac,
     ),
     debugDeviceRemote: DeviceInfo(
@@ -151,7 +154,7 @@ class _ApiConstants {
 
   final SLEEP_MODE_BRIGHTNESS = 5;
   final MQTT_DEVICE_MAX_BRIGHTNESS = 255;
-  final MQTT_SEND_REQUEST_THRESHOLD = const Duration(milliseconds: 120);
+  final MQTT_SEND_REQUEST_THRESHOLD = const Duration(milliseconds: 50);
   final MQTT_GET_REQUEST_FREQ = const Duration(seconds: 30);
   final MQTT_KEEP_ALIVE_FREQ_SEC = 25;
 

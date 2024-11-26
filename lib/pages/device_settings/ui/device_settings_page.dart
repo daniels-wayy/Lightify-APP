@@ -405,7 +405,7 @@ class _DeviceSettingsPageState extends State<DeviceSettingsPage> {
     final timeZone = int.tryParse(gmtController.text);
     final btnPin = int.tryParse(btnPinController.text);
 
-    if (port > 0 && currentLimit > 0 && ledCount > 0 && timeZone != null && btnPin != null) {
+    if (port > 0 && ledCount > 0 && timeZone != null && btnPin != null) {
       context.read<DeviceSettingsCubit>().onSave(DeviceSettings(
             topic: widget.args.deviceInfo.topic,
             port: port,
