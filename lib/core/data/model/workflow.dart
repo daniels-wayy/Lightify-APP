@@ -151,7 +151,8 @@ class Workflow {
     var result = '${isRun ? 'Running' : 'Upcoming'} ';
     result += brightness <= 0
         ? 'fade out'
-        : 'fade ${device.brightnessPercent < brightnessPercent ? 'in' : 'out'} to $brightnessPercent%';
+        // : 'fade ${device.brightnessPercent < brightnessPercent ? 'in' : 'out'} to $brightnessPercent%';
+        : 'dim to $brightnessPercent%';
     result += ' ';
 
     final formatEndingTime = DateFormat.Hm().format(workflowTime);

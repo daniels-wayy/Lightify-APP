@@ -27,7 +27,7 @@ class WorkflowFormPage extends StatefulWidget {
   State<WorkflowFormPage> createState() => _WorkflowFormPageState();
 }
 
-class _WorkflowFormPageState extends State<WorkflowFormPage> {
+class _WorkflowFormPageState extends State<WorkflowFormPage> with AutomaticKeepAliveClientMixin<WorkflowFormPage> {
   late FixedExtentScrollController hoursController;
   late FixedExtentScrollController minutesController;
   late FixedExtentScrollController repeatController;
@@ -77,6 +77,7 @@ class _WorkflowFormPageState extends State<WorkflowFormPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return CustomPopScope(
       onWillPop: () {
         _back();
@@ -109,10 +110,10 @@ class _WorkflowFormPageState extends State<WorkflowFormPage> {
                     child: Column(
                       children: [
                         _buildRepeat(),
-                        SizedBox(height: height(18)),
-                        const Divider(),
-                        SizedBox(height: height(18)),
-                        _buildDuration(),
+                        // SizedBox(height: height(18)),
+                        // const Divider(),
+                        // SizedBox(height: height(18)),
+                        // _buildDuration(),
                         SizedBox(height: height(18)),
                         const Divider(),
                         SizedBox(height: height(18)),
@@ -311,7 +312,8 @@ class _WorkflowFormPageState extends State<WorkflowFormPage> {
 
   void _onAdd() {
     final state = context.read<WorkflowFormCubit>().state;
-    final id = min(255, state.currentId + (Random().nextInt(40)));
+    // final id = min(255, state.currentId + (Random().nextInt(40)));
+    final id = state.currentId + Random().nextInt(50000);
     if (!widget.args.isExist(id)) {
       final workflow = Workflow(
         id: id,
@@ -369,4 +371,7 @@ class _WorkflowFormPageState extends State<WorkflowFormPage> {
       Navigator.of(context).pop();
     }
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

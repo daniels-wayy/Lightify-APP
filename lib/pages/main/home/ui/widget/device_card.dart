@@ -57,7 +57,7 @@ class DeviceCard extends StatefulWidget {
     this.layoutType = AdaptiveLayoutType.regular,
   });
 
-  static const COLORS_SWITCH_DURATION = Duration(milliseconds: 350);
+  static const COLORS_SWITCH_DURATION = Duration(milliseconds: 200);
 
   @override
   State<DeviceCard> createState() => _DeviceCardState();

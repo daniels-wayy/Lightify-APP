@@ -24,8 +24,9 @@ class DeviceRepoImpl implements DeviceRepo {
     return _networkRepo.serverUpdates?.map((data) {
       if (data == null || data.isEmpty) return const ServerResponseType.empty();
       try {
-        if (data.startsWith(AppConstants.api.MQTT_PACKETS_HEADER)) {
+        debugPrint('received: $data');
 
+        if (data.startsWith(AppConstants.api.MQTT_PACKETS_HEADER)) {
           final formattedData = data.replaceAll(AppConstants.api.MQTT_PACKETS_HEADER, '');
 
           // Device state

@@ -39,7 +39,7 @@ class NetworkRepoImpl implements NetworkRepo {
 
     try {
       // await client.connect();
-      await client.connect('thisisffftestilumuser', 'Denpro98!!!!');
+      await client.connect(AppConstants.api.mqttUsername, AppConstants.api.mqttPass);
       await Future<void>.delayed(const Duration(milliseconds: 50));
     } on NoConnectionException catch (e) {
       debugPrint('MQTT Connection NoConnectionException! $e');

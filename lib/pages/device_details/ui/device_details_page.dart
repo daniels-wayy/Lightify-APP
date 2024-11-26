@@ -111,13 +111,13 @@ class _DeviceDetailsPageState extends State<DeviceDetailsPage> {
                         onCustomColorTap: _onCustomColorTap,
                       ),
                       SizedBox(height: height(26)),
-                      _DetailsEffectsControlsWidget(
-                        device: device,
-                        onEffectChanged: widget.args.onEffectChanged,
-                        onEffectSpeedChanged: widget.args.onEffectSpeedChanged,
-                        onEffectScaleChanged: widget.args.onEffectScaleChanged,
-                      ),
-                      SizedBox(height: height(42)),
+                      // _DetailsEffectsControlsWidget(
+                      //   device: device,
+                      //   onEffectChanged: widget.args.onEffectChanged,
+                      //   onEffectSpeedChanged: widget.args.onEffectSpeedChanged,
+                      //   onEffectScaleChanged: widget.args.onEffectScaleChanged,
+                      // ),
+                      // SizedBox(height: height(42)),
                       _DetailsPresetColorsWidget(
                         onPresetTap: widget.args.onColorChanged,
                         onColorPresetRemove: _onPresetRemove,
